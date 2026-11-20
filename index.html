@@ -390,6 +390,14 @@ details.xb summary::-webkit-details-marker{display:none}
 .facts li{margin:5px 0;line-height:1.55}
 .facts .refchip{margin-left:4px;padding:1px 6px;font-size:.74rem}
 
+.srcline{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:8px 0 0;line-height:1.45}
+.srcline .srclab{font-weight:600}
+.srcline a,.srcdocs a{color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+.srcline cite{font-style:italic}
+.srcdocs{margin-top:16px;padding-top:10px;border-top:1px dashed var(--line);font-family:var(--sans);font-size:.85rem}
+.srcdocs .srch{font-weight:600;color:var(--muted);margin:0 0 4px}
+.srcdocs ul{margin:0;padding-left:18px}
+.srcdocs li{margin:3px 0}
 .note{font-family:var(--sans);font-size:.85rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--line);margin-top:28px;padding-top:16px}
 
 /* Reading font setting */
@@ -697,7 +705,7 @@ a.notebtn{text-decoration:none;display:inline-block}
     </div>
   </section>
 
-  <p class="note">These are simplified summaries of each tradition's official or mainstream teaching. Individual congregations, pastors, and members often hold a range of views, and some families (Baptist, Methodist, Pentecostal) include many separate denominations that differ from one another.</p>
+  <p class="note">These are simplified summaries of each tradition's official or mainstream teaching. Each one names the church's own documents it is based on; where a church has no official statement, that is said too. Individual congregations, pastors, and members often hold a range of views, and some families (Baptist, Methodist, Pentecostal) include many separate denominations that differ from one another.</p>
 </main>
 <div class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="shName" hidden><button class="x" id="shX" aria-label="Close">×</button><h3 id="shName"></h3><p class="meta" id="shMeta"></p><p id="shNote"></p><div class="refchips" id="shRefs"></div><button class="btn" id="shFind">Find every mention</button></div>
 
@@ -752,7 +760,7 @@ const T = [
  communion:"The bread and wine become Christ's body and blood. Believers prepare carefully, including by fasting, before receiving.",
  endtimes:"Christ will return to judge the living and the dead; the church teaches no detailed millennial timeline.",
  governance:"A patriarch and Holy Synod in Addis Ababa. For centuries its bishops came from the Coptic Church of Alexandria; it received its own patriarch in 1959. The Eritrean church became independent in 1993, and bishops in Tigray announced a separate church in 2021.",
- translation:"Ge'ez in the liturgy; Amharic and other local-language Bibles for everyday reading."},
+ translation:"Ge'ez is the traditional language of the liturgy, now increasingly celebrated in Amharic. Amharic and other local-language Bibles are used for everyday reading."},
 {id:"lutheran",name:"Lutheran",fam:"Historic Protestant",c:"#2648A0",
  origin:"Martin Luther, Germany, 1517",
  summary:"Puts Scripture alone as final judge and reads every page in terms of Law and Gospel, with Christ at the center.",
@@ -961,6 +969,194 @@ toggleAll.addEventListener("click",()=>{
 });
 tradChips.appendChild(toggleAll);
 
+// ---------- Sources for each church's teaching ----------
+// docs: the documents cited. Each topic lists [docKey, "section"] pairs, or {note:"..."} for things no document settles.
+const CSRC={
+catholic:{docs:{
+  ccc:["Catechism of the Catholic Church","https://www.vatican.va/archive/ENG0015/_INDEX.HTM"],
+  dv:["Second Vatican Council, Dei Verbum (1965)","https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_const_19651118_dei-verbum_en.html"],
+  lg:["Second Vatican Council, Lumen Gentium (1964)","https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_const_19641121_lumen-gentium_en.html"],
+  trent:["Council of Trent, Session IV (1546)",null],
+  usccb:["U.S. Conference of Catholic Bishops, the NABRE","https://bible.usccb.org/"]},
+ authority:[["ccc","¶¶ 80–87"],["dv","§§ 9–10"]],
+ canon:[["ccc","¶ 120"],["trent","decree on the canonical Scriptures"]],
+ interpret:[["ccc","¶¶ 109–119 (the senses of Scripture, ¶¶ 115–118)"]],
+ salvation:[["ccc","¶¶ 1987–2029 (justification and grace); ¶¶ 1855–1861 (mortal sin); ¶ 1446 (confession)"]],
+ baptism:[["ccc","¶¶ 1213, 1250–1252 (infants), 1263"]],
+ communion:[["ccc","¶¶ 1366–1367 (sacrifice), 1374–1376 (transubstantiation)"]],
+ endtimes:[["ccc","¶¶ 668–682; ¶ 676 rejects millenarianism"]],
+ governance:[["ccc","¶¶ 880–887"],["lg","§ 22"]],
+ translation:[["usccb","the translation approved by the U.S. bishops"],{note:"Others listed are in common Catholic use."}]},
+orthodox:{docs:{
+  hopko:["Thomas Hopko, The Orthodox Faith (Orthodox Church in America)","https://oca.org/orthodoxy/the-orthodox-faith"],
+  dos:["Confession of Dositheus, Synod of Jerusalem (1672)","https://www.crivoice.org/creeddositheus.html"],
+  osb:["The Orthodox Study Bible (2008)",null]},
+ authority:[["hopko","Vol. 1, “Sources of Christian Doctrine”"],["dos","Decree 2"]],
+ canon:[["dos","Question 3"],["hopko","Vol. 1, “The Bible” and “Old Testament”"]],
+ interpret:[["dos","Decrees 2 and 12"],["hopko","Vol. 1, “Sources of Christian Doctrine”"]],
+ salvation:[["hopko","Vol. 4, “Spirituality”"],["dos","Decree 13 (faith working through love)"]],
+ baptism:[["dos","Decree 16"],["hopko","Vol. 2, “Worship”"]],
+ communion:[["dos","Decree 17"],["hopko","Vol. 2, “Worship”"]],
+ endtimes:[["hopko","Vol. 1, “The Symbol of Faith”"]],
+ governance:[["hopko","Vol. 3, “Church History”"],{note:"The Ecumenical Patriarch's primacy rests on canon 3 of the Council of Constantinople (381) and canon 28 of Chalcedon (451)."}],
+ translation:[["osb","common in English-speaking parishes"]]},
+ethiopian:{docs:{
+  cnewa:["Ronald Roberson, The Eastern Christian Churches (CNEWA)","https://cnewa.org/eastern-christian-churches/oriental-orthodox-churches/the-ethiopian-orthodox-tewahedo-church/"],
+  cnewaer:["Ronald Roberson, “The Eritrean Orthodox Church” (CNEWA)","https://cnewa.org/eastern-christian-churches/oriental-orthodox-churches/the-eritrean-orthodox-church/"],
+  cowley:["R. W. Cowley, “The Biblical Canon of the Ethiopian Orthodox Church Today,” Ostkirchliche Studien 23 (1974): 318–323",null],
+  mk:["Mahibere Kidusan (EOTC Sunday School Department), “The Sacrament of Baptism”","https://nextgeneration.eotcmk.org/seven-sacraments/the-sacrament-of-baptism"],
+  fast:["A. Michael and K. Baye, Scientific Reports 13 (2023): 7963","https://doi.org/10.1038/s41598-023-35060-4"],
+  ark:["Aleteia, “Is the Ark of the Covenant really in Ethiopia?” (2017)","https://aleteia.org/2017/09/15/is-the-ark-of-the-covenant-really-in-ethiopia"],
+  ns:["Nine Saints Ethiopian Orthodox Monastery, \u201cChristology\u201d","https://ninesaintsethiopianorthodoxmonastery.org/docs/doctrine/christology"],
+  addis:["Addis Standard, “How the war in Tigray threatens to split ancient Ethiopian Orthodox Church”","https://addisstandard.com/?p=1381"]},
+ authority:[["ns","accepts the first three councils as ecumenical"],["cnewa","rejects Chalcedon"]],
+ canon:[["cowley","the narrower (54 + 27) and broader (46 + 35) counts"]],
+ interpret:[["cnewa","Sabbath, food laws, circumcision"],["ark","the tabot"]],
+ salvation:[["fast","more than 200 fast days; 55-day Lent"]],
+ baptism:[["mk","40th and 80th day, triple immersion, chrismation and Communion"]],
+ communion:[["mk",""]],
+ endtimes:[{note:"Taken from the Nicene Creed, which the church confesses. No church document sets out a millennial timeline."}],
+ governance:[["cnewa","patriarchate 1959"],["cnewaer","Eritrea 1993"],["addis","Tigray 2021"]],
+ translation:[["cnewa","Ge'ez and Amharic in the liturgy"]]},
+lutheran:{docs:{
+  ac:["Augsburg Confession (1530)","https://thebookofconcord.org/augsburg-confession/"],
+  fc:["Formula of Concord (1577)","https://thebookofconcord.org/formula-of-concord-solid-declaration/"],
+  ap:["Apology of the Augsburg Confession (1531)","https://thebookofconcord.org/"],
+  elca:["Evangelical Lutheran Church in America","https://www.elca.org/"],
+  lcms:["Lutheran Church–Missouri Synod","https://www.lcms.org/"]},
+ authority:[["fc","Epitome, “Rule and Norm”"]],
+ canon:[{note:"Luther's 1534 Bible placed the Apocrypha in a separate section, calling the books useful and good to read but not equal to Holy Scripture."}],
+ interpret:[["fc","Article V (Law and Gospel)"],["ap","Article IV"]],
+ salvation:[["ac","Article IV (justification), Article VI (new obedience)"]],
+ baptism:[["ac","Article IX"]],
+ communion:[["ac","Article X"],["fc","Solid Declaration VII.35 (“under the bread, with the bread, in the bread”)"]],
+ endtimes:[["ac","Article XVII"]],
+ governance:[["ac","Article XXVIII"],["elca",""],["lcms",""]],
+ translation:[{note:"Common use. The LCMS's Lutheran Service Book (2006) uses the ESV; the ELCA's Evangelical Lutheran Worship uses the NRSV."}]},
+reformed:{docs:{
+  wcf:["Westminster Confession of Faith (1647)","https://opc.org/wcf.html"],
+  crc:["Heidelberg Catechism and Canons of Dort (Three Forms of Unity)","https://www.crcna.org/welcome/beliefs/confessions"]},
+ authority:[["wcf","1.6 and 1.10"]],
+ canon:[["wcf","1.2–1.3"]],
+ interpret:[["wcf","1.9 (Scripture interprets Scripture); ch. 7 (covenant)"]],
+ salvation:[["wcf","ch. 3 (election), ch. 11 (justification)"],["crc","Canons of Dort (the five points behind “TULIP”)"]],
+ baptism:[["wcf","28.4"],["crc","Heidelberg Catechism Q&A 74"]],
+ communion:[["wcf","29.7"]],
+ endtimes:[["wcf","ch. 32–33"],{note:"The confession takes no millennial position; the description reflects common views."}],
+ governance:[["wcf","ch. 30–31 (church censures, synods and councils)"]],
+ translation:[{note:"Common use; no official translation."}]},
+anglican:{docs:{
+  art:["Thirty-Nine Articles of Religion (1571)","https://www.anglican.ca/resources/articles-of-religion/"],
+  hooker:["Richard Hooker, Of the Laws of Ecclesiastical Polity, Book V",null],
+  gsfa:["Episcopal News Service on the Global South primates' statement (Feb. 20, 2023)","https://www.episcopalnewsservice.org/2023/02/20/global-south-archbishops-reject-welbys-leadership-role-vow-to-re-set-anglican-communion/"]},
+ authority:[["art","Article VI"],["hooker","the source of the Scripture, tradition, and reason pattern"]],
+ canon:[["art","Article VI"]],
+ interpret:[{note:"The Book of Common Prayer lectionary; range of views reflects the Communion's own diversity."}],
+ salvation:[["art","Article XI"]],
+ baptism:[["art","Article XXVII"]],
+ communion:[["art","Article XXVIII"]],
+ endtimes:[{note:"The Articles and creeds affirm Christ's return and judgment; no millennial position is set."}],
+ governance:[["art","Article XXXVI"],["gsfa",""]],
+ translation:[{note:"Common use; the NRSV is widely used in Church of England and Episcopal liturgy."}]},
+methodist:{docs:{
+  aor:["Articles of Religion (Book of Discipline 2020/2024)","https://www.umc.org/en/content/articles-of-religion"],
+  task:["Book of Discipline ¶ 105, “Our Theological Task”","https://www.umc.org/content/book-of-discipline-105-our-theological-task"],
+  table:["United Methodist Church, “An open table” (citing This Holy Mystery, 2004)","https://www.umc.org/content/an-open-table-how-united-methodists-understand-communion"],
+  umnews:["UM News, “Heartbreak, hope follow season of church exits” (Jan. 18, 2024)","https://www.umnews.org/news/heartbreak-hope-follow-season-of-church-exits"]},
+ authority:[["task",""],["aor","Article V"]],
+ canon:[["aor","Article V"]],
+ interpret:[["task","on experience and Scripture"]],
+ salvation:[["aor","Article IX"],["task","grace and holiness"]],
+ baptism:[["aor","Article XVII"]],
+ communion:[["aor","Article XVIII"],["table",""]],
+ endtimes:[{note:"The Articles take no millennial position."}],
+ governance:[["umnews","more than 7,600 of 30,541 U.S. congregations, 2019–2023"]],
+ translation:[{note:"Common use; no official translation."}]},
+baptist:{docs:{
+  bfm:["Southern Baptist Convention, Baptist Faith and Message 2000","https://bfm.sbc.net/bfm2000/"],
+  lw:["Lifeway Research, “Pastors: The End of the World Is Complicated” (2016)","https://news.lifeway.com/2016/04/26/pastors-the-end-of-the-world-is-complicated/"]},
+ authority:[["bfm","Article I and Preamble"]],
+ canon:[["bfm","Article I"]],
+ interpret:[["bfm","Preamble (“soul competency and the priesthood of believers”)"]],
+ salvation:[["bfm","Article IV; Article V (believers “will never fall away”)"]],
+ baptism:[["bfm","Article VII"]],
+ communion:[["bfm","Article VII"]],
+ endtimes:[["bfm","Article X takes no millennial position"],["lw","75% of Baptist pastors hold premillennial views"]],
+ governance:[["bfm","Article VI"]],
+ translation:[{note:"Common use; no official translation."}]},
+pentecostal:{docs:{
+  ag:["Assemblies of God, Statement of Fundamental Truths","https://www.creeds.net/Misc/AOGtruths.pdf"],
+  lw:["Lifeway Research (2016)","https://news.lifeway.com/2016/04/26/pastors-the-end-of-the-world-is-complicated/"]},
+ authority:[["ag","Truth 1"]],
+ canon:[["ag","Truth 1"]],
+ interpret:[["ag","Truths 7, 8 and 12"]],
+ salvation:[["ag","Truths 5, 7 and 8"]],
+ baptism:[["ag","Truth 6"],{note:"Oneness Pentecostals (such as the United Pentecostal Church International) baptize in Jesus' name only."}],
+ communion:[["ag","Truth 6"]],
+ endtimes:[["ag","Truths 13 and 14"],["lw","84% of Pentecostal pastors hold premillennial views"]],
+ governance:[{note:"Varies by denomination."}],
+ translation:[{note:"Common use; no official translation."}]},
+nondenom:{docs:{
+  fact:["Hartford Institute, Report on the 2020 Faith Communities Today Survey of Nondenominational and Independent Churches","https://hirr.hartfordinternational.edu/wp-content/uploads/2024/10/Report-on-the-2020-Faith-Communities-Today-Survey-of-Nondenominational-and-Independent-Churches.pdf"]},
+ _all:[{note:"These churches share no common statement of faith. This describes typical patterns, based on surveys of the churches; individual churches differ."},["fact",""]]},
+sda:{docs:{
+  fb:["Seventh-day Adventist Church, 28 Fundamental Beliefs","https://www.adventist.org/beliefs/"]},
+ authority:[["fb","Beliefs 1 and 18"]],
+ canon:[["fb","Belief 1"]],
+ interpret:[["fb","Beliefs 19, 20 and 24"]],
+ salvation:[["fb","Beliefs 10 and 24"]],
+ baptism:[["fb","Belief 15"]],
+ communion:[["fb","Belief 16"]],
+ endtimes:[["fb","Beliefs 25–27"]],
+ governance:[["fb","Belief 12"],{note:"The General Conference constitution sets the structure."}],
+ translation:[{note:"Common use; no official translation."}]},
+lds:{docs:{
+  aof:["The Articles of Faith","https://www.churchofjesuschrist.org/study/scriptures/pgp/a-of-f/1"],
+  dc:["Doctrine and Covenants","https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc"],
+  kjv:["Church News, “Letter reaffirms use of King James Version of Bible” (1992)","https://www.thechurchnews.com/1992/6/20/23259463/letter-reaffirms-use-of-king-james-version-of-bible/"]},
+ authority:[["aof","Articles 8 and 9"]],
+ canon:[["aof","Article 8"]],
+ interpret:[["aof","Article 8"],{note:"The Joseph Smith Translation appears in footnotes of the church's KJV."}],
+ salvation:[["aof","Articles 3 and 4"],["dc","section 76 (degrees of glory)"]],
+ baptism:[["dc","20:72–74 (immersion), 68:25–27 (age 8), 128 (baptism for the dead)"]],
+ communion:[["dc","20:75–79; 27:2"]],
+ endtimes:[["aof","Article 10"]],
+ governance:[["dc","section 107"]],
+ translation:[["kjv",""]]},
+jw:{docs:{
+  b:["jw.org, “What Do Jehovah's Witnesses Believe?”","https://www.jw.org/en/jehovahs-witnesses/faq/jehovah-witness-beliefs/"],
+  y:["The Watchtower, “100 Years of Kingdom Rule” (Jan. 15, 2014)","https://www.jw.org/en/library/magazines/w20140115/100-years-kingdom-rule/"]},
+ _all:[["b",""]],
+ endtimes:[["b",""],["y",""]]}
+};
+// Topic sources for one church: [{name,url,detail}] plus notes
+function srcFor(id,topic){
+  const s=CSRC[id];if(!s)return null;
+  const list=s[topic]||s._all;if(!list)return null;
+  return list.map(x=>x.note?{note:x.note}:{name:s.docs[x[0]][0],url:s.docs[x[0]][1],detail:x[1]});
+}
+function srcLine(id,topic){
+  const items=srcFor(id,topic);if(!items)return null;
+  const p=el("p",{class:"srcline"});
+  const lab=el("span",{class:"srclab"});lab.textContent="Source: ";p.appendChild(lab);
+  items.forEach((it,i)=>{
+    if(i)p.appendChild(document.createTextNode("; "));
+    if(it.note){p.appendChild(document.createTextNode(it.note));return}
+    const nm=it.url?el("a",{href:it.url,target:"_blank",rel:"noopener noreferrer"}):el("cite");
+    nm.textContent=it.name;p.appendChild(nm);
+    if(it.detail)p.appendChild(document.createTextNode(", "+it.detail));
+  });
+  return p;
+}
+function srcDocs(id){
+  const s=CSRC[id];if(!s)return null;
+  const wrap=el("div",{class:"srcdocs"});
+  const h=el("p",{class:"srch"});h.textContent="Official sources";wrap.appendChild(h);
+  const ul=el("ul");
+  Object.values(s.docs).forEach(([t,u])=>{const li=el("li");if(u){const a=el("a",{href:u,target:"_blank",rel:"noopener noreferrer"});a.textContent=t;li.appendChild(a)}else li.textContent=t;ul.appendChild(li)});
+  wrap.appendChild(ul);return wrap;
+}
+
 function renderCompare(){
   const tp=TOPICS.find(x=>x.id===topic);
   document.getElementById("topicTitle").textContent=tp.title;
@@ -973,6 +1169,7 @@ function renderCompare(){
     d.appendChild(el("h3",{},t.name));
     d.appendChild(el("p",{class:"fam"},t.fam));
     const p=el("p",{class:"body"});p.textContent=t[topic];d.appendChild(p);
+    const sl=srcLine(t.id,topic);if(sl)d.appendChild(sl);
     box.appendChild(d);
   });
 }
@@ -990,7 +1187,8 @@ T.forEach(t=>{
   s.querySelector(".summary").textContent=t.summary;
   d.appendChild(s);
   const dl=el("dl");
-  TOPICS.forEach(tp=>{const dt=el("dt");dt.textContent=tp.title;const dd=el("dd");dd.textContent=t[tp.id];dl.append(dt,dd)});
+  TOPICS.forEach(tp=>{const dt=el("dt");dt.textContent=tp.title;const dd=el("dd");dd.textContent=t[tp.id];const sl=srcLine(t.id,tp.id);if(sl)dd.appendChild(sl);dl.append(dt,dd)});
+  const sd=srcDocs(t.id);if(sd)dl.appendChild(sd);
   d.appendChild(dl);
   cl.appendChild(d);
 });
