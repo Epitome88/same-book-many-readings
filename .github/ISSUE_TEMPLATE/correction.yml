@@ -1,0 +1,29 @@
+name: Correction
+description: Something in the app is wrong or unfair to a tradition
+labels: [correction]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Where in the app
+      description: The tab and item, or a link like #John-3-16 or #saints/francis
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What it says now, and what it should say
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: The church's own document or another primary source. Wikipedia alone isn't enough.
+    validations:
+      required: true
+  - type: input
+    id: tradition
+    attributes:
+      label: Your tradition (optional)
+      description: Helpful when you're correcting how your own church is described.

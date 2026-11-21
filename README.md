@@ -55,9 +55,9 @@ Notes are saved in the browser you use, and clearing site data deletes them. Use
 
 ## Contributing
 
-Corrections are welcome, especially from members of the traditions described. Please open an issue or pull request with a source for the change. The app tries to describe each church as its own official teaching does, and to note where sources disagree.
+Corrections are welcome, especially from members of the traditions described. See **[CONTRIBUTING.md](CONTRIBUTING.md)** for how to report a mistake or propose a change, the source rule, and where each kind of content lives.
 
-`tools/build_public.py` builds this site from the single-file version of the app, moving the Bible texts into `data/` and adding the offline files from `tools/pwa/`. `tools/` also holds the scripts used to build the Douay-Rheims text: `parse_dr.py` reads the source files, `build_dr.py` maps them to modern verse numbering, and `check.py` compares every verse with the King James text to catch misalignments.
+The app is built from the files in `src/`: the page (`index.html`), styles, code, and one file per kind of content in `src/data/`. `python3 tools/build.py` builds this website; `python3 tools/build.py --claude` builds a single self-contained file with both Bibles inside. `tools/` also holds the scripts used to build the Douay-Rheims text: `parse_dr.py` reads the source files, `build_dr.py` maps them to modern verse numbering, and `check.py` compares every verse with the King James text to catch misalignments.
 
 ## Licenses
 

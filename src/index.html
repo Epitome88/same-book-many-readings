@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Same Book, Many Readings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&display=swap" rel="stylesheet">
+<style>
+/*@include styles.css*/
+</style>
+</head>
+<body>
+<script>try{var _th=localStorage.getItem("readTheme");if(_th==="light"||_th==="dark")document.documentElement.setAttribute("data-theme",_th)}catch(e){}try{if(localStorage.getItem("readFont")==="keel")document.documentElement.classList.add("keel");var _fs=parseFloat(localStorage.getItem("readSize"));if(_fs>=0.8&&_fs<=1.6)document.documentElement.style.setProperty("--fs",_fs)}catch(e){}</script>
+<header>
+  <button class="setbtn" id="setOpen" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="stxt">Settings</span></button>
+  <div class="head-inner">
+    <div class="ribbons" id="ribbons" aria-hidden="true"></div>
+    <h1>Same Book, Many Readings</h1>
+    <p class="lede">How thirteen Christian traditions read, interpret, and teach the Bible, side by side.</p>
+  </div>
+</header>
+
+<nav>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="compare">Compare</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="churches">Churches</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="passages">Verses</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="find">Find</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="lineage">Lineage</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="angels">Angels</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="saints">Saints</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="books">Other Books</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="notes">Notes</button>
+  </div>
+</nav>
+
+<main>
+  <section id="compare">
+    <h2 id="topicTitle"></h2>
+    <p class="hint" id="topicHint"></p>
+    <div class="chiprow" id="topicChips"></div>
+    <div class="tchips" id="tradChips"></div>
+    <div id="entries"></div>
+  </section>
+
+  <section id="churches" hidden>
+    <h2>The family tree</h2>
+    <p class="hint">How Christian churches branched apart over 2,000 years. Tap any branch to see when and why it split.</p>
+    <div class="ftwrap">
+      <div class="ftscroll" id="ftSvg"></div>
+      <p class="ftswipe">Swipe sideways to see the whole tree.</p>
+    </div>
+    <div class="ftinfo" id="ftInfo" aria-live="polite"></div>
+    <h2>The traditions</h2>
+    <p class="hint">Tap a church to see everything it teaches about Scripture.</p>
+    <div id="churchList"></div>
+  </section>
+
+  <section id="passages" hidden>
+    <h2>Find a verse</h2>
+    <p class="hint">Pick a book to see the verses churches read differently, or enter a chapter and verse to look up any verse in the Bible.</p>
+    <label class="fl verrow">Bible<select class="verSel" aria-label="Bible version"></select></label>
+    <div class="finder">
+      <label class="fl">Book<select id="fBook"></select></label>
+      <label class="fl">Chapter<input id="fCh" type="number" inputmode="numeric" min="1" disabled></label>
+      <label class="fl">Verse<input id="fVs" type="number" inputmode="numeric" min="1" disabled></label>
+    </div>
+    <label class="fl search">Search saved verses<input id="fQ" type="search" placeholder="Try baptism, Mary, rapture, or Peter" autocomplete="off"></label>
+    <div id="askBox"></div>
+    <div id="vNotes"></div>
+    <div class="count" id="pCount"></div>
+    <div id="passageList"></div>
+  </section>
+
+
+  <section id="find" hidden>
+    <h2>Find a name or parable</h2>
+    <p class="hint">Search the whole Bible for a person, place, word, or parable and see every verse where it appears.</p>
+    <label class="fl verrow">Bible<select class="verSel" aria-label="Bible version"></select></label>
+    <div class="findbar">
+      <input id="q2" type="search" placeholder="Abraham, Mary, Good Samaritan" autocapitalize="words" autocomplete="off" enterkeyhint="search" aria-label="Name or parable">
+      <button class="btn" id="go2">Find</button>
+    </div>
+    <p class="tiny">Capitalized words find names only; lowercase finds every use. Separate several names with commas. Searching the <span class="verName">Douay-Rheims</span>.</p>
+    <div class="chiprow" id="sugg"></div>
+    <div id="findOut"></div>
+    <div class="wc">
+      <h3>Word counter</h3>
+      <p class="hint">How many times every word is used, across the whole Bible or any part of it. Tap a word to see each verse.</p>
+      <div class="wcgrid">
+        <label class="fl">Count words in<select id="wcScope"></select></label>
+        <label class="fl">Show<select id="wcMode"><option value="content">Meaningful words</option><option value="all">Every word</option></select></label>
+      </div>
+      <label class="fl search">Filter the list<input id="wcFilter" type="search" placeholder="Starts with, e.g. lov" autocomplete="off" autocapitalize="none"></label>
+      <div class="wcstats" id="wcStats"></div>
+      <div id="wcList"><p class="status">Counting…</p></div>
+    </div>
+  </section>
+
+
+  <section id="lineage" hidden>
+    <p class="lsublab">Choose a family to show:</p>
+    <div class="chiprow lsub" id="linTabs" role="tablist" aria-label="Choose whose family to show"></div>
+    <div id="linApostle" hidden></div>
+    <div id="linJesus">
+    <h2>The family line of Jesus</h2>
+    <p class="hint">From Adam to Jesus, as traced in Matthew 1 and Luke 3. Tap anyone to learn who they were and find every mention of them.</p>
+    <div class="counts" id="lcounts"></div>
+    <div class="legend">
+      <span style="--k:var(--both)"><i></i>Both Gospels</span>
+      <span style="--k:var(--mt)"><i></i>Matthew only</span>
+      <span style="--k:var(--lk)"><i></i>Luke only</span>
+    </div>
+    <details class="why">
+      <summary>Why are there two different lists? <span aria-hidden="true">+</span></summary>
+      <div class="wb">
+        <p>Matthew starts with Abraham and moves forward, arranging the names in three sets of fourteen. To keep that pattern he leaves out some kings, such as Ahaziah, Joash, Amaziah, and Jehoiakim. Luke starts with Jesus and works backward past Abraham to Adam, “the son of God.”</p>
+        <p>The two lists agree from Abraham to David. Then Matthew follows King Solomon while Luke follows Nathan, another son of David and Bathsheba (1 Chronicles 3:5). They meet briefly at Shealtiel and Zerubbabel, then part again until Joseph.</p>
+        <h4>How churches explain the difference</h4>
+        <p><b>Both lists are Joseph's.</b> An early explanation from Julius Africanus (around AD 220), long held in Catholic and Orthodox tradition: Joseph's father by birth and his legal father were linked through a levirate marriage (Deuteronomy 25:5–6), so one list is natural and the other legal.</p>
+        <p><b>Luke gives Mary's line.</b> Many Protestants read Heli as Mary's father, with Joseph called his “son” by marriage. That would make Luke's list Jesus' physical ancestry, since both Gospels teach he was born of a virgin.</p>
+        <p><b>Royal line and human line.</b> Many readers see Matthew showing Jesus' legal right to David's throne through the kings, and Luke showing his tie to all humanity back to Adam.</p>
+        <h4>Details readers notice</h4>
+        <p>Matthew names five women: Tamar, Rahab, Ruth, Bathsheba (“the wife of Urias”), and Mary. Luke includes a second Cainan, found in the Greek Septuagint but not in the Hebrew text of Genesis 11. Jeremiah 22:30 says no descendant of Jeconiah would rule from David's throne; some see the virgin birth as the answer to that.</p>
+      </div>
+    </details>
+    <div class="tree" id="tree"></div>
+    </div>
+  </section>
+
+
+  <section id="angels" hidden>
+    <h2>Angels and demons</h2>
+    <p class="hint">The ranks, names, and titles found in Scripture and Christian tradition. Tap any rank or name for details; every verse cited is listed at the bottom.</p>
+
+    <div class="part">
+      <h3>The heavenly host</h3>
+      <p class="hint">The Bible names these orders but never ranks them. This nine-level arrangement comes from <i>The Celestial Hierarchy</i> by Pseudo-Dionysius (around AD 500), later taught by Thomas Aquinas and pictured by Dante.</p>
+      <div class="throne" aria-hidden="true"><svg viewBox="0 0 54 54"><g stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><line x1="27" y1="2" x2="27" y2="10"/><line x1="27" y1="44" x2="27" y2="52"/><line x1="2" y1="27" x2="10" y2="27"/><line x1="44" y1="27" x2="52" y2="27"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="39" y1="39" x2="45" y2="45"/><line x1="45" y1="9" x2="39" y2="15"/><line x1="15" y1="39" x2="9" y2="45"/></g><circle cx="27" cy="27" r="11" fill="var(--gold)"/></svg>Closest to God</div>
+      <div class="pyr" id="angPyr"></div>
+      <div class="cards" id="angCards"></div>
+    </div>
+
+    <div class="part">
+      <h3>The powers of darkness</h3>
+      <p class="hint">Satan heads the fallen angels. Ephesians 6:12 lists four kinds of evil powers; whether Paul meant them as a ranking is debated.</p>
+      <div class="pyr" id="demPyr"></div>
+      <div class="cards" id="demCards"></div>
+    </div>
+
+    <div class="part views">
+      <h3>How churches differ</h3>
+      <p><b>Catholic and Orthodox</b> teaching commonly uses the nine choirs and affirms guardian angels (Matthew 18:10). Both honor Raphael, named in Tobit. Orthodox tradition also venerates seven archangels, including Uriel, Selaphiel, Jegudiel, and Barachiel.</p>
+      <p><b>Most Protestants</b> affirm that angels and demons are real but treat the nine-level ranking as speculation. Only Michael and Gabriel are named in their 66-book Bible.</p>
+      <p><b>Seventh-day Adventists</b> teach that Michael the archangel is Christ himself, and that Lucifer, once a covering cherub, began the great controversy between good and evil.</p>
+      <p><b>Jehovah's Witnesses</b> teach that Michael is Jesus in his heavenly existence, and that Satan was cast out of heaven in 1914.</p>
+      <p><b>Latter-day Saints</b> teach that Michael was Adam before mortal life, identify Gabriel with Noah, and teach that Lucifer rebelled in a premortal council.</p>
+      <p><b>On Lucifer:</b> Isaiah 14 and Ezekiel 28 have long been read as describing Satan's fall. Many scholars, and some churches, read them first as taunts against the kings of Babylon and Tyre, with any reference to Satan as secondary.</p>
+    </div>
+
+    <div class="part">
+      <h3>References</h3>
+      <p class="hint">Tap a verse to read it. Quotations are from the <span class="verName">Douay-Rheims</span>.</p>
+      <ol class="refs" id="angRefs"></ol>
+    </div>
+  </section>
+
+
+  <section id="saints" hidden>
+    <div id="sListView">
+      <h2>Saints</h2>
+      <p class="hint">Search by name to read about a saint's life, feast day, and when they were canonized.</p>
+      <div class="stoday" id="sToday"></div>
+      <div class="sbar">
+        <input id="sQ" type="search" placeholder="Search a name, e.g. Francis or Mother Teresa" autocomplete="off" aria-label="Search saints">
+        <select id="sSort" aria-label="Sort saints">
+          <option value="az">A to Z</option>
+          <option value="new">Newest canonized</option>
+          <option value="old">Oldest canonized</option>
+          <option value="lived">When they lived</option>
+          <option value="feast">Upcoming feast days</option>
+        </select>
+      </div>
+      <div class="chiprow" id="sFilters"></div>
+      <p class="scount" id="sCount"></p>
+      <div class="slist" id="sList"></div>
+
+      <div class="tlwrap" style="margin-top:24px">
+        <p class="sub">When they were made saints</p>
+        <div class="tlleg"><span style="--k:var(--saint)"><i></i>Canonized by a pope</span><span style="--k:var(--orth)"><i></i>Glorified by an Orthodox church</span></div>
+        <div id="sTimeline"></div>
+        <p class="tiny" id="sTlNote"></p>
+      </div>
+
+      <div class="part views">
+        <h3>How churches recognize saints</h3>
+        <p><b>Before canonization existed.</b> For the first thousand years, saints were recognized by local acclaim, usually martyrs and bishops whose churches kept the day of their death. That's why the apostles and early saints here were never formally canonized. The first known papal canonization was Ulrich of Augsburg in 993, and popes took sole control of the process in 1234.</p>
+        <p><b>Catholic.</b> A cause moves through four stages: Servant of God, Venerable (a life of heroic virtue), Blessed (beatification, usually after one approved miracle), and Saint (canonization, usually after a second). Martyrs can be beatified without a miracle. The pope declares a canonization, and Catholics may ask saints to pray for them.</p>
+        <p><b>Orthodox.</b> Saints are “glorified” rather than canonized, by the synod of a self-governing church, usually after widespread local veneration. Orthodox churches honor many saints from before 1054 that Catholics share, and some churches keep feasts on the older Julian calendar, 13 days later.</p>
+        <p><b>Anglican and Lutheran.</b> These churches keep calendars of saints and commemorations, including figures like Martin Luther, Thomas Cranmer, and Dietrich Bonhoeffer, but they don't canonize. They honor saints as examples of faith rather than asking for their prayers.</p>
+        <p><b>Most other Protestants.</b> The New Testament calls all believers “saints” (Romans 1:7, Ephesians 1:1). Baptists, Pentecostals, and non-denominational churches generally don't keep saints' days and pray only to God.</p>
+        <p><b>Latter-day Saints and Jehovah's Witnesses.</b> Latter-day Saints use “saints” for all church members, as in the church's name. Neither group venerates saints.</p>
+        <p class="tiny">Feast days follow the Catholic calendar unless noted; some are observed only in certain countries. Canonizations are current through October 2025.</p>
+      </div>
+    </div>
+    <div id="sDetail" hidden></div>
+  </section>
+
+  <section id="books" hidden>
+    <h2>Books outside the Bible</h2>
+    <p class="hint">Ancient books that were left out, lost, or included by only some churches, with what each one is and why it isn't in most Bibles.</p>
+    <div class="tlwrap">
+      <p class="sub">How the Bible's books were decided</p>
+      <div id="xbTl"></div>
+      <p class="xbinfo" id="xbTlInfo"></p>
+      <p class="tiny">Tap a dot to read about each step.</p>
+    </div>
+    <div class="sbar" style="grid-template-columns:1fr">
+      <input id="xbQ" type="search" placeholder="Search a book, e.g. Enoch, Thomas, Maccabees" autocomplete="off" aria-label="Search books">
+    </div>
+    <div class="chiprow" id="xbFilters"></div>
+    <div class="xbkey"><span>Which Bibles include it:</span>
+      <span><span class="inc inc-y">P</span> In the Bible</span>
+      <span><span class="inc inc-a">P</span> In an appendix</span>
+      <span><span class="inc inc-n">P</span> Not included</span>
+      <span><span class="inc inc-u">E</span> Not confirmed</span>
+      <span>P = Protestant, C = Catholic, O = Eastern Orthodox, E = Ethiopian Orthodox</span>
+    </div>
+    <p class="scount" id="xbCount"></p>
+    <div id="xbList"></div>
+    <div class="part views" style="margin-top:26px">
+      <h3>How churches decided what belongs</h3>
+      <p>No single meeting picked the Bible's books. Churches recognized them over centuries, mostly by asking four questions: <b>Is it apostolic</b>, written by an apostle or someone close to one? <b>Is it orthodox</b>, agreeing with the faith the churches already held? <b>Is it catholic</b>, used widely across the churches rather than in one region? And <b>is it ancient</b>, dating from the time of the apostles or the prophets?</p>
+      <p><b>The New Testament</b> is the same 27 books in Catholic, Orthodox, and Protestant Bibles. Most were accepted early; Hebrews, James, 2 Peter, 2 and 3 John, Jude, and Revelation were debated longer. The Ethiopian Orthodox Church counts 81 books in all, the most of any church, including 1 Enoch and Jubilees; see the Ethiopian Bible section above.</p>
+      <p><b>The Old Testament</b> is where churches differ. Protestants follow the Hebrew Bible used by Jews, 39 books. Catholics add 7 books plus parts of Esther and Daniel, for 46. Orthodox churches add a few more, following the Greek Old Testament the early Church used.</p>
+      <p><b>Latter-day Saints</b> use the KJV without the Apocrypha. Their scripture says of the Apocrypha, “There are many things contained therein that are true,” along with additions by men, and that reading it is helpful but not needed (Doctrine and Covenants 91). <b>Jehovah's Witnesses</b> use the 66 books.</p>
+      <p class="tiny">Dates are scholarly estimates and many are debated. Reading links go to public-domain texts at eBible.org and the Internet Archive, which open in a new tab; a few older archive scans are large files. Translations from 1913 and earlier use older English.</p>
+    </div>
+  </section>
+
+  <section id="notes" hidden>
+    <h2>Notes</h2>
+    <p class="hint">Write down questions, sermon notes, or anything you're studying. Notes save automatically as you type. Link a note to a passage, like John 3:16 or Romans 8:28-30, and it shows up whenever you open that passage. Use <b>Back up notes</b> to keep a copy or move your notes to another device or browser.</p>
+    <div id="nListView">
+      <div class="nbar">
+        <input id="nSearch" type="search" placeholder="Search notes" autocomplete="off" aria-label="Search your notes">
+        <select id="nSort" aria-label="Sort notes"><option value="recent">Recent</option><option value="bible">Bible order</option></select>
+        <button class="btn" id="nNew">New note</button>
+      </div>
+      <p class="nstore" id="nStore">Opening your notes…</p>
+      <div class="nio" role="group" aria-label="Back up or move your notes"><button class="mini link" id="nExport">Back up notes (.json)</button><button class="mini link" id="nExportMd">Save as readable text (.md)</button><button class="mini link" id="nImportBtn">Restore from a backup</button><input type="file" id="nImport" accept=".json,application/json" hidden></div>
+      <p class="nstore" id="nIoMsg" aria-live="polite"></p>
+      <div class="nlist" id="nList"></div>
+    </div>
+    <div id="nEditView" hidden>
+      <button class="mini link" id="nBack">← All notes</button>
+      <div class="editor">
+        <input class="et" id="nTitle" placeholder="Title" aria-label="Title">
+        <input class="er" id="nRef" placeholder="Link to a verse, e.g. John 3:16 or Romans 8:28-30" aria-label="Verse this note is about">
+        <div class="refprev" id="nRefPrev" aria-live="polite"></div>
+        <textarea id="nBody" placeholder="Start writing…" aria-label="Note"></textarea>
+        <div class="erow">
+          <span class="saved" id="nSaved"></span>
+          <span><button class="mini link" id="nOpenRef" hidden>Open this verse</button> <button class="mini danger" id="nDel">Delete note</button></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">These are simplified summaries of each tradition's official or mainstream teaching. Each one names the church's own documents it is based on; where a church has no official statement, that is said too. Individual congregations, pastors, and members often hold a range of views, and some families (Baptist, Methodist, Pentecostal) include many separate denominations that differ from one another.</p>
+</main>
+<div class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="shName" hidden><button class="x" id="shX" aria-label="Close">×</button><h3 id="shName"></h3><p class="meta" id="shMeta"></p><p id="shNote"></p><div class="refchips" id="shRefs"></div><button class="btn" id="shFind">Find every mention</button></div>
+
+<script type="application/octet-stream" id="kjvdata">@@BIBLE kjvdata@@</script>
+<script type="application/octet-stream" id="drdata">@@BIBLE drdata@@</script>
+<script>
+//@include app.js
+</script>
+<div class="setbg" id="setBg" hidden></div>
+<div class="setpanel" id="setPanel" role="dialog" aria-modal="true" aria-labelledby="setTitle" hidden>
+  <button class="x" id="setClose" aria-label="Close settings">&times;</button>
+  <h3 id="setTitle">Settings</h3>
+  <div class="setrow verset" style="border-top:0;padding-top:0">
+    <div><b id="verLab">Bible version</b><span>Used everywhere in the app. NABRE links open on Bible.com.</span></div>
+    <select class="verSel setsel" aria-labelledby="verLab"></select>
+  </div>
+  <div class="themerow" style="margin-top:0">
+    <div class="sizehead"><b id="thLab">Appearance</b><output id="thOut" for="thIn">Match system</output></div>
+    <input type="range" id="thIn" min="0" max="2" step="1" value="1" aria-labelledby="thLab" aria-valuetext="Match system">
+    <div class="themelabs"><button type="button" data-v="0">Light</button><button type="button" data-v="1">System</button><button type="button" data-v="2">Dark</button></div>
+    <p class="themenote" id="thNote"></p>
+  </div>
+  <div class="setrow">
+    <div><b id="kLab">Dyslexia-friendly font</b><span>Switches the whole app to Keel Sans, with weighted letter bottoms and no mirror-image letters.</span></div>
+    <button class="sw" id="keelSw" role="switch" aria-checked="false" aria-labelledby="kLab"></button>
+  </div>
+  <p class="fontprev" aria-hidden="true">b d p q &middot; I l 1 &middot; O 0</p>
+  <div class="sizerow">
+    <div class="sizehead"><b id="szLab">Text size</b><output id="szOut" for="szIn">100%</output></div>
+    <div class="sizectl"><span class="a1" aria-hidden="true">A</span><input type="range" id="szIn" min="80" max="160" step="5" value="100" aria-labelledby="szLab"><span class="a2" aria-hidden="true">A</span></div>
+    <button class="mini" id="szReset">Reset to default</button>
+  </div>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,sw=document.getElementById("keelSw"),
+      pan=document.getElementById("setPanel"),bg=document.getElementById("setBg"),
+      openB=document.getElementById("setOpen"),closeB=document.getElementById("setClose");
+  function sync(){sw.setAttribute("aria-checked",root.classList.contains("keel")?"true":"false")}
+  function open(){pan.hidden=false;bg.hidden=false;sync();thIn.focus()}
+  function close(){pan.hidden=true;bg.hidden=true;openB.focus()}
+  var TH=["light","system","dark"],TN=["Light","Match system","Dark"],thIn=document.getElementById("thIn"),thOut=document.getElementById("thOut"),thNote=document.getElementById("thNote"),mq=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
+  function setTheme(i,save){
+    i=Math.max(0,Math.min(2,Math.round(+i)||0));
+    thIn.value=i;thOut.textContent=TN[i];thIn.setAttribute("aria-valuetext",TN[i]);
+    if(TH[i]==="system")root.removeAttribute("data-theme");else root.setAttribute("data-theme",TH[i]);
+    document.querySelectorAll(".themelabs button").forEach(function(b){b.setAttribute("aria-pressed",+b.dataset.v===i?"true":"false")});
+    thNote.textContent=TH[i]==="system"?"Follows your device, which is set to "+(mq&&mq.matches?"dark":"light")+" right now.":"";
+    if(save){try{localStorage.setItem("readTheme",TH[i])}catch(e){}}
+  }
+  var curTh=root.getAttribute("data-theme");setTheme(curTh==="light"?0:curTh==="dark"?2:1,false);
+  thIn.addEventListener("input",function(){setTheme(thIn.value,true)});
+  document.querySelectorAll(".themelabs button").forEach(function(b){b.addEventListener("click",function(){setTheme(b.dataset.v,true)})});
+  if(mq){var onSys=function(){if(+thIn.value===1)setTheme(1,false)};if(mq.addEventListener)mq.addEventListener("change",onSys);else if(mq.addListener)mq.addListener(onSys)}
+  var sz=document.getElementById("szIn"),szOut=document.getElementById("szOut");
+  function setSize(p,save){
+    p=Math.min(160,Math.max(80,Math.round(p/5)*5));
+    sz.value=p;szOut.textContent=p+"%";sz.setAttribute("aria-valuetext",p+" percent");
+    root.style.setProperty("--fs",p/100);
+    if(save){try{localStorage.setItem("readSize",String(p/100))}catch(e){}}
+  }
+  var cur=parseFloat(getComputedStyle(root).getPropertyValue("--fs"))||1;
+  setSize(cur*100,false);
+  sz.addEventListener("input",function(){setSize(+sz.value,true)});
+  document.getElementById("szReset").addEventListener("click",function(){setSize(100,true)});
+  sw.addEventListener("click",function(){
+    var on=!root.classList.contains("keel");
+    root.classList.toggle("keel",on);sync();
+    try{localStorage.setItem("readFont",on?"keel":"default")}catch(e){}
+  });
+  try{syncVerUI()}catch(e){}
+  openB.addEventListener("click",open);closeB.addEventListener("click",close);bg.addEventListener("click",close);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!pan.hidden)close()});
+  sync();
+})();
+</script>
+</body>
+</html>

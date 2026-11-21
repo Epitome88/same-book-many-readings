@@ -1,0 +1,12 @@
+{
+  "name": "same-book-many-readings",
+  "private": true,
+  "description": "Tests for Same Book, Many Readings",
+  "scripts": {
+    "validate": "node tests/validate.js",
+    "test": "node tests/browser.js"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
