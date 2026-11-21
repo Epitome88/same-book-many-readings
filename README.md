@@ -38,17 +38,17 @@ Light, dark, or match-your-device appearance; Keel Sans, a dyslexia-friendly fon
 
 ## Running it
 
-Open `index.html` in any modern browser. Nothing to install or build.
+The site needs a web server, because the two Bible texts are separate files (`data/`) that load only when you use them. The easiest way is **GitHub Pages**: Settings → Pages → Deploy from branch → `main` / root. To try it on your own computer, run `python3 -m http.server` in this folder and open http://localhost:8000.
 
-To host it, turn on **GitHub Pages** for this repository (Settings → Pages → Deploy from branch → `main` / root).
+Once you've visited the site, it works offline. On a phone you can install it: in Safari, Share → Add to Home Screen; in Chrome, ⋮ → Install app (or Add to Home screen).
 
-Notes are saved in the browser you use. Clearing site data deletes them.
+Notes are saved in the browser you use, and clearing site data deletes them. Use **Back up notes** in the Notes tab to save a copy or move your notes to another device.
 
 ## Contributing
 
 Corrections are welcome, especially from members of the traditions described. Please open an issue or pull request with a source for the change. The app tries to describe each church as its own official teaching does, and to note where sources disagree.
 
-`tools/` holds the scripts used to build the Douay-Rheims text: `parse_dr.py` reads the source files, `build_dr.py` maps them to modern verse numbering, and `check.py` compares every verse with the King James text to catch misalignments.
+`tools/build_public.py` builds this site from the single-file version of the app, moving the Bible texts into `data/` and adding the offline files from `tools/pwa/`. `tools/` also holds the scripts used to build the Douay-Rheims text: `parse_dr.py` reads the source files, `build_dr.py` maps them to modern verse numbering, and `check.py` compares every verse with the King James text to catch misalignments.
 
 ## Licenses
 
