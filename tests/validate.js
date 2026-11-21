@@ -3,8 +3,8 @@
 //   node tests/validate.js --base origin/main  also compare against another version and flag removed content
 const fs=require('fs'),path=require('path'),vm=require('vm'),zlib=require('zlib'),{execFileSync}=require('child_process');
 const ROOT=path.join(__dirname,'..');
-const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles'];
-const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES'];
+const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers'];
+const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS'];
 const errors=[],warnings=[];
 const err=(where,msg)=>errors.push(`${where}: ${msg}`);
 
@@ -80,9 +80,15 @@ const uniq=(list,key,name)=>{const s=new Set();(list||[]).forEach((x,i)=>{const 
 uniq(cur.SAINTS,'id','saints');uniq(cur.XBOOKS,'id','books outside the Bible');uniq(cur.FT,'id','church tree');uniq(cur.APOSTLES,'id','apostles');
 (cur.SAINTS||[]).forEach(x=>(x.refs||[]).forEach(r=>{const p=parseRef(r);if(!p||!ALL_BOOKS.has(p.book))err(`saints ${x.id}`,`bad Bible reference "${r}"`)}));
 
+// 5b. Early Christian writers: keyed to real passages, complete entries.
+for(const [ref,list] of Object.entries(cur.FATHERS||{})){
+  if(!(cur.P||[]).some(p=>p.ref===ref))err(`fathers ${ref}`,'not a passage in src/data/passages.js');
+  list.forEach((f,i)=>['who','when','work','tr','url','q'].forEach(k=>{if(!f[k])err(`fathers ${ref} #${i+1}`,`missing ${k}`)}));
+}
+
 // 6. Compare with the base version: flag anything removed.
 const bi=process.argv.indexOf('--base');
-const counts=o=>({traditions:(o.T||[]).length,passages:(o.P||[]).length,readings:(o.P||[]).reduce((n,p)=>n+(p.r||[]).length,0),'source documents':Object.values(o.CSRC||{}).reduce((n,c)=>n+Object.keys(c.docs||{}).length,0),saints:(o.SAINTS||[]).length,parables:(o.PARABLES||[]).length,'lineage names':JSON.stringify(o.LINE||[]).split('"n":').length-1,'angels and demons':(o.ANG_NAMED||[]).length+(o.DEM_NAMED||[]).length,'books outside the Bible':(o.XBOOKS||[]).length,'church tree branches':(o.FT||[]).length,apostles:(o.APOSTLES||[]).length});
+const counts=o=>({traditions:(o.T||[]).length,passages:(o.P||[]).length,readings:(o.P||[]).reduce((n,p)=>n+(p.r||[]).length,0),'source documents':Object.values(o.CSRC||{}).reduce((n,c)=>n+Object.keys(c.docs||{}).length,0),saints:(o.SAINTS||[]).length,parables:(o.PARABLES||[]).length,'lineage names':JSON.stringify(o.LINE||[]).split('"n":').length-1,'angels and demons':(o.ANG_NAMED||[]).length+(o.DEM_NAMED||[]).length,'books outside the Bible':(o.XBOOKS||[]).length,'church tree branches':(o.FT||[]).length,apostles:(o.APOSTLES||[]).length,'early Christian quotations':Object.values(o.FATHERS||{}).reduce((n,l)=>n+l.length,0)});
 const now=counts(cur);
 let removed=[];
 if(bi>0){

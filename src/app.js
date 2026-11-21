@@ -1,8 +1,10 @@
+//@include calendar.js
 //@include data/topics.js
 
 //@include data/traditions.js
 
 //@include data/passages.js
+//@include data/fathers.js
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -232,6 +234,17 @@ function passageCard(p,generated){
     if(r.s){const sl=rsrc(r.s);if(sl)rd.appendChild(sl)}
     d.appendChild(rd);
   });
+  const fa=FATHERS[p.ref];
+  if(fa&&!generated){
+    const box=el("div",{class:"fathers"});const h=el("p",{class:"srch"});h.textContent="Early Christian writers";box.appendChild(h);
+    fa.forEach(f=>{
+      const q=el("blockquote",{class:"fq"});q.textContent="\u201c"+f.q+"\u201d";box.appendChild(q);
+      const c=el("p",{class:"fcite"});c.append("\u2014 "+f.who+", ");
+      const a=el("a",{href:f.url,target:"_blank",rel:"noopener noreferrer"});a.textContent=f.work;c.append(a," ("+f.when+"; translated by "+f.tr+")");box.appendChild(c);
+      if(f.note){const n=el("p",{class:"fnote"});n.textContent=f.note;box.appendChild(n)}
+    });
+    d.appendChild(box);
+  }
   return d;
 }
 
@@ -1395,6 +1408,28 @@ function showApostle(a){
     bar.appendChild(b);
   });
 })();
+
+// ---------- Today's Mass readings ----------
+let todayOffset=0;
+function renderToday(){
+  const box=document.getElementById("today");if(!box)return;
+  const now=new Date(),d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+todayOffset);
+  const y=d.getFullYear(),m=d.getMonth()+1,dd=d.getDate(),r=LIT.info(y,m,dd);
+  box.textContent="";
+  const head=el("div",{class:"tdhead"});
+  const prev=el("button",{class:"mini","aria-label":"Previous day"});prev.textContent="‹";prev.onclick=()=>{todayOffset--;renderToday()};
+  const next=el("button",{class:"mini","aria-label":"Next day"});next.textContent="›";next.onclick=()=>{todayOffset++;renderToday()};
+  const t=el("p",{class:"tdlabel"});t.textContent=(todayOffset===0?"Today's Mass readings":"Mass readings")+" · "+d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  head.append(prev,t,next);box.appendChild(head);
+  const nm=el("p",{class:"tdname"});nm.textContent=r.name;box.appendChild(nm);
+  const meta=el("p",{class:"tdmeta"});meta.textContent=`${r.season} · Sunday readings: Year ${r.sundayCycle} · Weekday readings: Year ${r.weekdayCycle}`;box.appendChild(meta);
+  const a=el("a",{href:LIT.readingsUrl(y,m,dd),target:"_blank",rel:"noopener noreferrer"});a.textContent="Read them on the USCCB website (NABRE)";
+  const p=el("p",{class:"tdlink"});p.appendChild(a);
+  if(todayOffset!==0){const back=el("button",{class:"mini link"});back.textContent="Back to today";back.onclick=()=>{todayOffset=0;renderToday()};p.append(" · ",back)}
+  box.appendChild(p);
+  const note=el("p",{class:"tdnote"});note.textContent="Calendar for the dioceses of the United States. Saints' days and other feasts are shown on the readings page.";box.appendChild(note);
+}
+renderToday();
 
 // ---------- Links to a tab, verse, saint or topic ----------
 // Addresses look like #John-3-16, #1-Corinthians-13, #saints/francis, #compare/salvation, #lineage/peter, #find/Melchizedek.

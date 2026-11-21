@@ -440,3 +440,15 @@ html{font-size:calc(100% * var(--fs,1))}
 a.notebtn{text-decoration:none;display:inline-block}
 .combined{font-family:var(--sans);font-size:.9rem;color:var(--muted);font-style:normal}
 .fontprev{font-family:"Keel Sans",sans-serif;font-size:1.25rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:4px 0 0}
+.today{border:1px solid var(--line);border-left:4px solid #9B1D30;border-radius:6px;background:var(--surface);padding:10px 12px 8px;margin:0 0 18px}
+.tdhead{display:flex;align-items:center;gap:8px}
+.tdhead .mini{flex:none;min-width:32px;font-size:1.1rem;line-height:1}
+.tdlabel{flex:1;margin:0;font-family:var(--sans);font-size:.78rem;color:var(--muted);text-align:center}
+.tdname{font-family:var(--serif);font-size:1.15rem;margin:6px 0 2px}
+.tdmeta,.tdnote{font-family:var(--sans);font-size:.8rem;color:var(--muted);margin:0 0 6px}
+.tdnote{font-size:.72rem;margin:4px 0 0}
+.tdlink{font-family:var(--sans);font-size:.9rem;margin:0}
+.fathers{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+.fq{font-family:var(--serif);font-style:italic;font-size:.95rem;margin:6px 0 2px;padding-left:10px;border-left:3px solid var(--line)}
+.fcite,.fnote{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:0 0 6px}
+.fnote{font-style:normal}

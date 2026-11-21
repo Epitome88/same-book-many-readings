@@ -36,6 +36,9 @@ jobs:
       - name: Built website matches the source
         run: python3 tools/build.py --check
 
+      - name: Liturgical calendar matches the USCCB calendars
+        run: node tests/calendar.js
+
       - name: Content is valid and nothing was removed
         env:
           BASE_REF: ${{ github.base_ref }}

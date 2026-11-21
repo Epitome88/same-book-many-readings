@@ -456,6 +456,18 @@ html{font-size:calc(100% * var(--fs,1))}
 a.notebtn{text-decoration:none;display:inline-block}
 .combined{font-family:var(--sans);font-size:.9rem;color:var(--muted);font-style:normal}
 .fontprev{font-family:"Keel Sans",sans-serif;font-size:1.25rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:4px 0 0}
+.today{border:1px solid var(--line);border-left:4px solid #9B1D30;border-radius:6px;background:var(--surface);padding:10px 12px 8px;margin:0 0 18px}
+.tdhead{display:flex;align-items:center;gap:8px}
+.tdhead .mini{flex:none;min-width:32px;font-size:1.1rem;line-height:1}
+.tdlabel{flex:1;margin:0;font-family:var(--sans);font-size:.78rem;color:var(--muted);text-align:center}
+.tdname{font-family:var(--serif);font-size:1.15rem;margin:6px 0 2px}
+.tdmeta,.tdnote{font-family:var(--sans);font-size:.8rem;color:var(--muted);margin:0 0 6px}
+.tdnote{font-size:.72rem;margin:4px 0 0}
+.tdlink{font-family:var(--sans);font-size:.9rem;margin:0}
+.fathers{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+.fq{font-family:var(--serif);font-style:italic;font-size:.95rem;margin:6px 0 2px;padding-left:10px;border-left:3px solid var(--line)}
+.fcite,.fnote{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:0 0 6px}
+.fnote{font-style:normal}
 </style>
 </head>
 <body>
@@ -506,6 +518,7 @@ a.notebtn{text-decoration:none;display:inline-block}
   </section>
 
   <section id="passages" hidden>
+    <div id="today" class="today" aria-live="polite"></div>
     <h2>Find a verse</h2>
     <p class="hint">Pick a book to see the verses churches read differently, or enter a chapter and verse to look up any verse in the Bible.</p>
     <label class="fl verrow">Bible<select class="verSel" aria-label="Bible version"></select></label>
@@ -721,6 +734,61 @@ a.notebtn{text-decoration:none;display:inline-block}
 <div class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="shName" hidden><button class="x" id="shX" aria-label="Close">×</button><h3 id="shName"></h3><p class="meta" id="shMeta"></p><p id="shNote"></p><div class="refchips" id="shRefs"></div><button class="btn" id="shFind">Find every mention</button></div>
 
 <script>
+// ---------- The Catholic liturgical calendar (dioceses of the United States) ----------
+// Rules: Universal Norms on the Liturgical Year and the Calendar, nos. 19, 22, 28, 33, 38, 40 and 43–44,
+// and the USCCB's yearly calendars (Epiphany on the Sunday from January 2 to 8; when that Sunday is
+// January 7 or 8, the Baptism of the Lord moves to the Monday after). Feasts of saints aren't computed:
+// the readings page shows each day's celebration.
+const LIT=(()=>{
+  const day=(y,m,d)=>new Date(Date.UTC(y,m-1,d));
+  const add=(dt,n)=>new Date(dt.getTime()+n*864e5);
+  const diff=(a,b)=>Math.round((a-b)/864e5);
+  const ORD=["","First","Second","Third","Fourth","Fifth","Sixth","Seventh","Eighth","Ninth","Tenth","Eleventh","Twelfth","Thirteenth","Fourteenth","Fifteenth","Sixteenth","Seventeenth","Eighteenth","Nineteenth","Twentieth","Twenty-first","Twenty-second","Twenty-third","Twenty-fourth","Twenty-fifth","Twenty-sixth","Twenty-seventh","Twenty-eighth","Twenty-ninth","Thirtieth","Thirty-first","Thirty-second","Thirty-third","Thirty-fourth"];
+  function easter(y){ // Gregorian computus (Meeus/Jones/Butcher)
+    const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+      h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+      mo=Math.floor((h+l-7*m+114)/31),dd=((h+l-7*m+114)%31)+1;
+    return day(y,mo,dd);
+  }
+  function adventStart(y){const n=day(y,11,30),w=n.getUTCDay();return add(n,w<=3?-w:7-w)} // Sunday on or closest to Nov 30
+  function epiphany(y){const j=day(y,1,2);return add(j,(7-j.getUTCDay())%7)}                 // Sunday from Jan 2 to 8
+  function baptism(y){const e=epiphany(y);return e.getUTCDate()>=7?add(e,1):add(e,7)}
+  function info(y,m,d){
+    const dt=day(y,m,d),sun=dt.getUTCDay()===0;
+    const E=easter(y),ash=add(E,-46),pent=add(E,49),adv=adventStart(y),advPrev=adventStart(y-1);
+    const lyear=dt>=adv?y+1:y; // the liturgical year is named for the year it ends in
+    const out={date:dt,sundayCycle:["C","A","B"][lyear%3],weekdayCycle:lyear%2===0?"II":"I",season:"",name:""};
+    const wk=(start,d0)=>Math.floor(diff(d0,start)/7)+1;
+    if(dt>=adv&&dt<day(y,12,25)){out.season="Advent";const w=wk(adv,dt);out.name=sun?`${ORD[w]} Sunday of Advent`:`${ORD[w]} Week of Advent`}
+    else if(dt>=day(y,12,25)){out.season="Christmas Time";
+      // The Holy Family: the Sunday after Christmas, or December 30 when Christmas itself is a Sunday.
+      const holyFamily=day(y,12,25).getUTCDay()===0?day(y,12,30):add(day(y,12,25),7-day(y,12,25).getUTCDay());
+      out.name=d===25?"The Nativity of the Lord (Christmas)":+dt===+holyFamily?"The Holy Family of Jesus, Mary and Joseph":"Christmas Time";}
+    else{
+      const ep=epiphany(y),bap=baptism(y);
+      if(dt<=bap){out.season="Christmas Time";
+        out.name=m===1&&d===1?"Mary, the Holy Mother of God":+dt===+ep?"The Epiphany of the Lord":+dt===+bap?"The Baptism of the Lord":"Christmas Time";
+      }
+      else if(dt<ash){out.season="Ordinary Time";const base=bap.getUTCDay()===0?bap:ep;const w=wk(base,dt);
+        out.name=sun?`${ORD[Math.floor(diff(dt,base)/7)+1]} Sunday in Ordinary Time`:`${ORD[w]} Week in Ordinary Time`}
+      else if(dt<add(E,-3)){out.season="Lent";
+        if(+dt===+ash)out.name="Ash Wednesday";
+        else if(dt<add(ash,4))out.name="After Ash Wednesday";
+        else if(+dt===+add(E,-7))out.name="Palm Sunday of the Passion of the Lord";
+        else if(dt>add(E,-7))out.name="Holy Week";
+        else{const w=wk(add(ash,4),dt);out.name=sun?`${ORD[w]} Sunday of Lent`:`${ORD[w]} Week of Lent`}}
+      else if(dt<E){out.season="Paschal Triduum";out.name=["Holy Thursday","Good Friday","Holy Saturday"][diff(dt,add(E,-3))]}
+      else if(dt<=pent){out.season="Easter Time";const w=wk(E,dt);
+        out.name=+dt===+E?"Easter Sunday of the Resurrection of the Lord":+dt===+pent?"Pentecost Sunday":w===1?"Octave of Easter":sun?`${ORD[w]} Sunday of Easter`:`${ORD[w]} Week of Easter`}
+      else{out.season="Ordinary Time";const king=add(adv,-7);
+        const sunBefore=add(dt,-dt.getUTCDay()),w=34-Math.round(diff(king,sunBefore)/7);
+        out.name=+dt===+add(pent,7)?"The Most Holy Trinity":+dt===+add(pent,14)?"The Most Holy Body and Blood of Christ":+dt===+king?"Our Lord Jesus Christ, King of the Universe":sun?`${ORD[w]} Sunday in Ordinary Time`:`${ORD[w]} Week in Ordinary Time`}
+    }
+    return out;
+  }
+  const readingsUrl=(y,m,d)=>`https://bible.usccb.org/bible/readings/${String(m).padStart(2,"0")}${String(d).padStart(2,"0")}${String(y%100).padStart(2,"0")}.cfm`;
+  return {easter,adventStart,epiphany,baptism,info,readingsUrl};
+})();
 const TOPICS = [
   {id:"authority", label:"Authority", title:"Where authority comes from", hint:"What stands alongside, or above, the Bible."},
   {id:"canon", label:"Which books", title:"Which books count as Scripture", hint:"Not every church uses the same Bible."},
@@ -1538,6 +1606,45 @@ P.push(
   {who:"Lutheran, Anglican, Reformed",ids:["lutheran", "anglican", "reformed"],t:"A rule for personal life, not for governments: Christians may serve as soldiers and governments may wage just wars.",s:[["lutheran", "ac", "XVI"], ["anglican", "art", "XXXVII"], ["reformed", "wcf", "23.2"]]}
  ]}
 );
+// Early Christian writers on the debated passages, quoted word for word from public-domain translations
+// (Ante-Nicene and Nicene and Post-Nicene Fathers, 1885–1893). Keys are passage refs in passages.js.
+const FATHERS={
+"Matthew 26:26":[
+ {who:"Justin Martyr",when:"about AD 155",work:"First Apology 66",tr:"Roberts and Donaldson",url:"https://logoslibrary.org/justin/apology1/66.html",
+  q:"For not as common bread and common drink do we receive these; but in like manner as Jesus Christ our Saviour, having been made flesh by the Word of God, had both flesh and blood for our salvation, so likewise have we been taught that the food which is blessed by the prayer of His word, and from which our blood and flesh by transmutation are nourished, is the flesh and blood of that Jesus who was made flesh."},
+ {who:"Ignatius of Antioch",when:"about AD 110",work:"Letter to the Smyrnaeans 7",tr:"Roberts and Donaldson",url:"https://www.newadvent.org/fathers/0109.htm",
+  q:"They abstain from the Eucharist and from prayer, because they confess not the Eucharist to be the flesh of our Saviour Jesus Christ, which suffered for our sins, and which the Father, of His goodness, raised up again."}],
+"John 6:53":[
+ {who:"Ignatius of Antioch",when:"about AD 110",work:"Letter to the Smyrnaeans 7",tr:"Roberts and Donaldson",url:"https://www.newadvent.org/fathers/0109.htm",
+  q:"They abstain from the Eucharist and from prayer, because they confess not the Eucharist to be the flesh of our Saviour Jesus Christ, which suffered for our sins, and which the Father, of His goodness, raised up again."}],
+"John 3:5":[
+ {who:"Justin Martyr",when:"about AD 155",work:"First Apology 61",tr:"Roberts and Donaldson",url:"https://www.ewtn.com/catholicism/library/first-apology-9066",
+  q:"Then they are brought by us where there is water, and are regenerated…"}],
+"Mark 10:14":[
+ {who:"Irenaeus of Lyons",when:"about AD 180",work:"Against Heresies II.22.4",tr:"Roberts and Rambaut",url:"https://www.newadvent.org/fathers/0103222.htm",
+  q:"For He came to save all through means of Himself — all, I say, who through Him are born again to God — infants, and children, and boys, and youths, and old men.",
+  note:"Often cited for infant baptism, though readers disagree about whether “born again” here means baptism."}],
+"Acts 20:7":[
+ {who:"Justin Martyr",when:"about AD 155",work:"First Apology 67",tr:"Roberts and Donaldson",url:"https://www.ewtn.com/catholicism/library/first-apology-9066",
+  q:"And on the day called Sunday, all who live in cities or in the country gather together to one place."}],
+"2 Maccabees 12:46":[
+ {who:"Tertullian",when:"about AD 211",work:"The Chaplet (De Corona) 3",tr:"S. Thelwall",url:"https://www.newadvent.org/fathers/0304.htm",
+  q:"As often as the anniversary comes round, we make offerings for the dead as birthday honours."}],
+"Romans 3:28":[
+ {who:"Clement of Rome",when:"about AD 96",work:"First Letter to the Corinthians 32–33",tr:"John Keith",url:"https://www.newadvent.org/fathers/1010.htm",
+  q:"And we, too, being called by His will in Christ Jesus, are not justified by ourselves, nor by our own wisdom, or understanding, or godliness, or works which we have wrought in holiness of heart; but by that faith through which, from the beginning, Almighty God has justified all men… What shall we do, then, brethren? Shall we become slothful in well-doing, and cease from the practice of love?",
+  note:"Protestants often cite the first sentence; Catholics and Orthodox point to the question that follows it."}],
+"Matthew 1:25":[
+ {who:"Jerome",when:"about AD 383",work:"Against Helvidius 6",tr:"Fremantle, Lewis and Martley",url:"https://www.newadvent.org/fathers/3007.htm",
+  q:"The words knew and till in the language of Holy Scripture are capable of a double meaning."}],
+"Revelation 20:4":[
+ {who:"Justin Martyr",when:"about AD 160",work:"Dialogue with Trypho 80",tr:"Roberts and Donaldson",url:"https://logoslibrary.org/justin/trypho/080.html",
+  q:"But I and others, who are right-minded Christians on all points, are assured that there will be a resurrection of the dead, and a thousand years in Jerusalem, which will then be built, adorned, and enlarged…",
+  note:"In the same chapter Justin grants that “many who belong to the pure and pious faith, and are true Christians, think otherwise.”"},
+ {who:"Augustine of Hippo",when:"about AD 425",work:"City of God XX.7",tr:"Marcus Dods",url:"https://www.logoslibrary.org/augustine/city/2007.html",
+  q:"Now the thousand years may be understood in two ways, so far as occurs to me…",
+  note:"Augustine says he once held the millennial view himself. The second of his two readings takes the thousand years as \u201can equivalent for the whole duration of this world.\u201d"}]
+};
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -2020,6 +2127,17 @@ function passageCard(p,generated){
     if(r.s){const sl=rsrc(r.s);if(sl)rd.appendChild(sl)}
     d.appendChild(rd);
   });
+  const fa=FATHERS[p.ref];
+  if(fa&&!generated){
+    const box=el("div",{class:"fathers"});const h=el("p",{class:"srch"});h.textContent="Early Christian writers";box.appendChild(h);
+    fa.forEach(f=>{
+      const q=el("blockquote",{class:"fq"});q.textContent="\u201c"+f.q+"\u201d";box.appendChild(q);
+      const c=el("p",{class:"fcite"});c.append("\u2014 "+f.who+", ");
+      const a=el("a",{href:f.url,target:"_blank",rel:"noopener noreferrer"});a.textContent=f.work;c.append(a," ("+f.when+"; translated by "+f.tr+")");box.appendChild(c);
+      if(f.note){const n=el("p",{class:"fnote"});n.textContent=f.note;box.appendChild(n)}
+    });
+    d.appendChild(box);
+  }
   return d;
 }
 
@@ -4067,6 +4185,28 @@ function showApostle(a){
     bar.appendChild(b);
   });
 })();
+
+// ---------- Today's Mass readings ----------
+let todayOffset=0;
+function renderToday(){
+  const box=document.getElementById("today");if(!box)return;
+  const now=new Date(),d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+todayOffset);
+  const y=d.getFullYear(),m=d.getMonth()+1,dd=d.getDate(),r=LIT.info(y,m,dd);
+  box.textContent="";
+  const head=el("div",{class:"tdhead"});
+  const prev=el("button",{class:"mini","aria-label":"Previous day"});prev.textContent="‹";prev.onclick=()=>{todayOffset--;renderToday()};
+  const next=el("button",{class:"mini","aria-label":"Next day"});next.textContent="›";next.onclick=()=>{todayOffset++;renderToday()};
+  const t=el("p",{class:"tdlabel"});t.textContent=(todayOffset===0?"Today's Mass readings":"Mass readings")+" · "+d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  head.append(prev,t,next);box.appendChild(head);
+  const nm=el("p",{class:"tdname"});nm.textContent=r.name;box.appendChild(nm);
+  const meta=el("p",{class:"tdmeta"});meta.textContent=`${r.season} · Sunday readings: Year ${r.sundayCycle} · Weekday readings: Year ${r.weekdayCycle}`;box.appendChild(meta);
+  const a=el("a",{href:LIT.readingsUrl(y,m,dd),target:"_blank",rel:"noopener noreferrer"});a.textContent="Read them on the USCCB website (NABRE)";
+  const p=el("p",{class:"tdlink"});p.appendChild(a);
+  if(todayOffset!==0){const back=el("button",{class:"mini link"});back.textContent="Back to today";back.onclick=()=>{todayOffset=0;renderToday()};p.append(" · ",back)}
+  box.appendChild(p);
+  const note=el("p",{class:"tdnote"});note.textContent="Calendar for the dioceses of the United States. Saints' days and other feasts are shown on the readings page.";box.appendChild(note);
+}
+renderToday();
 
 // ---------- Links to a tab, verse, saint or topic ----------
 // Addresses look like #John-3-16, #1-Corinthians-13, #saints/francis, #compare/salvation, #lineage/peter, #find/Melchizedek.

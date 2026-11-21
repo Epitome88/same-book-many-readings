@@ -38,6 +38,10 @@ console.log('Verse comparisons');
     links:[...document.querySelectorAll('#passageList .srcline a')].map(a=>[a.href,a.rel,a.target])}));
   ok(r.cards===r.saved&&r.cards>0,`all ${r.saved} saved passages show`);
   ok(r.links.length>0&&r.links.every(([h,rel,t])=>h.startsWith('https://')&&rel==='noopener noreferrer'&&t==='_blank'),`${r.links.length} source links are https and open safely in a new tab`);
+  const t=await p.evaluate(()=>({name:document.querySelector('#today .tdname').textContent,href:document.querySelector('#today .tdlink a').href,
+    fq:[...document.querySelectorAll('#passageList article.passage')].find(a=>a.querySelector('.ref').textContent.startsWith('Matthew 26:26')).querySelectorAll('.fathers .fq').length}));
+  ok(t.name.length>3&&/^https:\/\/bible\.usccb\.org\/bible\/readings\/\d{6}\.cfm$/.test(t.href),`today's Mass readings card: ${t.name}`);
+  ok(t.fq===2,'early Christian writers show on Matthew 26:26');
   ok(!errs.length,'no errors'+(errs.length?': '+errs.join('; '):''));await c.close();}
 
 console.log('Links to a view');
