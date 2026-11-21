@@ -1,6 +1,6 @@
 # Same Book, Many Readings
 
-A free, open-source Bible study app that shows how thirteen Christian traditions read, interpret, and teach the Bible, side by side.
+A free, open-source Bible study app that shows how nineteen Christian traditions read, interpret, and teach the Bible, side by side.
 
 **[Open the app →](https://epitome88.github.io/same-book-many-readings/)**
 

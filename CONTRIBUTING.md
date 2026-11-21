@@ -21,7 +21,7 @@ Every claim about what a church teaches, and every date, canonization or Bible r
 
 | File | What it holds |
 |---|---|
-| `src/data/traditions.js` | The 13 traditions and their summaries for each Compare topic |
+| `src/data/traditions.js` | The 19 traditions and their summaries for each Compare topic |
 | `src/data/topics.js` | The Compare topics |
 | `src/data/passages.js` | Debated passages and how each church reads them |
 | `src/data/sources.js` | Each church's official documents, and which sections back each topic |
@@ -50,7 +50,7 @@ Add an entry to `src/data/passages.js`:
 ```
 
 - `ref` must be a real verse, written like `John 3:16` or `John 3:16-18`. The app shows the text from the reader's chosen Bible.
-- `ids` are the tradition ids: `catholic`, `orthodox`, `ethiopian`, `lutheran`, `reformed`, `anglican`, `methodist`, `baptist`, `pentecostal`, `nondenom`, `sda`, `lds`, `jw`.
+- `ids` are the tradition ids: `catholic`, `eastcath`, `orthodox`, `ethiopian`, `coptic`, `armenian`, `lutheran`, `reformed`, `anabaptist`, `anglican`, `methodist`, `baptist`, `quaker`, `cofc`, `pentecostal`, `nondenom`, `sda`, `lds`, `jw`.
 - `s` cites documents listed in `src/data/sources.js` as `[tradition, documentKey, "section"]`. Add the document there first if it's new.
 - Write plain text only. HTML isn't allowed, and the check below rejects it.
 

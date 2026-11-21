@@ -57,7 +57,7 @@ def build_site():
     dver=h.hexdigest()[:10]
     old='const r=await fetch("data/"+id+".gz");';assert s.count(old)==1
     s=s.replace(old,'const r=await fetch("data/"+id+".gz?v='+dver+'");')
-    head='''<meta name="description" content="How thirteen Christian traditions read the same Bible, side by side.">
+    head='''<meta name="description" content="How nineteen Christian traditions read the same Bible, side by side.">
 <meta name="theme-color" content="#F2F3F6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#141925" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">

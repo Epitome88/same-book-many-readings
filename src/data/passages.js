@@ -61,7 +61,10 @@ P.push(
   {who:"Anglican and Methodist",ids:["anglican","methodist"],t:"Christ is truly present in the meal, but how is left a mystery."},
   {who:"Reformed",ids:["reformed"],t:"The bread is a sign and seal; believers truly receive Christ spiritually, by faith."},
   {who:"Baptist, Pentecostal, Non-denominational, Adventist",ids:["baptist","pentecostal","nondenom","sda"],t:"\u201cIs\u201d means represents, as when Jesus says \u201cI am the door.\u201d The meal is a memorial."},
-  {who:"Latter-day Saints and Witnesses",ids:["lds","jw"],t:"Symbolic emblems. Latter-day Saints use water instead of wine; the New World Translation renders it \u201cThis means my body.\u201d"}
+  {who:"Latter-day Saints and Witnesses",ids:["lds","jw"],t:"Symbolic emblems. Latter-day Saints use water instead of wine; the New World Translation renders it \u201cThis means my body.\u201d"},
+  {who:"Coptic and Armenian Orthodox",ids:["coptic", "armenian"],t:"The bread and wine become the actual body and blood of Christ. Armenians use unleavened bread and wine not mixed with water.",s:[["coptic", "euch", ""], ["armenian", "sjl", ""]]},
+  {who:"Anabaptist",ids:["anabaptist"],t:"The Supper is a sign by which the church thankfully remembers Christ’s death and renews its covenant with God and one another.",s:[["anabaptist", "cof", "Article 12"]]},
+  {who:"Quakers",ids:["quaker"],t:"Communion with Christ’s body and blood is inward and spiritual, so most Friends use no outward bread and wine.",s:[["quaker", "bar", "Proposition XIII"]]}
  ]},
 {ref:"John 3:5", tags:"born again baptism new birth water spirit", q:"Except a man be born of water and of the Spirit, he cannot enter into the kingdom of God.",
  r:[
@@ -77,7 +80,8 @@ P.push(
   {who:"Reformed and Methodist",ids:["reformed","methodist"],t:"Baptism is God's sign and means of grace, joined to repentance and faith, but faith is what receives forgiveness."},
   {who:"Baptist and Evangelical",ids:["baptist","nondenom","sda"],t:"Forgiveness comes through repentance and faith. Baptism follows as the public response, not the cause."},
   {who:"Pentecostal",ids:["pentecostal"],t:"Points to receiving the Spirit, often as a further experience with speaking in tongues. Oneness Pentecostals see the phrase \u201cin the name of Jesus Christ\u201d as the required baptismal formula."},
-  {who:"Latter-day Saints and Witnesses",ids:["lds","jw"],t:"Baptism by immersion is an essential step of obedience. Latter-day Saints receive the Holy Ghost by the laying on of hands afterward."}
+  {who:"Latter-day Saints and Witnesses",ids:["lds","jw"],t:"Baptism by immersion is an essential step of obedience. Latter-day Saints receive the Holy Ghost by the laying on of hands afterward."},
+  {who:"Churches of Christ",ids:["cofc"],t:"A plain statement of how a person is saved: repent and be baptized by immersion for the forgiveness of sins. Baptism is necessary for salvation.",s:[["cofc", "acu", "baptism for remission of sins"], ["cofc", "wrr", ""]]}
  ]},
 {ref:"Ephesians 2:8-9", tags:"grace faith works salvation saved", q:"For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast.",
  r:[
@@ -253,17 +257,20 @@ P.push(
  ]},
 {ref:"Matthew 28:19", q:"Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost:", tags:"Trinity baptism formula name Father Son Holy Ghost oneness",
  r:[
-  {who:"Trinitarian churches",ids:["catholic","orthodox","ethiopian","lutheran","reformed","anglican","methodist","baptist","pentecostal","nondenom","sda"],t:"One “name” (singular) shared by Father, Son and Holy Spirit: one God in three persons. Baptism with these words is recognized across these churches, even when they disagree about much else.",s:[["pentecostal","ag","2"],["sda","fb","2"]]},
+  {who:"Trinitarian churches",ids:["catholic","orthodox","ethiopian","lutheran","reformed","anglican","methodist","baptist","pentecostal","nondenom","sda","eastcath","coptic","armenian","anabaptist"],t:"One “name” (singular) shared by Father, Son and Holy Spirit: one God in three persons. Baptism with these words is recognized across these churches, even when they disagree about much else.",s:[["pentecostal","ag","2"],["sda","fb","2"]]},
   {who:"Oneness Pentecostals",ids:["pentecostal"],t:"Groups such as the United Pentecostal Church (not the Assemblies of God) teach that the one “name” is Jesus and baptize “in Jesus' name” (Acts 2:38)."},
   {who:"Latter-day Saints",ids:["lds"],t:"Baptism uses the words Father, Son and Holy Ghost, understood as three separate beings united in purpose. The Catholic Church ruled in 2001 that it can't recognize these baptisms because of this different understanding.",s:[["lds","dc","20:73"],["catholic","cdf01",""]]},
-  {who:"Jehovah's Witnesses",ids:["jw"],t:"All three are named, but only Jehovah is God; Jesus is his Son, and the holy spirit is God's active force, not a person."}
+  {who:"Jehovah's Witnesses",ids:["jw"],t:"All three are named, but only Jehovah is God; Jesus is his Son, and the holy spirit is God's active force, not a person."},
+  {who:"Quakers",ids:["quaker"],t:"Most Friends read this as baptism into the name, the power and presence, of God by the Spirit, not as a command for outward water baptism.",s:[["quaker", "bar", "Proposition XII"]]}
  ]},
 {ref:"Mark 10:14", q:"But when Jesus saw it, he was much displeased, and said unto them, Suffer the little children to come unto me, and forbid them not: for of such is the kingdom of God.", tags:"infant baptism children dedication",
  r:[
-  {who:"Churches that baptize infants",ids:["catholic","orthodox","ethiopian","lutheran","reformed","anglican","methodist"],t:"Children belong to the kingdom and shouldn't be kept from Christ, so they should be baptized. Whole households were baptized in Acts (16:15, 33). Ethiopian Orthodox baptize at 40 days for boys and 80 for girls.",s:[["lutheran","ac","IX"],["reformed","wcf","28.4"],["anglican","art","XXVII"],["ethiopian","mk",""]]},
+  {who:"Churches that baptize infants",ids:["catholic","orthodox","ethiopian","lutheran","reformed","anglican","methodist","eastcath","coptic","armenian"],t:"Children belong to the kingdom and shouldn't be kept from Christ, so they should be baptized. Whole households were baptized in Acts (16:15, 33). Ethiopian Orthodox baptize at 40 days for boys and 80 for girls.",s:[["lutheran","ac","IX"],["reformed","wcf","28.4"],["anglican","art","XXVII"],["ethiopian","mk",""]]},
   {who:"Baptist, Pentecostal, Non-denominational, Adventist",ids:["baptist","pentecostal","nondenom","sda"],t:"Jesus blessed the children; he didn't baptize them. Baptism follows a person's own faith, so many churches hold a dedication service for babies instead."},
   {who:"Latter-day Saints",ids:["lds"],t:"Little children are saved through Christ and aren't accountable until age eight, when they may be baptized.",s:[["lds","dc","68:25–27"]]},
-  {who:"Jehovah's Witnesses",ids:["jw"],t:"Baptism is for those old enough to understand and dedicate themselves to Jehovah."}
+  {who:"Jehovah's Witnesses",ids:["jw"],t:"Baptism is for those old enough to understand and dedicate themselves to Jehovah."},
+  {who:"Anabaptists and Churches of Christ",ids:["anabaptist", "cofc"],t:"Baptism is for believers who repent and ask for it; the Anabaptists’ Schleitheim Confession (1527) was among the first to reject infant baptism outright.",s:[["anabaptist", "sch", "Article 1"], ["anabaptist", "cof", "Article 11"]]},
+  {who:"Quakers",ids:["quaker"],t:"Most Friends practice no outward baptism of infants or adults; true baptism is spiritual.",s:[["quaker", "bar", "Proposition XII"]]}
  ]},
 {ref:"Mark 16:17-18", q:"And these signs shall follow them that believe; In my name shall they cast out devils; they shall speak with new tongues; They shall take up serpents; and if they drink any deadly thing, it shall not hurt them; they shall lay hands on the sick, and they shall recover.", tags:"signs tongues healing snakes gifts cessationism",
  r:[
@@ -327,7 +334,7 @@ P.push(
 {ref:"John 20:23", q:"Whose soever sins ye remit, they are remitted unto them; and whose soever sins ye retain, they are retained.", tags:"confession forgive sins absolution priest penance",
  r:[
   {who:"Catholic",ids:["catholic"],t:"Christ gave the apostles and their successors, bishops and priests, the power to forgive sins in his name in the sacrament of Penance.",s:[["catholic","ccc","¶¶1441–1445, 1461"]]},
-  {who:"Orthodox",ids:["orthodox","ethiopian"],t:"The mystery of Confession: the penitent confesses to Christ with the priest as witness, and the priest pronounces God's forgiveness. Ethiopian Orthodox each have a “father of confession.”"},
+  {who:"Orthodox",ids:["orthodox","ethiopian","coptic"],t:"The mystery of Confession: the penitent confesses to Christ with the priest as witness, and the priest pronounces God's forgiveness. Ethiopian and Coptic Orthodox each have a “father of confession.”"},
   {who:"Lutheran",ids:["lutheran"],t:"Private confession and absolution are kept and valued; the pastor's word of forgiveness is God's own.",s:[["lutheran","ac","XI, XXV"]]},
   {who:"Anglican",ids:["anglican"],t:"The priest pronounces absolution in public worship, and private confession is available: “all may, none must, some should.”"},
   {who:"Reformed and Evangelical",ids:["reformed","methodist","baptist","pentecostal","nondenom","sda"],t:"The church forgives and retains sins by preaching the gospel and by church discipline. Believers confess directly to God (1 John 1:9); no priest is needed."}
@@ -335,11 +342,12 @@ P.push(
 {ref:"Acts 8:17", q:"Then laid they their hands on them, and they received the Holy Ghost.", tags:"laying on hands confirmation chrismation Holy Spirit baptism in the Spirit",
  r:[
   {who:"Catholic",ids:["catholic"],t:"Basis for the sacrament of Confirmation, which completes baptismal grace with the gift of the Holy Spirit.",s:[["catholic","ccc","¶1288"]]},
-  {who:"Orthodox",ids:["orthodox","ethiopian"],t:"Chrismation, anointing with holy oil, immediately follows baptism, even for infants, who then receive Communion.",s:[["ethiopian","mk",""]]},
+  {who:"Orthodox",ids:["orthodox","ethiopian","armenian","eastcath"],t:"Chrismation, anointing with holy oil, immediately follows baptism, even for infants, who then receive Communion.",s:[["ethiopian","mk",""]]},
   {who:"Lutheran and Anglican",ids:["lutheran","anglican","methodist"],t:"Confirmation is kept as a rite of prayer and affirmation of faith (by a bishop, for Anglicans), but not as a sacrament like baptism.",s:[["anglican","art","XXV"]]},
   {who:"Pentecostal",ids:["pentecostal"],t:"Shows that baptism in the Holy Spirit is a distinct experience after conversion, whose initial evidence is speaking in tongues.",s:[["pentecostal","ag","7–8"]]},
   {who:"Latter-day Saints",ids:["lds"],t:"The gift of the Holy Ghost is given by the laying on of hands by those holding priesthood authority, after baptism.",s:[["lds","aof","4"]]},
-  {who:"Reformed and Baptist",ids:["reformed","baptist","nondenom"],t:"A one-time event showing that the Samaritans belonged to the same church as the apostles; today every believer receives the Spirit at conversion."}
+  {who:"Reformed and Baptist",ids:["reformed","baptist","nondenom"],t:"A one-time event showing that the Samaritans belonged to the same church as the apostles; today every believer receives the Spirit at conversion."},
+  {who:"Coptic Orthodox",ids:["coptic"],t:"After baptism the child is anointed with holy Myron, signed with 36 crosses, and receives Communion at the next liturgy.",s:[["coptic", "bap", ""]]}
  ]},
 {ref:"Acts 15:29", q:"That ye abstain from meats offered to idols, and from blood, and from things strangled, and from fornication: from which if ye keep yourselves, ye shall do well. Fare ye well.", tags:"blood transfusion strangled Jerusalem council",
  r:[
@@ -352,7 +360,8 @@ P.push(
   {who:"Most churches",ids:["catholic","orthodox","lutheran","reformed","anglican","methodist","baptist","pentecostal","nondenom","lds"],t:"The first Christians gathered on Sunday, the day of the Resurrection, to “break bread.” Sunday is the Lord's Day (Revelation 1:10).",s:[["catholic","ccc","¶¶2174–2176"],["reformed","wcf","21.7"],["baptist","bfm","VIII"]]},
   {who:"Seventh-day Adventist",ids:["sda"],t:"Describes a one-time evening meeting before Paul's departure; it doesn't change the Sabbath, which remains the seventh day.",s:[["sda","fb","20"]]},
   {who:"Ethiopian Orthodox",ids:["ethiopian"],t:"Both days are kept holy: Saturday as the Sabbath and Sunday as the Lord's Day.",s:[["ethiopian","cnewa",""]]},
-  {who:"Jehovah's Witnesses",ids:["jw"],t:"Christians aren't bound to any weekly holy day; meetings are held on various days."}
+  {who:"Jehovah's Witnesses",ids:["jw"],t:"Christians aren't bound to any weekly holy day; meetings are held on various days."},
+  {who:"Churches of Christ",ids:["cofc"],t:"The pattern for the church: the Lord’s Supper is taken every Sunday, the first day of the week.",s:[["cofc", "acu", ""], ["cofc", "te", ""]]}
  ]},
 {ref:"Romans 3:28", q:"Therefore we conclude that a man is justified by faith without the deeds of the law.", tags:"faith alone sola fide justification works of the law",
  r:[
@@ -369,7 +378,11 @@ P.push(
   {who:"Jehovah's Witnesses",ids:["jw"],t:"Baptism is by full immersion, as a public symbol of dedication to Jehovah."},
   {who:"Orthodox",ids:["orthodox","ethiopian"],t:"Baptism truly unites a person to Christ's death and resurrection, and is done by triple immersion, even for infants.",s:[["ethiopian","mk",""]]},
   {who:"Catholic",ids:["catholic"],t:"Baptism really joins us to Christ's death and rising. Immersion is the fullest sign, but pouring has been used since ancient times and is equally valid.",s:[["catholic","ccc","¶¶1227, 1239"]]},
-  {who:"Lutheran, Reformed, Anglican, Methodist",ids:["lutheran","reformed","anglican","methodist"],t:"The meaning is union with Christ; the amount of water doesn't matter. Pouring or sprinkling is proper.",s:[["reformed","wcf","28.3"]]}
+  {who:"Lutheran, Reformed, Anglican, Methodist",ids:["lutheran","reformed","anglican","methodist"],t:"The meaning is union with Christ; the amount of water doesn't matter. Pouring or sprinkling is proper.",s:[["reformed","wcf","28.3"]]},
+  {who:"Churches of Christ",ids:["cofc"],t:"Baptism must be by full immersion, for the forgiveness of sins; it is where a believer is joined to Christ’s death and resurrection.",s:[["cofc", "wrr", ""], ["cofc", "acu", ""]]},
+  {who:"Coptic Orthodox",ids:["coptic"],t:"Triple immersion in the name of the Trinity, even for infants.",s:[["coptic", "bap", ""]]},
+  {who:"Anabaptist",ids:["anabaptist"],t:"Baptism signifies dying and rising with Christ; Mennonites may baptize by pouring, immersion or sprinkling.",s:[["anabaptist", "cof", "Article 11"]]},
+  {who:"Quakers",ids:["quaker"],t:"Being “buried with him” is an inward, spiritual baptism, not an outward rite.",s:[["quaker", "bar", "Proposition XII"]]}
  ]},
 {ref:"Romans 8:29-30", q:"For whom he did foreknow, he also did predestinate to be conformed to the image of his Son, that he might be the firstborn among many brethren. Moreover whom he did predestinate, them he also called: and whom he called, them he also justified: and whom he justified, them he also glorified.", tags:"predestination election foreknow Calvinism free will",
  r:[
@@ -460,7 +473,8 @@ P.push(
   {who:"Catholic",ids:["catholic"],t:"Priestly celibacy in the Latin Church is a discipline, not a doctrine: Eastern Catholic churches ordain married men, and some married former Protestant clergy are ordained. Bishops are always celibate.",s:[["catholic","ccc","¶¶1579–1580"]]},
   {who:"Orthodox",ids:["orthodox","ethiopian"],t:"Married men may be ordained deacons and priests (but may not marry after ordination). Bishops are chosen from celibate monks."},
   {who:"Protestants",ids:["lutheran","reformed","anglican","methodist","baptist","pentecostal","nondenom","sda"],t:"Ministers are free to marry; the Reformers also cited 1 Timothy 4:3 against compulsory celibacy. Many read “one wife” as ruling out divorced and remarried pastors.",s:[["lutheran","ac","XXIII"],["anglican","art","XXXII"],["methodist","aor","XXI"]]},
-  {who:"Latter-day Saints and Witnesses",ids:["lds","jw"],t:"Leaders are usually married; Latter-day Saint bishops are married men."}
+  {who:"Latter-day Saints and Witnesses",ids:["lds","jw"],t:"Leaders are usually married; Latter-day Saint bishops are married men."},
+  {who:"Eastern Catholic",ids:["eastcath"],t:"As in the Orthodox churches, married men can be ordained priests, while remaining fully Catholic.",s:[["eastcath", "ccc", "¶1580"]]}
  ]},
 {ref:"1 Timothy 3:15", q:"But if I tarry long, that thou mayest know how thou oughtest to behave thyself in the house of God, which is the church of the living God, the pillar and ground of the truth.", tags:"church pillar ground of truth authority magisterium",
  r:[
@@ -538,5 +552,23 @@ P.push(
  r:[
   {who:"Most churches",ids:["catholic","orthodox","ethiopian","lutheran","reformed","anglican","methodist","baptist","pentecostal","nondenom","sda","jw"],t:"The warning is about the book of Revelation itself, but these churches also hold that public revelation ended with the apostles, which rules out later books as new scripture.",s:[["catholic","ccc","¶¶66–67"]]},
   {who:"Latter-day Saints",ids:["lds"],t:"It applies only to this book (Deuteronomy 4:2 has the same warning, yet more scripture followed). God still reveals new things.",s:[["lds","aof","9"]]}
+ ]}
+);
+
+// Peace churches: oaths and nonviolence.
+P.push(
+{ref:"James 5:12", q:"But above all things, my brethren, swear not, neither by heaven, neither by the earth, neither by any other oath: but let your yea be yea; and your nay, nay; lest ye fall into condemnation.", tags:"oaths swear affirm courts truth",
+ r:[
+  {who:"Anabaptist",ids:["anabaptist"],t:"Christians should not swear oaths at all, but give a simple yes or no and always tell the truth; in court they affirm instead.",s:[["anabaptist", "sch", "Article 7"], ["anabaptist", "cof", "Article 20"]]},
+  {who:"Quakers",ids:["quaker"],t:"Quakers have always refused to swear oaths, because swearing suggests truth matters only on some occasions.",s:[["quaker", "truth", ""]]},
+  {who:"Catholic",ids:["catholic"],t:"Jesus forbids careless and false swearing, not every oath: an oath may be taken for grave and right reasons, such as in court.",s:[["catholic", "ccc", "¶¶2154–2155"]]},
+  {who:"Lutheran, Anglican, Reformed",ids:["lutheran", "anglican", "reformed"],t:"A lawful oath, taken with reverence when a magistrate requires it in a serious matter, is permitted. The Augsburg Confession rejected the Anabaptists’ refusal.",s:[["lutheran", "ac", "XVI"], ["anglican", "art", "XXXIX"], ["reformed", "wcf", "22.2"]]}
+ ]},
+{ref:"Matthew 5:39", q:"But I say unto you, That ye resist not evil: but whosoever shall smite thee on thy right cheek, turn to him the other also.", tags:"nonviolence pacifism war peace military nonresistance turn the other cheek",
+ r:[
+  {who:"Anabaptist",ids:["anabaptist"],t:"Disciples follow Jesus in nonresistance: they don’t prepare for or take part in war or military service, and resist evil without violence.",s:[["anabaptist", "cof", "Article 22"], ["anabaptist", "sch", "Article 6"]]},
+  {who:"Quakers",ids:["quaker"],t:"Friends “utterly deny” all outward wars and will not fight anyone with outward weapons; this is the Quaker peace testimony.",s:[["quaker", "peace", ""]]},
+  {who:"Catholic",ids:["catholic"],t:"About personal revenge. Nations may use military force in legitimate defense under strict conditions, and those who refuse to bear arms for reasons of conscience should be provided for.",s:[["catholic", "ccc", "¶¶2309–2311"]]},
+  {who:"Lutheran, Anglican, Reformed",ids:["lutheran", "anglican", "reformed"],t:"A rule for personal life, not for governments: Christians may serve as soldiers and governments may wage just wars.",s:[["lutheran", "ac", "XVI"], ["anglican", "art", "XXXVII"], ["reformed", "wcf", "23.2"]]}
  ]}
 );
