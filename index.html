@@ -287,6 +287,7 @@ ol.refs .rt sup{font-family:var(--sans);font-size:.7rem;color:var(--muted);margi
 .erow .btn{margin-top:0}
 .saved{font-family:var(--sans);font-size:.8rem;color:var(--muted)}
 .danger{color:#A3262E !important}
+.linkbox{display:block;width:100%;margin:6px 0;font:inherit;font-size:.8rem;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
 .notebtn{background:none;border:1px solid var(--line);border-radius:4px;font-family:var(--sans);font-size:.75rem;color:var(--muted);padding:2px 8px;margin-left:8px;cursor:pointer;vertical-align:1px}
 
 /* Saints */
@@ -959,7 +960,7 @@ const active=new Set(T.map(t=>t.id));
 const topicChips=document.getElementById("topicChips");
 TOPICS.forEach(tp=>{
   const b=el("button",{class:"chip","aria-pressed":tp.id===topic},tp.label);
-  b.addEventListener("click",()=>{topic=tp.id;topicChips.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderCompare()});
+  b.addEventListener("click",()=>{topic=tp.id;topicChips.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderCompare();syncHash()});
   topicChips.appendChild(b);
 });
 const tradChips=document.getElementById("tradChips");
@@ -1800,6 +1801,7 @@ function passageCard(p,generated){
   const d=el("article",{class:"passage"});
   const h=el("p",{class:"ref"});h.textContent=p.ref;
   const nb=el("button",{class:"notebtn"});nb.textContent="Note";nb.onclick=()=>noteFromVerse(p.ref,p.q||"");h.appendChild(nb);
+  {const x=parseRange(p.ref);const lb=el("button",{class:"notebtn","aria-label":"Copy a link to "+p.ref});lb.textContent="Link";lb.onclick=()=>shareLink(verseHash(x.book,x.ch,x.v1),lb);h.appendChild(lb);}
   d.appendChild(h);
   if(generated){const g=el("p",{class:"gen"});g.textContent="Looked up by Claude for this verse. Check the wording against your own Bible.";d.appendChild(g)}
   {const x=parseRange(p.ref);const own=getPassage(x.book,x.ch,x.v1,x.v2);const qt=own||p.q;
@@ -1936,6 +1938,7 @@ function renderVerses(){
     pl.appendChild(e);
   }
   list.forEach(p=>pl.appendChild(passageCard(p,false)));
+  syncHash();
 }
 [fBook,fCh,fVs,fQ].forEach(x=>x.addEventListener("input",()=>{verseRange=null;renderVerses()}));
 fBook.addEventListener("change",()=>{if(!fBook.value){fCh.value="";fVs.value=""}renderVerses()});
@@ -3160,6 +3163,7 @@ function renderSaints(){
 function openSaint(x){
   sCur=x;const d=sEl("sDetail");d.innerHTML="";
   const back=el("button",{class:"mini link"});back.textContent="← All saints";back.onclick=closeSaint;d.appendChild(back);
+  const sl=el("button",{class:"notebtn","aria-label":"Copy a link to "+x.n});sl.textContent="Link";sl.onclick=()=>shareLink("#saints/"+x.id,sl);d.appendChild(sl);
   const h=el("h3",{class:"sname"});h.textContent=x.n;d.appendChild(h);
   if(x.aka&&x.aka.length){const a=el("p",{class:"saka"});a.textContent="Also known as "+x.aka.join(", ");d.appendChild(a)}
   const g=el("dl",{class:"sfacts"});
@@ -3195,8 +3199,9 @@ function openSaint(x){
   const nb=el("button",{class:"btn ghost",style:"margin-left:0"});nb.textContent="Add a note";nb.onclick=()=>noteFromVerse(x.n,"");act.appendChild(nb);
   d.appendChild(act);
   sEl("sListView").hidden=true;d.hidden=false;window.scrollTo({top:document.querySelector("nav").offsetTop});
+  syncHash();
 }
-function closeSaint(){sCur=null;sEl("sDetail").hidden=true;sEl("sListView").hidden=false}
+function closeSaint(){sCur=null;sEl("sDetail").hidden=true;sEl("sListView").hidden=false;syncHash()}
 
 // Today's feast
 (function(){
@@ -3855,12 +3860,75 @@ function showApostle(a){
   const bar=document.getElementById("linTabs");
   const items=[{id:"jesus",n:"Jesus"},...APOSTLES];
   items.forEach((a,i)=>{
-    const b=el("button",{class:"chip",role:"tab","aria-selected":i===0?"true":"false"});b.textContent=a.n;
+    const b=el("button",{class:"chip",role:"tab","data-ap":a.id,"aria-selected":i===0?"true":"false"});b.textContent=a.n;
     b.onclick=()=>{bar.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-selected",c===b?"true":"false"));
-      const j=a.id==="jesus";document.getElementById("linJesus").hidden=!j;document.getElementById("linApostle").hidden=j;if(!j)showApostle(a)};
+      const j=a.id==="jesus";document.getElementById("linJesus").hidden=!j;document.getElementById("linApostle").hidden=j;if(!j)showApostle(a);syncHash()};
     bar.appendChild(b);
   });
 })();
+
+// ---------- Links to a tab, verse, saint or topic ----------
+// Addresses look like #John-3-16, #1-Corinthians-13, #saints/francis, #compare/salvation, #lineage/peter, #find/Melchizedek.
+var LINKS_READY=false, APPLYING_HASH=false;
+const PUBLIC_URL="https://epitome88.github.io/same-book-many-readings/";
+const TAB_IDS=["compare","churches","passages","find","lineage","angels","saints","books","notes"];
+function verseHash(book,ch,v){return "#"+book.replace(/ /g,"-")+(ch?"-"+ch:"")+(ch&&v?"-"+v:"")}
+function currentHash(){
+  const tab=(document.querySelector('.tab[aria-selected="true"]')||{dataset:{}}).dataset.tab||"compare";
+  if(tab==="passages"&&fBook.value){const ch=parseInt(fCh.value)||0;return verseHash(fBook.value,ch,ch?parseInt(fVs.value)||0:0)}
+  if(tab==="saints"&&sCur)return "#saints/"+sCur.id;
+  if(tab==="compare")return "#compare/"+topic;
+  if(tab==="lineage"){const c=document.querySelector('#lineage .chip[data-ap][aria-selected="true"]');if(c&&c.dataset.ap!=="jesus")return "#lineage/"+c.dataset.ap}
+  if(tab==="find"&&q2.value.trim())return "#find/"+encodeURIComponent(q2.value.trim());
+  return "#"+tab;
+}
+function syncHash(){
+  if(!LINKS_READY||APPLYING_HASH)return;
+  const h=currentHash();
+  if(!location.hash&&h==="#compare/"+TOPICS[0].id)return; // keep the plain address for the opening view
+  if(location.hash!==h){try{history.replaceState(null,"",h)}catch(e){}}
+}
+function applyHash(){
+  let h="";try{h=decodeURIComponent(location.hash.slice(1))}catch(e){return}
+  if(!h)return;
+  APPLYING_HASH=true;
+  try{
+    const slash=h.indexOf("/"),a=slash<0?h:h.slice(0,slash),b=slash<0?"":h.slice(slash+1);
+    const tabBtn=id=>document.querySelector('.tab[data-tab="'+id+'"]');
+    if(TAB_IDS.includes(a)){
+      tabBtn(a).click();
+      if(a==="saints"&&b){const x=SAINTS.find(s=>s.id===b);if(x)openSaint(x)}
+      else if(a==="compare"&&b){const i=TOPICS.findIndex(t=>t.id===b);if(i>=0)topicChips.querySelectorAll(".chip")[i].click()}
+      else if(a==="lineage"&&b){const c=[...document.querySelectorAll("#lineage .chip[data-ap]")].find(c=>c.dataset.ap===b);if(c)c.click()}
+      else if(a==="find"&&b){q2.value=b.slice(0,200);runFind()}
+    }else{
+      const m=h.match(/^(.+?)-(\d+)(?:-(\d+))?$/)||[null,h];
+      const want=m[1].replace(/-/g," ").toLowerCase();
+      const book=[...fBook.options].map(o=>o.value).find(v=>v&&v.toLowerCase()===want);
+      if(book)openVerse(book,m[2]||"",m[2]&&m[3]?m[3]:"");
+    }
+  }catch(e){}
+  finally{APPLYING_HASH=false}
+}
+function linkFor(hash){
+  const onSite=/^https?:$/.test(location.protocol)&&!/(^|\.)(claude\.ai|claudeusercontent\.com|anthropic\.com)$/.test(location.hostname);
+  return (onSite?location.origin+location.pathname:PUBLIC_URL)+hash;
+}
+async function shareLink(hash,btn){
+  const url=linkFor(hash),old=btn.textContent;
+  const done=t=>{btn.textContent=t;setTimeout(()=>{btn.textContent=old},2200)};
+  try{await navigator.clipboard.writeText(url);done("Link copied");return}catch(e){}
+  try{if(navigator.share){await navigator.share({url});return}}catch(e){if(e&&e.name==="AbortError")return}
+  // Last resort: show the link so it can be copied by hand.
+  const box=el("input",{type:"text",readonly:"",class:"linkbox","aria-label":"Link to copy"});box.value=url;
+  btn.after(box);box.focus();box.select();box.addEventListener("blur",()=>box.remove());
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>syncHash()));
+q2.addEventListener("change",()=>syncHash());
+window.addEventListener("hashchange",applyHash);
+applyHash();
+LINKS_READY=true;
+if(location.hash)syncHash();
 
 </script>
 <div class="setbg" id="setBg" hidden></div>

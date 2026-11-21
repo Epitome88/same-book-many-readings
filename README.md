@@ -42,6 +42,15 @@ The site needs a web server, because the two Bible texts are separate files (`da
 
 Once you've visited the site, it works offline. On a phone you can install it: in Safari, Share → Add to Home Screen; in Chrome, ⋮ → Install app (or Add to Home screen).
 
+You can link straight to a verse, saint or page, and the Link buttons on verse cards and saint pages copy one for you:
+
+- a verse or chapter: `#John-3-16`, `#1-Corinthians-13`, `#Song-of-Solomon-2-1`
+- a saint: `#saints/francis`
+- a Compare topic: `#compare/salvation`
+- an apostle's lineage: `#lineage/peter`
+- a search: `#find/Melchizedek`
+- any tab: `#churches`, `#angels`, `#books`, `#notes`
+
 Notes are saved in the browser you use, and clearing site data deletes them. Use **Back up notes** in the Notes tab to save a copy or move your notes to another device.
 
 ## Contributing

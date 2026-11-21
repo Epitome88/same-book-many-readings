@@ -1,7 +1,7 @@
 // Same Book, Many Readings: offline support.
 // The page is fetched fresh when online (so updates arrive) and from the cache when offline.
 // The Bible texts are large and rarely change, so they're kept in a separate cache and reused.
-const VERSION = "577120b088";
+const VERSION = "9c166bfc8f";
 const SHELL = "sbmr-shell-" + VERSION;
 const DATA = "sbmr-data";
 const FONTS = "sbmr-fonts";
