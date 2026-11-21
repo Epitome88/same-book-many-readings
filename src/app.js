@@ -1,4 +1,5 @@
 //@include calendar.js
+//@include data/checked.js
 //@include data/topics.js
 
 //@include data/traditions.js
@@ -1408,6 +1409,15 @@ function showApostle(a){
     bar.appendChild(b);
   });
 })();
+
+// ---------- When each tab was last checked against its sources ----------
+function fmtChecked(iso){const [y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}
+Object.entries(CHECKED).forEach(([tab,iso])=>{
+  const sec=document.getElementById(tab);if(!sec)return;
+  const p=el("p",{class:"checked"});p.textContent="Facts that change over time (leaders, splits, canonizations) last checked: "+fmtChecked(iso)+". Spot something out of date? Please report it on GitHub.";
+  sec.appendChild(p);
+});
+{const s=document.getElementById("saintsChecked");if(s)s.textContent=fmtChecked(CHECKED.saints)}
 
 // ---------- Today's Mass readings ----------
 let todayOffset=0;

@@ -45,7 +45,7 @@ const T = [
  baptism:"Triple immersion, traditionally boys on the 40th day after birth and girls on the 80th, following Leviticus 12. Chrismation and first Communion are given together with baptism.",
  communion:"The bread and wine become Christ's body and blood. Believers prepare carefully, including by fasting, before receiving.",
  endtimes:"Christ will return to judge the living and the dead; the church teaches no detailed millennial timeline.",
- governance:"A patriarch and Holy Synod in Addis Ababa. For centuries its bishops came from the Coptic Church of Alexandria; it received its own patriarch in 1959. The Eritrean church became independent in 1993, and bishops in Tigray announced a separate church in 2021.",
+ governance:"A patriarch and Holy Synod in Addis Ababa. For centuries its bishops came from the Coptic Church of Alexandria; it received its own patriarch in 1959. The Eritrean church became independent in 1993, Bishops in Tigray announced a separate church in 2021 and appointed their own bishops in 2023, when the synod in Addis Ababa excommunicated four of them; in 2024 they formed their own synod.",
  translation:"Ge'ez is the traditional language of the liturgy, now increasingly celebrated in Amharic. Amharic and other local-language Bibles are used for everyday reading."},
 {id:"coptic",name:"Coptic Orthodox",fam:"Oriental Orthodox",c:"#8C4A2F",
  origin:"Traces itself to St. Mark the Evangelist, who by tradition was martyred in Alexandria in AD 63. A separate church formed after most of Egypt rejected the Council of Chalcedon (451)",

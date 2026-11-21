@@ -452,3 +452,4 @@ a.notebtn{text-decoration:none;display:inline-block}
 .fq{font-family:var(--serif);font-style:italic;font-size:.95rem;margin:6px 0 2px;padding-left:10px;border-left:3px solid var(--line)}
 .fcite,.fnote{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:0 0 6px}
 .fnote{font-style:normal}
+.checked{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin:28px 0 0;padding-top:8px;border-top:1px solid var(--line)}

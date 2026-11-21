@@ -3,8 +3,8 @@
 //   node tests/validate.js --base origin/main  also compare against another version and flag removed content
 const fs=require('fs'),path=require('path'),vm=require('vm'),zlib=require('zlib'),{execFileSync}=require('child_process');
 const ROOT=path.join(__dirname,'..');
-const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers'];
-const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS'];
+const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers','checked'];
+const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS','CHECKED'];
 const errors=[],warnings=[];
 const err=(where,msg)=>errors.push(`${where}: ${msg}`);
 
@@ -84,6 +84,14 @@ uniq(cur.SAINTS,'id','saints');uniq(cur.XBOOKS,'id','books outside the Bible');u
 for(const [ref,list] of Object.entries(cur.FATHERS||{})){
   if(!(cur.P||[]).some(p=>p.ref===ref))err(`fathers ${ref}`,'not a passage in src/data/passages.js');
   list.forEach((f,i)=>['who','when','work','tr','url','q'].forEach(k=>{if(!f[k])err(`fathers ${ref} #${i+1}`,`missing ${k}`)}));
+}
+
+// 5c. Last-checked dates: real dates, flagged when more than a year old.
+for(const [tab,iso] of Object.entries(cur.CHECKED||{})){
+  const t=Date.parse(iso+'T00:00:00Z');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||isNaN(t))err(`checked ${tab}`,`"${iso}" should be a date like 2026-11-21`);
+  else if(t>Date.now()+864e5)err(`checked ${tab}`,`${iso} is in the future`);
+  else if(Date.now()-t>365*864e5)warnings.push(`the ${tab} tab was last checked on ${iso}, over a year ago: time to re-verify it`);
 }
 
 // 6. Compare with the base version: flag anything removed.

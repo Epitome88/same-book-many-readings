@@ -468,6 +468,7 @@ a.notebtn{text-decoration:none;display:inline-block}
 .fq{font-family:var(--serif);font-style:italic;font-size:.95rem;margin:6px 0 2px;padding-left:10px;border-left:3px solid var(--line)}
 .fcite,.fnote{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:0 0 6px}
 .fnote{font-style:normal}
+.checked{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin:28px 0 0;padding-top:8px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -662,7 +663,7 @@ a.notebtn{text-decoration:none;display:inline-block}
         <p><b>Anglican and Lutheran.</b> These churches keep calendars of saints and commemorations, including figures like Martin Luther, Thomas Cranmer, and Dietrich Bonhoeffer, but they don't canonize. They honor saints as examples of faith rather than asking for their prayers.</p>
         <p><b>Most other Protestants.</b> The New Testament calls all believers “saints” (Romans 1:7, Ephesians 1:1). Baptists, Pentecostals, and non-denominational churches generally don't keep saints' days and pray only to God.</p>
         <p><b>Latter-day Saints and Jehovah's Witnesses.</b> Latter-day Saints use “saints” for all church members, as in the church's name. Neither group venerates saints.</p>
-        <p class="tiny">Feast days follow the Catholic calendar unless noted; some are observed only in certain countries. Canonizations are current through October 2025.</p>
+        <p class="tiny">Feast days follow the Catholic calendar unless noted; some are observed only in certain countries. Canonizations are current as of <span id="saintsChecked">the date below</span>.</p>
       </div>
     </div>
     <div id="sDetail" hidden></div>
@@ -789,6 +790,15 @@ const LIT=(()=>{
   const readingsUrl=(y,m,d)=>`https://bible.usccb.org/bible/readings/${String(m).padStart(2,"0")}${String(d).padStart(2,"0")}${String(y%100).padStart(2,"0")}.cfm`;
   return {easter,adventStart,epiphany,baptism,info,readingsUrl};
 })();
+// When the facts that change over time were last checked against current sources (year-month-day).
+// Only tabs with such facts are listed: the Bible's own content doesn't go out of date.
+// Update a date only after re-verifying that part, especially anything that changes over time:
+// church leaders, membership figures, splits and reunions, and canonizations.
+const CHECKED={
+  compare:"2026-11-21",
+  churches:"2026-11-21",
+  saints:"2026-11-21"
+};
 const TOPICS = [
   {id:"authority", label:"Authority", title:"Where authority comes from", hint:"What stands alongside, or above, the Bible."},
   {id:"canon", label:"Which books", title:"Which books count as Scripture", hint:"Not every church uses the same Bible."},
@@ -848,7 +858,7 @@ const T = [
  baptism:"Triple immersion, traditionally boys on the 40th day after birth and girls on the 80th, following Leviticus 12. Chrismation and first Communion are given together with baptism.",
  communion:"The bread and wine become Christ's body and blood. Believers prepare carefully, including by fasting, before receiving.",
  endtimes:"Christ will return to judge the living and the dead; the church teaches no detailed millennial timeline.",
- governance:"A patriarch and Holy Synod in Addis Ababa. For centuries its bishops came from the Coptic Church of Alexandria; it received its own patriarch in 1959. The Eritrean church became independent in 1993, and bishops in Tigray announced a separate church in 2021.",
+ governance:"A patriarch and Holy Synod in Addis Ababa. For centuries its bishops came from the Coptic Church of Alexandria; it received its own patriarch in 1959. The Eritrean church became independent in 1993, Bishops in Tigray announced a separate church in 2021 and appointed their own bishops in 2023, when the synod in Addis Ababa excommunicated four of them; in 2024 they formed their own synod.",
  translation:"Ge'ez is the traditional language of the liturgy, now increasingly celebrated in Amharic. Amharic and other local-language Bibles are used for everyday reading."},
 {id:"coptic",name:"Coptic Orthodox",fam:"Oriental Orthodox",c:"#8C4A2F",
  origin:"Traces itself to St. Mark the Evangelist, who by tradition was martyred in Alexandria in AD 63. A separate church formed after most of Egypt rejected the Council of Chalcedon (451)",
@@ -1723,7 +1733,9 @@ ethiopian:{docs:{
   fast:["A. Michael and K. Baye, Scientific Reports 13 (2023): 7963","https://doi.org/10.1038/s41598-023-35060-4"],
   ark:["Aleteia, “Is the Ark of the Covenant really in Ethiopia?” (2017)","https://aleteia.org/2017/09/15/is-the-ark-of-the-covenant-really-in-ethiopia"],
   ns:["Nine Saints Ethiopian Orthodox Monastery, \u201cChristology\u201d","https://ninesaintsethiopianorthodoxmonastery.org/docs/doctrine/christology"],
-  addis:["Addis Standard, “How the war in Tigray threatens to split ancient Ethiopian Orthodox Church”","https://addisstandard.com/?p=1381"]},
+  addis:["Addis Standard, “How the war in Tigray threatens to split ancient Ethiopian Orthodox Church”","https://addisstandard.com/?p=1381"],
+  tablet:["The Tablet, “Ethiopian synod excommunicates Tigray bishops” (August 9, 2023)","https://www.thetablet.co.uk/news/17453/ethiopian-synod-excommunicates-tigray-bishops"],
+  rvi:["Rift Valley Institute, The Ethiopian Orthodox Tewahedo Church in Post-War Ethiopia (2025)","https://riftvalley.net/wp-content/uploads/2025/04/RVI-250404-PRF-EOTC_FINAL.pdf"]},
  authority:[["ns","accepts the first three councils as ecumenical"],["cnewa","rejects Chalcedon"]],
  canon:[["cowley","the narrower (54 + 27) and broader (46 + 35) counts"]],
  interpret:[["cnewa","Sabbath, food laws, circumcision"],["ark","the tabot"]],
@@ -1731,7 +1743,7 @@ ethiopian:{docs:{
  baptism:[["mk","40th and 80th day, triple immersion, chrismation and Communion"]],
  communion:[["mk",""]],
  endtimes:[{note:"Taken from the Nicene Creed, which the church confesses. No church document sets out a millennial timeline."}],
- governance:[["cnewa","patriarchate 1959"],["cnewaer","Eritrea 1993"],["addis","Tigray 2021"]],
+ governance:[["cnewa","patriarchate 1959"],["cnewaer","Eritrea 1993"],["addis","Tigray 2021"],["tablet","Tigray 2023"],["rvi","the Tigrayan synod, October 2024"]],
  translation:[["cnewa","Ge'ez and Amharic in the liturgy"]]},
 eastcath:{docs:{
   oe:["Second Vatican Council, Orientalium Ecclesiarum (1964)","https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19641121_orientalium-ecclesiarum_en.html"],
@@ -3930,7 +3942,7 @@ const FT=[
   why:["A dispute over wording about Christ's divine and human natures","Resentment of control from Constantinople and Rome, and differences in language and culture"],
   sides:"They reject the label “Monophysite.” In modern dialogues with Catholics (beginning in 1973) and Eastern Orthodox (1989–1990), many leaders concluded the disagreement was largely over words, not faith. Full unity has not been restored."},
  {id:"ethiopian",n:"Ethiopian and Eritrean Orthodox",lane:2,y:1959,p:"oriental",c:"#3F9B3F",rel:"Part of the Oriental Orthodox family",whyLabel:"What changed",when:"Christian since about 330; its own patriarch in 1959",tid:"ethiopian",
-  story:"Christianity became the state religion of the kingdom of Aksum around 330, when the bishop Frumentius baptized King Ezana. For about 1,600 years the Ethiopian church received its bishops from the Coptic Church of Alexandria and shared its faith. In 1959 it was given its own patriarch. The Eritrean church became independent of it in 1993, after Eritrea's independence, and in 2021 bishops in Tigray announced a separate church during the Tigray War.",
+  story:"Christianity became the state religion of the kingdom of Aksum around 330, when the bishop Frumentius baptized King Ezana. For about 1,600 years the Ethiopian church received its bishops from the Coptic Church of Alexandria and shared its faith. In 1959 it was given its own patriarch. The Eritrean church became independent of it in 1993, after Eritrea's independence, and in 2021 bishops in Tigray announced a separate church during the Tigray War. They appointed their own bishops in 2023 and formed their own synod in 2024.",
   why:["1959 was a change in leadership, not belief: the Ethiopian and Coptic churches remain in full communion","Eritrea's independence from Ethiopia led to a separate Eritrean church in 1993","The Tigray War led bishops in Tigray to break with the synod in Addis Ababa in 2021"],
   sides:"The Ethiopian, Eritrean, and Coptic churches all belong to the Oriental Orthodox family and share the same faith."},
  {id:"orthodox",n:"Eastern Orthodox",lane:3,y:1054,p:"early",c:"#A87412",when:"The Great Schism, 1054",tid:"orthodox",
@@ -4185,6 +4197,15 @@ function showApostle(a){
     bar.appendChild(b);
   });
 })();
+
+// ---------- When each tab was last checked against its sources ----------
+function fmtChecked(iso){const [y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}
+Object.entries(CHECKED).forEach(([tab,iso])=>{
+  const sec=document.getElementById(tab);if(!sec)return;
+  const p=el("p",{class:"checked"});p.textContent="Facts that change over time (leaders, splits, canonizations) last checked: "+fmtChecked(iso)+". Spot something out of date? Please report it on GitHub.";
+  sec.appendChild(p);
+});
+{const s=document.getElementById("saintsChecked");if(s)s.textContent=fmtChecked(CHECKED.saints)}
 
 // ---------- Today's Mass readings ----------
 let todayOffset=0;
