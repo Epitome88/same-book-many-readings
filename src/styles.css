@@ -453,3 +453,11 @@ a.notebtn{text-decoration:none;display:inline-block}
 .fcite,.fnote{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:0 0 6px}
 .fnote{font-style:normal}
 .checked{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin:28px 0 0;padding-top:8px;border-top:1px solid var(--line)}
+.study{border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:8px 12px;margin:0 0 14px}
+.study>summary{cursor:pointer;font-family:var(--serif);font-size:1.1rem;padding:4px 0}
+.study>summary .notebtn{margin-left:10px}
+.study h3{font-family:var(--sans);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:16px 0 4px}
+.study p{line-height:1.55}
+.stintro{font-style:italic}
+.vref{white-space:nowrap}
+.stlink{font-family:var(--sans);font-size:.85rem;margin:8px 0 0}

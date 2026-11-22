@@ -33,6 +33,7 @@ Every claim about what a church teaches, and every date, canonization or Bible r
 | `src/data/other-books.js` | Books outside the Bible and where to read them |
 | `src/data/church-tree.js` | The family tree of churches |
 | `src/data/checked.js` | When each tab was last checked against its sources. Update a date only after re-verifying that tab |
+| `src/data/studies.js` | Bible studies on one theme (like the four cups of the Passover). Write `{Luke 22:20}` in the text to link a verse |
 | `src/data/fathers.js` | Early Christian writers on the debated passages, quoted word for word from public-domain translations |
 | `data/*.gz` | The Bible texts (built by the scripts in `tools/`; please don't edit by hand) |
 

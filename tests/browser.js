@@ -42,13 +42,15 @@ console.log('Verse comparisons');
     fq:[...document.querySelectorAll('#passageList article.passage')].find(a=>a.querySelector('.ref').textContent.startsWith('Matthew 26:26')).querySelectorAll('.fathers .fq').length}));
   ok(t.name.length>3&&/^https:\/\/bible\.usccb\.org\/bible\/readings\/\d{6}\.cfm$/.test(t.href),`today's Mass readings card: ${t.name}`);
   ok(t.fq===2,'early Christian writers show on Matthew 26:26');
+  const st=await p.evaluate(()=>{const d=document.getElementById('study-four-cups');return {links:d.querySelectorAll('a.vref').length,from:!!document.querySelector('#passageList a[href="#study/four-cups"]')}});
+  ok(st.links>=10&&st.from,`four cups study shows with ${st.links} verse links, linked from Matthew 26:26`);
   ok(!errs.length,'no errors'+(errs.length?': '+errs.join('; '):''));await c.close();}
 
 console.log('Links to a view');
 {const c=await ctx(b);
   for(const [h,check] of [['#John-3-16',"fBook.value==='John'&&fCh.value==='3'&&fVs.value==='16'"],['#1-Corinthians-13-8',"fBook.value==='1 Corinthians'"],
       ['#saints/francis',"sCur&&sCur.id==='francis'"],['#compare/salvation',"topic==='salvation'"],['#lineage/peter',"document.querySelector('#lineage .chip[aria-selected=true]').dataset.ap==='peter'"],
-      ['#find/Melchizedek',"q2.value==='Melchizedek'"],['#notes',"!document.getElementById('notes').hidden"]]){
+      ['#find/Melchizedek',"q2.value==='Melchizedek'"],['#notes',"!document.getElementById('notes').hidden"],['#study/four-cups',"document.getElementById('study-four-cups').open&&!document.getElementById('passages').hidden"]]){
     const p=await c.newPage();await p.goto(BASE+h);await p.waitForTimeout(700);
     ok(await p.evaluate(check),`${h} opens the right view`);await p.close();
   }

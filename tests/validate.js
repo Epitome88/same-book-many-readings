@@ -3,8 +3,8 @@
 //   node tests/validate.js --base origin/main  also compare against another version and flag removed content
 const fs=require('fs'),path=require('path'),vm=require('vm'),zlib=require('zlib'),{execFileSync}=require('child_process');
 const ROOT=path.join(__dirname,'..');
-const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers','checked'];
-const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS','CHECKED'];
+const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers','checked','studies'];
+const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS','CHECKED','STUDIES'];
 const errors=[],warnings=[];
 const err=(where,msg)=>errors.push(`${where}: ${msg}`);
 
@@ -86,6 +86,21 @@ for(const [ref,list] of Object.entries(cur.FATHERS||{})){
   list.forEach((f,i)=>['who','when','work','tr','url','q'].forEach(k=>{if(!f[k])err(`fathers ${ref} #${i+1}`,`missing ${k}`)}));
 }
 
+// 5b2. Bible studies: verse links resolve, related passages exist, sources are complete.
+const sids=new Set();
+(cur.STUDIES||[]).forEach((st,i)=>{
+  const w=`studies ${st.id||'#'+i}`;
+  if(!st.id||!/^[a-z0-9-]+$/.test(st.id))err(w,'id must be lowercase letters, numbers and dashes');
+  if(sids.has(st.id))err(w,'duplicate id');sids.add(st.id);
+  ['title','intro'].forEach(k=>{if(!st[k])err(w,`missing ${k}`)});
+  (st.passages||[]).forEach(r=>{if(!(cur.P||[]).some(p=>p.ref===r))err(w,`related passage "${r}" isn't in passages.js`)});
+  (st.sections||[]).forEach(sec=>(sec.p||[]).forEach(t=>{
+    for(const m of t.matchAll(/\{([^{}]+)\}/g)){const r=parseRef(m[1]);if(!r||!ALL_BOOKS.has(r.book)){err(w,`bad verse link {${m[1]}}`);continue}
+      for(let v=r.v1;v<=r.v2;v++)if(!verseExists(r.book,r.ch,v))err(w,`{${m[1]}}: ${r.book} ${r.ch}:${v} isn't in the Bible text`)}
+  }));
+  if(!(st.sources||[]).length)err(w,'needs sources');
+});
+
 // 5c. Last-checked dates: real dates, flagged when more than a year old.
 for(const [tab,iso] of Object.entries(cur.CHECKED||{})){
   const t=Date.parse(iso+'T00:00:00Z');
@@ -96,7 +111,7 @@ for(const [tab,iso] of Object.entries(cur.CHECKED||{})){
 
 // 6. Compare with the base version: flag anything removed.
 const bi=process.argv.indexOf('--base');
-const counts=o=>({traditions:(o.T||[]).length,passages:(o.P||[]).length,readings:(o.P||[]).reduce((n,p)=>n+(p.r||[]).length,0),'source documents':Object.values(o.CSRC||{}).reduce((n,c)=>n+Object.keys(c.docs||{}).length,0),saints:(o.SAINTS||[]).length,parables:(o.PARABLES||[]).length,'lineage names':JSON.stringify(o.LINE||[]).split('"n":').length-1,'angels and demons':(o.ANG_NAMED||[]).length+(o.DEM_NAMED||[]).length,'books outside the Bible':(o.XBOOKS||[]).length,'church tree branches':(o.FT||[]).length,apostles:(o.APOSTLES||[]).length,'early Christian quotations':Object.values(o.FATHERS||{}).reduce((n,l)=>n+l.length,0)});
+const counts=o=>({traditions:(o.T||[]).length,passages:(o.P||[]).length,readings:(o.P||[]).reduce((n,p)=>n+(p.r||[]).length,0),'source documents':Object.values(o.CSRC||{}).reduce((n,c)=>n+Object.keys(c.docs||{}).length,0),saints:(o.SAINTS||[]).length,parables:(o.PARABLES||[]).length,'lineage names':JSON.stringify(o.LINE||[]).split('"n":').length-1,'angels and demons':(o.ANG_NAMED||[]).length+(o.DEM_NAMED||[]).length,'books outside the Bible':(o.XBOOKS||[]).length,'church tree branches':(o.FT||[]).length,apostles:(o.APOSTLES||[]).length,studies:(o.STUDIES||[]).length,'early Christian quotations':Object.values(o.FATHERS||{}).reduce((n,l)=>n+l.length,0)});
 const now=counts(cur);
 let removed=[];
 if(bi>0){
