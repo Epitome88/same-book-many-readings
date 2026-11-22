@@ -142,7 +142,9 @@ mark{background:#F6D86B;color:#1B2232;padding:0 2px;border-radius:2px}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--sans);font-size:.82rem;color:var(--muted);margin:0 0 14px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:14px;height:14px;border-radius:50%;border:3px solid var(--k);display:inline-block}
-:root{--mt:#2F6FB0;--lk:#B5562E;--both:var(--ink)}
+:root{--mt:#2F6FB0;--lk:#A14A24;--both:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mt:#6FA6E0;--lk:#E3906A}}
+:root[data-theme="dark"]{--mt:#6FA6E0;--lk:#E3906A}
 .why{background:var(--surface);border:1px solid var(--line);border-radius:4px;margin:0 0 22px}
 .why summary{cursor:pointer;padding:12px 16px;font-family:var(--sans);font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between}
 .why summary::-webkit-details-marker{display:none}
@@ -271,6 +273,8 @@ ol.refs .rt sup{font-family:var(--sans);font-size:.7rem;color:var(--muted);margi
 .erow .btn{margin-top:0}
 .saved{font-family:var(--sans);font-size:.8rem;color:var(--muted)}
 .danger{color:#A3262E !important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .danger{color:#F08A8F !important}}
+:root[data-theme="dark"] .danger{color:#F08A8F !important}
 .linkbox{display:block;width:100%;margin:6px 0;font:inherit;font-size:.8rem;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
 .notebtn{background:none;border:1px solid var(--line);border-radius:4px;font-family:var(--sans);font-size:.75rem;color:var(--muted);padding:2px 8px;margin-left:8px;cursor:pointer;vertical-align:1px}
 
@@ -346,6 +350,7 @@ details.xb summary::-webkit-details-marker{display:none}
 .ftscroll svg{display:block;min-width:900px;width:100%;height:auto}
 .ftb{cursor:pointer}
 .ftb:focus-visible{outline:none}
+.ftb:focus-visible line:first-child{stroke:#2A7AB8;stroke-opacity:.3}
 .ftb:focus-visible text,.ftb.sel text{text-decoration:underline}
 .ftb.sel .ftl{stroke-width:7}
 .ftswipe{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:4px 12px 4px}

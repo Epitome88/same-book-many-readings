@@ -1141,7 +1141,7 @@ function openSaint(x){
   sCur=x;const d=sEl("sDetail");d.innerHTML="";
   const back=el("button",{class:"mini link"});back.textContent="← All saints";back.onclick=closeSaint;d.appendChild(back);
   const sl=el("button",{class:"notebtn","aria-label":"Copy a link to "+x.n});sl.textContent="Link";sl.onclick=()=>shareLink("#saints/"+x.id,sl);d.appendChild(sl);
-  const h=el("h3",{class:"sname"});h.textContent=x.n;d.appendChild(h);
+  const h=el("h2",{class:"sname"});h.textContent=x.n;d.appendChild(h);
   if(x.aka&&x.aka.length){const a=el("p",{class:"saka"});a.textContent="Also known as "+x.aka.join(", ");d.appendChild(a)}
   const g=el("dl",{class:"sfacts"});
   const add=(k,v)=>{if(!v)return;const dt=el("dt");dt.textContent=k;const dd=el("dd");dd.textContent=v;g.append(dt,dd)};
@@ -1195,7 +1195,7 @@ function closeSaint(){sCur=null;sEl("sDetail").hidden=true;sEl("sListView").hidd
   const pts=SAINTS.filter(x=>x.k!=="pre");
   const W=1000,H=118,x0=20,x1=980,y0=900,y1=2030;
   const X=y=>x0+(y-y0)/(y1-y0)*(x1-x0);
-  let svg=`<svg viewBox="0 0 ${W} ${H}" class="tl" role="img" aria-label="Timeline of canonization years, from 993 to 2025">`;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" class="tl" role="group" aria-label="Timeline of canonization years, from 993 to 2025">`;
   svg+=`<line x1="${x0}" y1="70" x2="${x1}" y2="70" stroke="var(--line)" stroke-width="2"/>`;
   [1000,1200,1400,1600,1800,2000].forEach(y=>{svg+=`<line x1="${X(y)}" y1="64" x2="${X(y)}" y2="76" stroke="var(--muted)" stroke-width="1.5"/><text x="${X(y)}" y="98" text-anchor="middle" font-size="20" fill="var(--muted)" font-family="Bricolage Grotesque, sans-serif">${y}</text>`});
   const used={};
@@ -1304,7 +1304,7 @@ function xbCard(b){
   ];
   const W=1000,H=110,x0=30,x1=970,y0=-200,y1=2000;
   const X=y=>x0+(y-y0)/(y1-y0)*(x1-x0);
-  let svg=`<svg viewBox="0 0 ${W} ${H}" class="tl" role="img" aria-label="Timeline of how the Bible's contents were decided">`;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" class="tl" role="group" aria-label="Timeline of how the Bible's contents were decided">`;
   svg+=`<line x1="${x0}" y1="50" x2="${x1}" y2="50" stroke="var(--line)" stroke-width="2"/>`;
   [[-200,"200 BC"],[0,"AD 1"],[500,"500"],[1000,"1000"],[1500,"1500"],[2000,"2000"]].forEach(([y,l])=>{svg+=`<line x1="${X(y)}" y1="44" x2="${X(y)}" y2="56" stroke="var(--muted)" stroke-width="1.5"/><text x="${X(y)}" y="82" text-anchor="middle" font-size="20" fill="var(--muted)" font-family="Bricolage Grotesque, sans-serif">${l}</text>`});
   const used={};
