@@ -7,6 +7,7 @@
 //@include data/passages.js
 //@include data/fathers.js
 //@include data/studies.js
+//@include data/jewish.js
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -18,7 +19,8 @@ T.forEach((t,i)=>{const r=el("div",{class:"ribbon",style:`--c:${t.c};height:${58
 // Tabs
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===b));
-  ["compare","churches","passages","find","lineage","angels","saints","books","notes"].forEach(id=>document.getElementById(id).hidden=id!==b.dataset.tab);
+  document.querySelectorAll(".tab").forEach(t=>{const sec=document.getElementById(t.dataset.tab);if(sec)sec.hidden=t.dataset.tab!==b.dataset.tab});
+  {const bar=b.parentElement;if(bar&&bar.scrollWidth>bar.clientWidth){const r=b.getBoundingClientRect(),br=bar.getBoundingClientRect();if(r.left<br.left||r.right>br.right)bar.scrollLeft+=r.left-br.left-(br.width-r.width)/2}}
   window.scrollTo({top:document.querySelector("nav").offsetTop,behavior:"instant"});
 }));
 
@@ -237,7 +239,7 @@ function passageCard(p,generated){
     d.appendChild(rd);
   });
   if(!generated)STUDIES.filter(st=>st.passages.includes(p.ref)).forEach(st=>{
-    const sp=el("p",{class:"stlink"});const a=el("a",{href:"#study/"+st.id});a.textContent="Bible study: "+st.title;sp.append(a);d.appendChild(sp)});
+    const sp=el("p",{class:"stlink"});const a=el("a",{href:"#jewish/"+jewishSubForStudy(st.id)});a.textContent="Bible study: "+st.title;sp.append(a);d.appendChild(sp)});
   const fa=FATHERS[p.ref];
   if(fa&&!generated){
     const box=el("div",{class:"fathers"});const h=el("p",{class:"srch"});h.textContent="Early Christian writers";box.appendChild(h);
@@ -1433,29 +1435,47 @@ function studyText(text){
   });
   frag.append(text.slice(last));return frag;
 }
-function renderStudies(){
-  const box=document.getElementById("studies");if(!box||!STUDIES.length)return;
-  box.textContent="";
-  const h=el("h2");h.textContent="Bible studies";box.appendChild(h);
-  STUDIES.forEach(st=>{
-    const d=el("details",{class:"study",id:"study-"+st.id});
-    const sm=el("summary");sm.textContent=st.title;d.appendChild(sm);
-    const intro=el("p",{class:"stintro"});intro.textContent=st.intro;d.appendChild(intro);
-    st.sections.forEach(sec=>{const hh=el("h3");hh.textContent=sec.h;d.appendChild(hh);sec.p.forEach(t=>{const p=el("p");p.appendChild(studyText(t));d.appendChild(p)})});
-    const src=el("div",{class:"srcdocs"});const sh=el("p",{class:"srch"});sh.textContent="Sources";src.appendChild(sh);const ul=el("ul");
-    st.sources.forEach(([t,u])=>{const li=el("li");const a=el("a",{href:u,target:"_blank",rel:"noopener noreferrer"});a.textContent=t;li.appendChild(a);ul.appendChild(li)});
-    src.appendChild(ul);d.appendChild(src);
-    const lb=el("button",{class:"notebtn"});lb.textContent="Link";lb.onclick=e=>{e.preventDefault();shareLink("#study/"+st.id,lb)};sm.appendChild(lb);
-    d.addEventListener("toggle",()=>syncHash());
-    box.appendChild(d);
+function srcList(list,label){
+  const src=el("div",{class:"srcdocs"});const sh=el("p",{class:"srch"});sh.textContent=label||"Sources";src.appendChild(sh);const ul=el("ul");
+  list.forEach(([t,u])=>{const li=el("li");const a=el("a",{href:u,target:"_blank",rel:"noopener noreferrer"});a.textContent=t;li.appendChild(a);ul.appendChild(li)});
+  src.appendChild(ul);return src;
+}
+function studyNode(st){
+  const d=el("div",{class:"study",id:"study-"+st.id});
+  const h=el("h3",{class:"sttitle"});h.textContent=st.title;
+  const lb=el("button",{class:"notebtn"});lb.textContent="Link";lb.onclick=()=>shareLink("#jewish/"+jewishSubForStudy(st.id),lb);h.appendChild(lb);d.appendChild(h);
+  const intro=el("p",{class:"stintro"});intro.textContent=st.intro;d.appendChild(intro);
+  st.sections.forEach(sec=>{const hh=el("h4");hh.textContent=sec.h;d.appendChild(hh);sec.p.forEach(t=>{const p=el("p");p.appendChild(studyText(t));d.appendChild(p)})});
+  d.appendChild(srcList(st.sources));
+  return d;
+}
+function jewishSubForStudy(id){const j=JEWISH.find(x=>x.study===id);return j?j.id:JEWISH[0].id}
+function openStudy(id){document.querySelector('.tab[data-tab="jewish"]').click();showJewish(jewishSubForStudy(id));return true}
+
+// ---------- Jewish Tradition tab ----------
+let jewCur=JEWISH[0].id;
+function showJewish(id){
+  const sec=JEWISH.find(x=>x.id===id)||JEWISH[0];jewCur=sec.id;
+  document.querySelectorAll("#jewTabs .chip").forEach(c=>c.setAttribute("aria-selected",c.dataset.sub===sec.id?"true":"false"));
+  const body=document.getElementById("jewBody");body.textContent="";
+  if(sec.study){const st=STUDIES.find(x=>x.id===sec.study);if(st)body.appendChild(studyNode(st));syncHash();return}
+  const intro=el("p",{class:"hint"});intro.textContent=sec.intro;body.appendChild(intro);
+  sec.items.forEach(it=>{
+    const art=el("article",{class:"jitem"});
+    const h=el("h3");h.textContent=it.h;art.appendChild(h);
+    it.t.forEach(t=>{const p=el("p");p.appendChild(studyText(t));art.appendChild(p)});
+    if(it.texts){const p=el("p",{class:"jtexts"});const b=el("span",{class:"srclab"});b.textContent="Jewish texts: ";p.append(b,it.texts);art.appendChild(p)}
+    if(it.xn){const p=el("p",{class:"jxn"});const b=el("span",{class:"srclab"});b.textContent="For Christians: ";p.append(b,studyText(it.xn));art.appendChild(p)}
+    art.appendChild(srcList(it.src));
+    body.appendChild(art);
   });
+  syncHash();
 }
-function openStudy(id){
-  const d=document.getElementById("study-"+id);if(!d)return false;
-  document.querySelector('.tab[data-tab="passages"]').click();d.open=true;
-  setTimeout(()=>d.scrollIntoView({block:"start"}),0);return true;
-}
-renderStudies();
+(function(){
+  const bar=document.getElementById("jewTabs");
+  JEWISH.forEach(sec=>{const b=el("button",{class:"chip",role:"tab","data-sub":sec.id,"aria-selected":"false"});b.textContent=sec.n;b.onclick=()=>showJewish(sec.id);bar.appendChild(b)});
+  showJewish(jewCur);
+})();
 
 // ---------- Today's Mass readings ----------
 let todayOffset=0;
@@ -1483,11 +1503,11 @@ renderToday();
 // Addresses look like #John-3-16, #1-Corinthians-13, #saints/francis, #compare/salvation, #lineage/peter, #find/Melchizedek.
 var LINKS_READY=false, APPLYING_HASH=false;
 const PUBLIC_URL="https://epitome88.github.io/same-book-many-readings/";
-const TAB_IDS=["compare","churches","passages","find","lineage","angels","saints","books","notes"];
+const TAB_IDS=["compare","churches","passages","find","lineage","angels","saints","books","jewish","notes"];
 function verseHash(book,ch,v){return "#"+book.replace(/ /g,"-")+(ch?"-"+ch:"")+(ch&&v?"-"+v:"")}
 function currentHash(){
   const tab=(document.querySelector('.tab[aria-selected="true"]')||{dataset:{}}).dataset.tab||"compare";
-  if(tab==="passages"){const o=document.querySelector("#studies details.study[open]");if(o)return "#study/"+o.id.slice(6)}
+  if(tab==="jewish")return "#jewish/"+jewCur;
   if(tab==="passages"&&fBook.value){const ch=parseInt(fCh.value)||0;return verseHash(fBook.value,ch,ch?parseInt(fVs.value)||0:0)}
   if(tab==="saints"&&sCur)return "#saints/"+sCur.id;
   if(tab==="compare")return "#compare/"+topic;
@@ -1515,11 +1535,12 @@ function applyHash(){
       else if(a==="compare"&&b){const i=TOPICS.findIndex(t=>t.id===b);if(i>=0)topicChips.querySelectorAll(".chip")[i].click()}
       else if(a==="lineage"&&b){const c=[...document.querySelectorAll("#lineage .chip[data-ap]")].find(c=>c.dataset.ap===b);if(c)c.click()}
       else if(a==="find"&&b){q2.value=b.slice(0,200);runFind()}
+      else if(a==="jewish"&&b){showJewish(b)}
     }else{
       const m=h.match(/^(.+?)-(\d+)(?:-(\d+))?$/)||[null,h];
       const want=m[1].replace(/-/g," ").toLowerCase();
       const book=[...fBook.options].map(o=>o.value).find(v=>v&&v.toLowerCase()===want);
-      if(book){document.querySelectorAll("#studies details.study[open]").forEach(d=>{d.open=false});openVerse(book,m[2]||"",m[2]&&m[3]?m[3]:"")}
+      if(book){openVerse(book,m[2]||"",m[2]&&m[3]?m[3]:"")}
     }
   }catch(e){}
   finally{APPLYING_HASH=false}

@@ -469,13 +469,17 @@ a.notebtn{text-decoration:none;display:inline-block}
 .fcite,.fnote{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:0 0 6px}
 .fnote{font-style:normal}
 .checked{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin:28px 0 0;padding-top:8px;border-top:1px solid var(--line)}
-.study{border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:8px 12px;margin:0 0 14px}
-.study>summary{cursor:pointer;font-family:var(--serif);font-size:1.1rem;padding:4px 0}
-.study>summary .notebtn{margin-left:10px}
-.study h3{font-family:var(--sans);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:16px 0 4px}
-.study p{line-height:1.55}
+.study{margin:4px 0 14px}
+.sttitle{font-family:var(--serif);font-size:1.25rem;margin:6px 0 6px}
+.sttitle .notebtn{margin-left:10px;vertical-align:middle}
+.study h4{font-family:var(--sans);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:16px 0 4px}
+.study p,.jitem p{line-height:1.55}
 .stintro{font-style:italic}
 .vref{white-space:nowrap}
+.jitem{border-top:1px solid var(--line);padding:4px 0 12px}
+.jitem h3{font-family:var(--serif);font-size:1.1rem;margin:12px 0 4px}
+.jtexts,.jxn{font-family:var(--sans);font-size:.85rem;margin:6px 0}
+.jxn{border-left:3px solid var(--line);padding-left:10px}
 .stlink{font-family:var(--sans);font-size:.85rem;margin:8px 0 0}
 </style>
 </head>
@@ -500,6 +504,7 @@ a.notebtn{text-decoration:none;display:inline-block}
     <button class="tab" role="tab" aria-selected="false" data-tab="angels">Angels</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="saints">Saints</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="books">Other Books</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="jewish">Jewish Tradition</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="notes">Notes</button>
   </div>
 </nav>
@@ -528,7 +533,6 @@ a.notebtn{text-decoration:none;display:inline-block}
 
   <section id="passages" hidden>
     <div id="today" class="today" aria-live="polite"></div>
-    <div id="studies"></div>
     <h2>Find a verse</h2>
     <p class="hint">Pick a book to see the verses churches read differently, or enter a chapter and verse to look up any verse in the Bible.</p>
     <label class="fl verrow">Bible<select class="verSel" aria-label="Bible version"></select></label>
@@ -710,6 +714,12 @@ a.notebtn{text-decoration:none;display:inline-block}
     </div>
   </section>
 
+  <section id="jewish" hidden>
+    <h2>Jewish Tradition</h2>
+    <div class="chiprow lsub" id="jewTabs" role="tablist" aria-label="Choose a part of Jewish tradition"></div>
+    <div id="jewBody"></div>
+  </section>
+
   <section id="notes" hidden>
     <h2>Notes</h2>
     <p class="hint">Write down questions, sermon notes, or anything you're studying. Notes save automatically as you type. Link a note to a passage, like John 3:16 or Romans 8:28-30, and it shows up whenever you open that passage. Use <b>Back up notes</b> to keep a copy or move your notes to another device or browser.</p>
@@ -806,7 +816,8 @@ const LIT=(()=>{
 const CHECKED={
   compare:"2026-11-21",
   churches:"2026-11-21",
-  saints:"2026-11-21"
+  saints:"2026-11-21",
+  jewish:"2026-11-21"
 };
 const TOPICS = [
   {id:"authority", label:"Authority", title:"Where authority comes from", hint:"What stands alongside, or above, the Bible."},
@@ -1696,6 +1707,188 @@ const STUDIES=[
   ["Jonathan Klawans, “Was Jesus' Last Supper a Seder?” (Biblical Archaeology Society)","https://www.biblicalarchaeology.org/daily/people-cultures-in-the-bible/jesus-historical-jesus/was-jesus-last-supper-a-seder/"]
  ]}
 ];
+// The Jewish Tradition tab. Judaism is described in its own terms, from Jewish sources first.
+// Each section is a sub-tab. Items: h (heading), t (paragraphs; {Book 1:2} links a verse),
+// texts (the main Jewish texts behind it), xn (the connection Christians draw, kept separate),
+// src ([title, url] pairs). A section with study:"id" shows that Bible study from studies.js.
+const JEWISH=[
+{id:"overview",n:"Overview",
+ intro:"Jesus, his mother and the apostles were Jews, and the Bible Christians call the Old Testament is the Jewish Bible. This tab describes Jewish faith and practice as Jews themselves describe it, with Jewish sources first. Where Christians draw a connection, it is marked separately. Much of Jewish practice took its present shape after the Temple was destroyed in AD 70, so not everything here was practiced the same way in Jesus' day.",
+ items:[
+  {h:"One God",t:["The heart of Jewish faith is the Shema: “Hear, O Israel: The LORD our God is one LORD” {Deuteronomy 6:4}. Jews recite it every morning and evening.","In the 1100s, Maimonides summed up Jewish belief in thirteen principles: God exists, is one, has no body, and is eternal; God alone is to be worshipped; God speaks through prophets, and Moses is the greatest of them; the Torah is from Heaven and will not be changed; God knows all and rewards and punishes; the Messiah will come; and the dead will be raised."],
+   texts:"Deuteronomy 6:4–9; Maimonides, Commentary on the Mishnah (the Thirteen Principles)",
+   src:[["Chabad.org, “The Shema”","https://www.chabad.org/library/article_cdo/aid/705353/jewish/The-Shema.htm"],["Chabad.org, “The 13 Principles”","https://www.chabad.org/library/article_cdo/aid/332555/jewish/The-13-Principles.htm"]]},
+  {h:"Covenant and Torah",t:["God made a covenant with Abraham and his descendants, sealed by circumcision {Genesis 17:7}, and at Mount Sinai gave Israel the Torah, the teaching that shapes Jewish life. The Ten Commandments begin, in Jewish counting, with “I am the LORD thy God, which have brought thee out of the land of Egypt” {Exodus 20:2}.","Torah means “teaching.” In the narrow sense it is the Five Books of Moses; in the wider sense it includes the whole of Jewish teaching, written and oral."],
+   texts:"Genesis 12; 15; 17; Exodus 19–24",
+   src:[["Chabad.org, “What Are the Ten Commandments?”","https://www.chabad.org/library/article_cdo/aid/2896/jewish/What-Are-the-Ten-Commandments.htm"],["My Jewish Learning, “Hebrew Bible: Torah, Prophets and Writings”","https://www.myjewishlearning.com/article/hebrew-bible/"]]},
+  {h:"How Christians and Jews relate",t:["Paul writes that to the Jews belong “the adoption, and the glory, and the covenants, and the giving of the law” {Romans 9:4}, and that “the gifts and calling of God are without repentance” {Romans 11:29}.","In 1965 the Second Vatican Council said that “the spiritual patrimony common to Christians and Jews is thus so great,” that Christ's passion “cannot be charged against all the Jews, without distinction, then alive, nor against the Jews of today,” and that “the Jews should not be presented as rejected or accursed by God.”","In 2000, more than 170 Jewish leaders answered with Dabru Emet (“Speak the Truth”), which begins, “Jews and Christians worship the same God,” and adds that “the humanly irreconcilable difference between Jews and Christians will not be settled until God redeems the entire world.”"],
+   xn:"The Catechism calls the Jewish people “the first to hear the Word of God” and notes that both await the Messiah: Christians his return, Jews his coming (¶¶839–840).",
+   src:[["Second Vatican Council, Nostra Aetate (1965), §4","https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decl_19651028_nostra-aetate_en.html"],["Dabru Emet: A Jewish Statement on Christians and Christianity (2000)","https://ccjr.us/dialogika-resources/documents-and-statements/jewish/dabru-emet"],["University of Edinburgh, on Dabru Emet","https://jnjr.div.ed.ac.uk/primary-sources/contemporary/dabru-emet-a-jewish-statement-on-christians-and-christianity"]]}
+ ]},
+{id:"texts",n:"Scriptures and Texts",
+ intro:"Judaism has a Written Torah, the Hebrew Bible, and an Oral Torah, the tradition of interpretation later written down in the Mishnah and Talmud.",
+ items:[
+  {h:"The Tanakh (Hebrew Bible)",t:["“Tanakh” is an acronym for its three parts: Torah (Teaching, the Five Books of Moses), Nevi'im (Prophets) and Ketuvim (Writings). It counts 24 books, one for each ancient scroll: Samuel, Kings, Chronicles and Ezra-Nehemiah are one book each, and the twelve minor prophets are one “Book of the Twelve.”","Protestant Bibles contain the same books divided into 39. Catholic and Orthodox Old Testaments add books Judaism doesn't count as Scripture, such as Tobit and 1–2 Maccabees. The standard Hebrew text is the Masoretic Text; the oldest complete manuscripts date from the 900s, while fragments are far older."],
+   texts:"The Masoretic Text",
+   src:[["Britannica, “Books of the Hebrew Bible”","https://www.britannica.com/topic/Hebrew-Bible/Books-of-the-Hebrew-Bible"],["My Jewish Learning, “Hebrew Bible: Torah, Prophets and Writings”","https://www.myjewishlearning.com/article/hebrew-bible/"]]},
+  {h:"The Mishnah",t:["The first written code of rabbinic law, published around AD 200 by Rabbi Judah the Prince in the land of Israel. It records the Oral Torah in six orders and 63 tractates: Zera'im (Seeds: blessings and farming), Mo'ed (Festivals), Nashim (Women: marriage and divorce), Nezikin (Damages: civil and criminal law), Kodashim (Holy Things: the Temple and sacrifices) and Tohorot (Purity)."],
+   texts:"Mishnah, six orders",
+   src:[["Britannica, “Mishna”","https://www.britannica.com/topic/Mishna"],["My Jewish Learning, “What Is the Talmud?”","https://www.myjewishlearning.com/article/talmud-101/"]]},
+  {h:"The Talmud",t:["Rabbis in the land of Israel and in Babylonia studied the Mishnah and recorded their discussions, the Gemara. Mishnah plus Gemara is the Talmud. There are two: the Jerusalem Talmud (Yerushalmi), finished around the late 300s, and the Babylonian Talmud (Bavli), compiled up to the 500s, which became the main authority. “Due to its spare and laconic style, the Talmud is studied, not read.”"],
+   texts:"Talmud Yerushalmi; Talmud Bavli",
+   src:[["My Jewish Learning, “What Is the Talmud?”","https://www.myjewishlearning.com/article/talmud-101/"],["Britannica, “Talmud: Early compilations”","https://www.britannica.com/topic/Talmud/Early-compilations"]]},
+  {h:"Midrash",t:["Midrash is the rabbis' way of interpreting Scripture by searching its words. Midrash halakhah draws out law (the Mekhilta on Exodus, Sifra on Leviticus, Sifrei on Numbers and Deuteronomy); midrash aggadah explores the stories, ethics and theology, as in the Midrash Rabbah collections on the Torah and the Five Scrolls."],
+   texts:"Mekhilta, Sifra, Sifrei, Midrash Rabbah",
+   src:[["My Jewish Learning, “What Is Midrash?”","https://www.myjewishlearning.com/article/midrash-101/"]]},
+  {h:"The law codes",t:["Maimonides completed the Mishneh Torah in 1180, the first true code of Jewish law, in 14 books. In the 1500s Joseph Caro wrote the Shulchan Aruch (“Set Table”) in four sections: daily life, prayer and holidays; kosher and ritual law; marriage; and civil law. Moses Isserles added glosses for Ashkenazi practice, and the two have been printed together ever since. The Shulchan Aruch is still the standard reference for Jewish law."],
+   texts:"Mishneh Torah; Arba'ah Turim; Shulchan Aruch",
+   src:[["My Jewish Learning, “The Mishneh Torah”","https://www.myjewishlearning.com/article/the-mishneh-torah/"],["My Jewish Learning, “Halachic Texts in the Middle Ages”","https://www.myjewishlearning.com/article/halakhic-texts-in-middle-ages/"],["My Jewish Learning, “The Shulchan Aruch”","https://www.myjewishlearning.com/article/the-shulhan-arukh/"]]}
+ ]},
+{id:"law",n:"The Law",
+ intro:"Halakha (“the way of walking”) is Jewish law: the commandments of the Torah as the rabbis interpreted and applied them.",
+ items:[
+  {h:"The 613 commandments",t:["The Talmud (Makkot 23b) counts 613 commandments (mitzvot) in the Torah: 248 positive (“do”) and 365 negative (“do not”). The Talmud doesn't list them; the most widely followed list is Maimonides'. Many, such as those about sacrifices, can't be kept while there is no Temple."],
+   texts:"Talmud, Makkot 23b; Maimonides' list",
+   xn:"Jesus said he came “not to destroy, but to fulfil” the law {Matthew 5:17}. The early Church decided that Gentile believers need not keep the whole Mosaic law (Acts 15); churches still differ on how its parts apply, as the Verses tab shows.",
+   src:[["Chabad.org, “The 613 Commandments”","https://www.chabad.org/library/article_cdo/aid/756399/jewish/The-613-Commandments-Mitzvot.htm."]]},
+  {h:"The Ten Commandments",t:["In Jewish counting the first commandment is “I am the LORD thy God” {Exodus 20:2}; the second forbids other gods and idols; then God's name, the Sabbath, honoring parents, murder, adultery, stealing, false witness and coveting. Tradition places the first five, which each name God, on the first tablet and the other five on the second."],
+   texts:"Exodus 20:1–14; Deuteronomy 5:6–18",
+   xn:"Catholics and Lutherans number them differently from Jews and from the Reformed and Orthodox: see Exodus 20:4–5 on the Verses tab.",
+   src:[["Chabad.org, “What Are the Ten Commandments?”","https://www.chabad.org/library/article_cdo/aid/2896/jewish/What-Are-the-Ten-Commandments.htm"]]},
+  {h:"The seven Noahide laws",t:["Judaism doesn't ask non-Jews to keep the whole Torah. The Talmud (Sanhedrin 56a) teaches that all humanity, the “children of Noah,” are bound by seven laws: establish courts of justice, and do not curse God, worship idols, commit sexual immorality, murder, steal, or eat flesh torn from a living animal {Genesis 9:4}. Since the later Middle Ages many Jewish authorities have counted Christians as Noahides."],
+   texts:"Talmud, Sanhedrin 56a; Tosefta Avodah Zarah 8:4",
+   src:[["My Jewish Learning, “The Noahide Laws”","https://www.myjewishlearning.com/article/the-noahide-laws/"]]},
+  {h:"Kosher food (kashrut)",t:["Only some animals are kosher: land animals that both part the hoof and chew the cud {Leviticus 11:3}, fish with fins and scales {Leviticus 11:9}, and certain birds. Meat must come from an animal slaughtered in the prescribed way and found healthy, and it is salted and soaked to remove blood. Meat and milk are never mixed, from the command “thou shalt not seethe a kid in his mother's milk” {Exodus 23:19}, so kosher kitchens keep separate dishes for each. Foods that are neither, like fruit and vegetables, are pareve (neutral)."],
+   texts:"Leviticus 11; Deuteronomy 14; Talmud, tractate Hullin; Shulchan Aruch, Yoreh De'ah",
+   xn:"See Leviticus 11:7 on the Verses tab for how churches read the food laws.",
+   src:[["My Jewish Learning, “Kashrut 101”","https://www.myjewishlearning.com/article/kashrut-101/"]]},
+  {h:"The Sabbath (Shabbat)",t:["Shabbat begins on Friday before sunset and ends on Saturday after nightfall. It opens with lighting candles, Kiddush (a blessing over wine) and two loaves of challah, recalling the double portion of manna, and closes with Havdalah (“separation”), with wine, spices and a flame.","Work is forbidden, which the Mishnah defines as 39 categories of creative labor (Shabbat 7:2), drawn from the work of building the Tabernacle: from sowing and plowing through baking, writing, lighting and putting out a fire, and carrying between domains."],
+   texts:"Exodus 20:8–11; 31:12–17; Mishnah Shabbat 7:2",
+   xn:"Most Christians keep Sunday, the day of the Resurrection; Seventh-day Adventists and Ethiopian Orthodox keep the Saturday Sabbath. See Exodus 20:8 and Colossians 2:16 on the Verses tab.",
+   src:[["Chabad.org, “What Is Shabbat?”","https://www.chabad.org/library/article_cdo/aid/633659/jewish/What-Is-Shabbat.htm"],["Chabad.org, “Introduction to the 39 Melachot”","https://www.chabad.org/library/article_cdo/aid/4739282/jewish/Introduction-to-the-39-Melachot.htm"],["Jewish Theological Seminary, on Mishnah Shabbat 7:2","https://www.jtsa.edu/?p=7188"]]},
+  {h:"Signs on the body and the home",t:["The Shema commands binding God's words “for a sign upon thine hand” and writing them “upon the posts of thy house” {Deuteronomy 6:8-9}. So observant Jews wear tefillin, two small black boxes holding four Torah passages, on the arm and head at weekday morning prayer (not on Shabbat or most holidays), and Jewish homes have a mezuzah, a parchment of the Shema, on the doorpost. Fringes (tzitzit) on the corners of garments come from {Numbers 15:38}."],
+   texts:"Deuteronomy 6:4–9; 11:13–21; Numbers 15:37–41",
+   src:[["Jewish Virtual Library, “Tefillin”","https://www.jewishvirtuallibrary.org/tefillin"],["Chabad.org, “The Shema”","https://www.chabad.org/library/article_cdo/aid/705353/jewish/The-Shema.htm"]]}
+ ]},
+{id:"feasts",n:"Feasts and Calendar",
+ intro:"The Jewish calendar follows the moon but adds a leap month seven times in every 19 years to stay in step with the seasons. Each day begins at sundown, so every holiday starts the evening before.",
+ items:[
+  {h:"The calendar",t:["The Bible counts the year from the spring month of the Exodus: “This month shall be unto you the beginning of months” {Exodus 12:2}. That month is Nisan; the new year, Rosh Hashanah, falls in the autumn month of Tishrei. Three pilgrimage festivals once brought all Israelite men to the Temple: Passover, Shavuot and Sukkot {Deuteronomy 16:16}."],
+   texts:"Leviticus 23; Numbers 28–29; Deuteronomy 16",
+   src:[["My Jewish Learning, “Jewish Calendar: Solar and Lunar”","https://www.myjewishlearning.com/article/jewish-calendar-solar-and-lunar/"],["My Jewish Learning, “Types of Jewish Holidays”","https://www.myjewishlearning.com/article/types-of-jewish-holidays/"]]},
+  {h:"Passover (Pesach)",t:["Begins on 15 Nisan and lasts seven days in Israel and eight elsewhere {Leviticus 23:5-6}. It remembers the Exodus from slavery in Egypt, named for the night God “passed over” Israel's homes. Homes are cleared of chametz (leavened food), matzah is eaten, and families hold the Seder, a 14-step meal retelling the Exodus from the Haggadah, with four cups of wine. See the Four Cups sub-tab."],
+   texts:"Exodus 12–13; Mishnah Pesachim 10; the Haggadah",
+   xn:"Jesus died at Passover, and Paul writes, “Christ our passover is sacrificed for us” {1 Corinthians 5:7}.",
+   src:[["My Jewish Learning, “Passover 101”","https://www.myjewishlearning.com/article/passover-pesach-101/"]]},
+  {h:"Counting the Omer and Shavuot",t:["From the second night of Passover, Jews count seven weeks, once marked by the omer offering of new barley at the Temple {Leviticus 23:10}. On the fiftieth day comes Shavuot, the Feast of Weeks {Leviticus 23:15-16}, celebrating the wheat harvest and the giving of the Torah at Sinai."],
+   texts:"Leviticus 23:9–21; Deuteronomy 16:9–12",
+   xn:"Shavuot is “Pentecost” (Greek for “fiftieth”). The Holy Spirit came on the apostles “when the day of Pentecost was fully come” {Acts 2:1}.",
+   src:[["My Jewish Learning, “Counting the Omer”","https://myjewishlearning.com/article/counting-the-omer"],["My Jewish Learning, “Types of Jewish Holidays”","https://www.myjewishlearning.com/article/types-of-jewish-holidays/"]]},
+  {h:"Rosh Hashanah and Yom Kippur",t:["Rosh Hashanah, the New Year, falls on 1 Tishrei {Leviticus 23:24} and is kept for two days, with the shofar (ram's horn) sounded as a call to repentance. It opens the Ten Days of Repentance, which end with Yom Kippur, the Day of Atonement {Leviticus 23:27}, the holiest day of the year: a full day of fasting and prayer that begins with Kol Nidre and ends with Neilah, the closing prayer before the open ark.","In Temple times, only on this day did the high priest enter the Holy of Holies {Leviticus 16:2} to make atonement for the people {Leviticus 16:30}."],
+   texts:"Leviticus 16; 23:23–32; Mishnah Yoma",
+   xn:"Hebrews reads Christ as the high priest who entered the true sanctuary once for all {Hebrews 9:7}.",
+   src:[["My Jewish Learning, “The High Holidays”","https://www.myjewishlearning.com/article/the-high-holidays/"]]},
+  {h:"Sukkot",t:["Five days after Yom Kippur comes Sukkot, the Feast of Tabernacles {Leviticus 23:34}, a week of living and eating in a sukkah, a booth with a roof of branches, remembering God's care for Israel in the desert. Each day the four species are waved together: palm (lulav), myrtle, willow and citron (etrog). An eighth day of holy assembly follows {Leviticus 23:36}."],
+   texts:"Leviticus 23:33–43; Mishnah Sukkah",
+   xn:"Jesus went up to Jerusalem for Sukkot and on its last day cried, “If any man thirst, let him come unto me, and drink” {John 7:37}.",
+   src:[["My Jewish Learning, “Sukkot 101”","https://www.myjewishlearning.com/article/sukkot-101/"]]},
+  {h:"Hanukkah",t:["Hanukkah (“dedication”) begins on 25 Kislev and lasts eight days. It celebrates the Maccabees' victory over the Syrian Greeks, who under Antiochus IV had banned Jewish practice, and their rededication of the Temple in 164 BC. The story is told in 1 and 2 Maccabees, which are not in the Jewish Bible; the Talmud tells of a single jar of pure oil that burned for eight days. Candles are lit each night, adding one more each night, as the school of Hillel taught."],
+   texts:"1 Maccabees 4; 2 Maccabees 10; Talmud, Shabbat 21b",
+   xn:"John records Jesus in the Temple “at the feast of the dedication” {John 10:22}. Catholic and Orthodox Bibles include 1 and 2 Maccabees.",
+   src:[["My Jewish Learning, “The History of Hanukkah”","https://www.myjewishlearning.com/article/hanukkah-history/"],["Britannica, “Hanukkah”","https://www.britannica.com/topic/Hanukkah/Introduction"]]},
+  {h:"Purim",t:["Purim, on 14 Adar (15 in walled cities like Jerusalem), celebrates the rescue of the Jews of Persia from Haman's plot, told in the Book of Esther. It is named for the “lots” (pur) Haman cast {Esther 9:26}. Its four commandments: hear the Megillah (Esther) read, send gifts of food, give to the poor, and hold a festive meal."],
+   texts:"Esther 9:20–32; Talmud, tractate Megillah",
+   src:[["Chabad.org, “What Is Purim?”","https://www.chabad.org/holidays/purim/article_cdo/aid/645309/jewish/What-Is-Purim.htm"]]},
+  {h:"Tisha B'Av",t:["The ninth of Av is a fast day mourning the destruction of both the First and the Second Temples, traditionally on the same date. The prophet Zechariah already mentions “the fast of the fifth month” {Zechariah 8:19}."],
+   texts:"Lamentations (read on the day); Mishnah Ta'anit 4:6",
+   src:[["My Jewish Learning, “Types of Jewish Holidays”","https://www.myjewishlearning.com/article/types-of-jewish-holidays/"]]}
+ ]},
+{id:"temple",n:"Temple and Sacrifice",
+ intro:"Before AD 70, the center of Jewish worship was the Temple in Jerusalem, where priests offered sacrifices. Since then, prayer, study and good deeds have taken their place.",
+ items:[
+  {h:"Tabernacle and Temples",t:["In the desert Israel carried a portable sanctuary, the Tabernacle: “Let them make me a sanctuary; that I may dwell among them” {Exodus 25:8}. Solomon built the First Temple in Jerusalem, completed in 957 BC; the Babylonians destroyed it in 586 BC. Jews returning from exile built the Second Temple, finished in 515 BC {Ezra 6:15}; Herod the Great rebuilt and enlarged it over 46 years. Roman legions destroyed it in AD 70, after a revolt that began in 66. Only part of its retaining wall, the Western Wall, remains."],
+   texts:"Exodus 25–40; 1 Kings 6–8; Ezra 3–6",
+   xn:"The Jews told Jesus, “Forty and six years was this temple in building,” and he spoke of “the temple of his body” (John 2:20–21).",
+   src:[["Britannica, “Temple of Jerusalem” summary","https://www.britannica.com/summary/Temple-of-Jerusalem"],["Jewish Virtual Library, “The Jewish Temple”","https://jewishvirtuallibrary.org/the-jewish-temple-beit-hamikdash"]]},
+  {h:"The offerings",t:["Leviticus describes the main offerings. The olah (burnt offering) was burned entirely on the altar {Leviticus 1:9}. The minchah (grain offering) was flour, often with oil {Leviticus 2:1}. Of the shelamim (peace offering) only the blood and fat went on the altar, and the worshipper ate the meat, often in thanksgiving {Leviticus 3:1}. The chatat (sin offering) atoned for sins {Leviticus 4:3}, and the asham (guilt offering) for certain wrongs such as taking holy things {Leviticus 5:15}. Every day a lamb was offered morning and evening, the tamid {Numbers 28:3}."],
+   texts:"Leviticus 1–7; Numbers 28–29; Mishnah, order Kodashim",
+   xn:"Hebrews reads these offerings as pointing to Christ's single sacrifice (Hebrews 9–10); churches differ on how the Eucharist relates to it (see Hebrews 10:12 on the Verses tab).",
+   src:[["My Jewish Learning, “A Comprehensive Overview of Ancient Jewish Sacrifice”","https://www.myjewishlearning.com/article/a-comprehensive-overview-of-ancient-jewish-sacrifice/"]]},
+  {h:"After the Temple",t:["With the Temple gone, prayer took the place of sacrifice. Hosea had said, “so will we render the calves of our lips” {Hosea 14:2}. The morning and afternoon services correspond to the daily morning and afternoon offerings; tradition also traces the three daily prayers to Abraham, Isaac and Jacob."],
+   texts:"Talmud, Berakhot 26b",
+   src:[["Jewish Virtual Library, “The Daily Services”","https://www.jewishvirtuallibrary.org/jsource/Judaism/services.html"],["My Jewish Learning, “A Comprehensive Overview of Ancient Jewish Sacrifice”","https://www.myjewishlearning.com/article/a-comprehensive-overview-of-ancient-jewish-sacrifice/"]]}
+ ]},
+{id:"prayer",n:"Prayer and Worship",
+ intro:"Jewish worship happens at home and in the synagogue, built around the Shema, the Amidah and the reading of the Torah.",
+ items:[
+  {h:"The Shema",t:["Three passages, {Deuteronomy 6:4-9}, {Deuteronomy 11:13-21} and {Numbers 15:37-41}, recited every morning and evening, a biblical commandment, and again at bedtime. Its first line, “Hear, O Israel,” is the central declaration of Jewish faith."],
+   texts:"Deuteronomy 6:4–9; 11:13–21; Numbers 15:37–41",
+   xn:"Asked for the greatest commandment, Jesus answered with the Shema (Mark 12:29–30).",
+   src:[["Chabad.org, “The Shema”","https://www.chabad.org/library/article_cdo/aid/705353/jewish/The-Shema.htm"]]},
+  {h:"The Amidah",t:["The “standing” prayer, also called Shemoneh Esrei (“eighteen”), is said silently, standing and facing Jerusalem, at every service. It had eighteen blessings; a nineteenth was added later, so the weekday Amidah now has nineteen."],
+   texts:"The Siddur (prayer book)",
+   src:[["Chabad.org, “What Is the Amidah?”","https://www.chabad.org/library/article_cdo/aid/3834226/jewish/What-Is-the-Amidah.htm"]]},
+  {h:"Three daily services",t:["Shacharit (morning), Minchah (afternoon) and Ma'ariv (evening). Daniel prayed three times a day toward Jerusalem {Daniel 6:10}, and the psalmist prays “evening, and morning, and at noon” {Psalms 55:17}. A full public service needs a minyan, a quorum of ten adults."],
+   texts:"Talmud, Berakhot 26b",
+   src:[["Jewish Virtual Library, “The Daily Services”","https://www.jewishvirtuallibrary.org/jsource/Judaism/services.html"]]},
+  {h:"Reading the Torah",t:["The Torah is divided into 54 weekly portions, chanted from a handwritten scroll at the Shabbat morning service, with shorter readings on Mondays, Thursdays and holidays. The cycle covers the whole Torah in a year."],
+   texts:"Talmud, tractate Megillah",
+   xn:"Luke shows Jesus in the synagogue at Nazareth on the Sabbath, standing up “for to read” {Luke 4:16}.",
+   src:[["My Jewish Learning, “What Is the Torah Portion?”","https://www.myjewishlearning.com/article/what-is-the-torah-portion/"],["Jewish Virtual Library, “The Daily Services”","https://www.jewishvirtuallibrary.org/jsource/Judaism/services.html"]]}
+ ]},
+{id:"life",n:"Life Cycle",
+ intro:"Jewish life marks birth, coming of age, marriage and death with rituals rooted in Scripture and the rabbis' teaching.",
+ items:[
+  {h:"Birth",t:["Baby boys are circumcised at the brit milah (“covenant of circumcision”) on the eighth day {Genesis 17:12}, when they are also named. A firstborn son is redeemed from a priest at a pidyon haben, from a month old, for five shekels {Numbers 18:16}. For girls, naming in the synagogue is traditional, and many families now hold a simchat bat (celebration of a daughter)."],
+   texts:"Genesis 17; Numbers 18:15–16; Shulchan Aruch, Yoreh De'ah",
+   xn:"Jesus was circumcised and named on the eighth day, then presented in the Temple {Luke 2:21}.",
+   src:[["My Jewish Learning, “Jewish Newborn Ceremonies 101”","https://www.myjewishlearning.com/article/jewish-newborn-ceremonies-101/"]]},
+  {h:"Bar and bat mitzvah",t:["At 13 a boy, and at 12 a girl, becomes obligated to keep the commandments. The ceremony usually includes reading from the Torah. The bat mitzvah for girls began in the United States with Judith Kaplan in 1922 and is now widely observed, especially in liberal congregations."],
+   texts:"Mishnah, Pirkei Avot 5 (“at thirteen, for the commandments”)",
+   src:[["My Jewish Learning, “Bar and Bat Mitzvah 101”","https://www.myjewishlearning.com/article/bar-and-bat-mitzvah-101/"]]},
+  {h:"Marriage",t:["The wedding takes place under a chuppah (canopy). The groom gives a ring, saying, “Behold, by this ring you are consecrated to me as my wife according to the laws of Moses and Israel.” The ketubah (marriage contract) sets out the husband's obligations to his wife. Seven blessings (sheva berakhot) are sung, and the ceremony ends with breaking a glass in memory of the Temple's destruction."],
+   texts:"Genesis 2:24; Mishnah and Talmud, tractate Kiddushin",
+   src:[["My Jewish Learning, “Jewish Weddings 101”","https://www.myjewishlearning.com/article/jewish-weddings-101/"]]},
+  {h:"Death and mourning",t:["Burial happens as soon as possible, often within a day. Mourners then sit shiva for seven days at home, as Joseph mourned his father seven days {Genesis 50:10}, followed by sheloshim to the thirtieth day. For a parent, the Mourner's Kaddish is said daily for eleven months, and each year the yahrzeit (anniversary) is marked with a candle and Kaddish."],
+   texts:"Talmud, tractate Mo'ed Katan; Shulchan Aruch, Yoreh De'ah",
+   src:[["My Jewish Learning, “Timeline of Jewish Mourning”","https://www.myjewishlearning.com/article/timeline-of-jewish-mourning/"]]}
+ ]},
+{id:"groups",n:"In Jesus' Time",
+ intro:"The Judaism of Jesus' day was varied. The historian Josephus, writing in the first century, describes several schools of thought.",
+ items:[
+  {h:"Pharisees",t:["Josephus says the Pharisees believed souls are immortal and receive “rewards or punishments, according as they have lived virtuously or viciously,” and that fate and human free will work together. Mark describes them “holding the tradition of the elders” {Mark 7:3}."],
+   texts:"Josephus, Antiquities 18.1.3; Jewish War 2.8.14",
+   xn:"Paul called himself “a Pharisee, the son of a Pharisee” (Acts 23:6).",
+   src:[["Josephus, Antiquities of the Jews 18.1 (Whiston translation)","https://lexundria.com/j_aj/18.1-18.25/wst"]]},
+  {h:"Sadducees",t:["Josephus says they taught that “souls die with the bodies” and held only to the written law. The Book of Acts agrees: “the Sadducees say that there is no resurrection, neither angel, nor spirit: but the Pharisees confess both” {Acts 23:8}."],
+   texts:"Josephus, Antiquities 18.1.4",
+   src:[["Josephus, Antiquities of the Jews 18.1 (Whiston translation)","https://lexundria.com/j_aj/18.1-18.25/wst"]]},
+  {h:"Essenes",t:["A strict community that, Josephus says, held all possessions in common, largely “neglect[ed] wedlock,” and lived “in every city.” The most common scholarly view links them to Qumran and the Dead Sea Scrolls, but many scholars dispute it, and some think the scrolls came from several groups."],
+   texts:"Josephus, Jewish War 2.8.2–13; Antiquities 18.1.5",
+   src:[["Josephus on the Essenes (Jewish War 2.8, Whiston translation)","https://virtualqumran.huji.ac.il/moreInfo/Josephus.htm"],["National Geographic, “Who wrote the Dead Sea Scrolls?”","https://www.nationalgeographic.com/history/history-magazine/article/who-wrote-the-dead-sea-scrolls"]]},
+  {h:"The “fourth philosophy” (Zealots)",t:["Josephus describes a fourth group, begun by Judas the Galilean, with “an inviolable attachment to liberty,” accepting God alone as their ruler and resisting Rome. One of the Twelve was “Simon called Zelotes” {Luke 6:15}."],
+   texts:"Josephus, Antiquities 18.1.6",
+   src:[["Josephus, Antiquities of the Jews 18.1 (Whiston translation)","https://lexundria.com/j_aj/18.1-18.25/wst"]]},
+  {h:"The Sanhedrin",t:["The Great Sanhedrin was the supreme court of 71 judges, later seated in the Temple compound; smaller courts of 23 heard capital cases. Its rulings bound the whole nation. It continued in a shrinking role until about the 400s."],
+   texts:"Mishnah Sanhedrin 1:5–6",
+   xn:"Jesus was tried before “the chief priests, and elders, and all the council” (Matthew 26:59).",
+   src:[["Chabad.org, “The Sanhedrin”","https://www.chabad.org/library/article_cdo/aid/4100306/jewish/The-Sanhedrin.htm"]]},
+  {h:"Samaritans",t:["The Samaritans accept only the Five Books of Moses and hold that God chose Mount Gerizim, not Jerusalem, as his dwelling place. Relations with Jews were tense: “the Jews have no dealings with the Samaritans” {John 4:9}. About 800 Samaritans live today on Mount Gerizim and in Holon, near Tel Aviv."],
+   texts:"John 4:19–22",
+   src:[["Britannica, “Samaritan”","https://www.britannica.com/topic/Samaritan"]]}
+ ]},
+{id:"today",n:"Judaism Today",
+ intro:"About 15.8 million Jews live in the world today: about 7.3 million in Israel and 6.3 million in the United States (Jewish Agency for Israel, 2024).",
+ items:[
+  {h:"The movements",t:["Orthodox Judaism holds to a traditional understanding of Jewish law as interpreted by rabbinic authorities; it includes Modern Orthodox, Haredi (“ultra-Orthodox”, the most stringent) and Hasidic Jews, from an 18th-century revival stressing joyful, ecstatic prayer. Conservative Judaism sees Jewish law as binding, though observance varies. Reform Judaism puts the ethical tradition first and leaves ritual to personal choice. Reconstructionist Judaism sees Judaism as “the evolving civilization of the Jewish people.”","In the United States, 37% of Jewish adults identify as Reform, 17% Conservative, 9% Orthodox and 4% other branches, while 32% name no denomination (Pew Research Center, 2020)."],
+   texts:"",
+   src:[["My Jewish Learning, “The Jewish Denominations”","https://www.myjewishlearning.com/article/the-jewish-denominations/"],["Pew Research Center, “Jewish Americans in 2020: Jewish identity and belief”","https://www.pewresearch.org/religion/2021/05/11/jewish-identity-and-belief/"]]},
+  {h:"World Jewish population",t:["The Jewish Agency's 2024 figures, from the demographer Sergio DellaPergola of the Hebrew University, count 15.8 million Jews worldwide, with 8.5 million outside Israel."],
+   texts:"",
+   src:[["Jewish News, “World's Jewish population now almost 16 million, says Jewish Agency” (2024)","https://www.jewishnews.co.uk/worlds-jewish-population-now-almost-16-million-says-jewish-agency/"]]}
+ ]},
+{id:"four-cups",n:"The Four Cups",study:"four-cups"}
+];
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -1707,7 +1900,8 @@ T.forEach((t,i)=>{const r=el("div",{class:"ribbon",style:`--c:${t.c};height:${58
 // Tabs
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===b));
-  ["compare","churches","passages","find","lineage","angels","saints","books","notes"].forEach(id=>document.getElementById(id).hidden=id!==b.dataset.tab);
+  document.querySelectorAll(".tab").forEach(t=>{const sec=document.getElementById(t.dataset.tab);if(sec)sec.hidden=t.dataset.tab!==b.dataset.tab});
+  {const bar=b.parentElement;if(bar&&bar.scrollWidth>bar.clientWidth){const r=b.getBoundingClientRect(),br=bar.getBoundingClientRect();if(r.left<br.left||r.right>br.right)bar.scrollLeft+=r.left-br.left-(br.width-r.width)/2}}
   window.scrollTo({top:document.querySelector("nav").offsetTop,behavior:"instant"});
 }));
 
@@ -2181,7 +2375,7 @@ function passageCard(p,generated){
     d.appendChild(rd);
   });
   if(!generated)STUDIES.filter(st=>st.passages.includes(p.ref)).forEach(st=>{
-    const sp=el("p",{class:"stlink"});const a=el("a",{href:"#study/"+st.id});a.textContent="Bible study: "+st.title;sp.append(a);d.appendChild(sp)});
+    const sp=el("p",{class:"stlink"});const a=el("a",{href:"#jewish/"+jewishSubForStudy(st.id)});a.textContent="Bible study: "+st.title;sp.append(a);d.appendChild(sp)});
   const fa=FATHERS[p.ref];
   if(fa&&!generated){
     const box=el("div",{class:"fathers"});const h=el("p",{class:"srch"});h.textContent="Early Christian writers";box.appendChild(h);
@@ -4261,29 +4455,47 @@ function studyText(text){
   });
   frag.append(text.slice(last));return frag;
 }
-function renderStudies(){
-  const box=document.getElementById("studies");if(!box||!STUDIES.length)return;
-  box.textContent="";
-  const h=el("h2");h.textContent="Bible studies";box.appendChild(h);
-  STUDIES.forEach(st=>{
-    const d=el("details",{class:"study",id:"study-"+st.id});
-    const sm=el("summary");sm.textContent=st.title;d.appendChild(sm);
-    const intro=el("p",{class:"stintro"});intro.textContent=st.intro;d.appendChild(intro);
-    st.sections.forEach(sec=>{const hh=el("h3");hh.textContent=sec.h;d.appendChild(hh);sec.p.forEach(t=>{const p=el("p");p.appendChild(studyText(t));d.appendChild(p)})});
-    const src=el("div",{class:"srcdocs"});const sh=el("p",{class:"srch"});sh.textContent="Sources";src.appendChild(sh);const ul=el("ul");
-    st.sources.forEach(([t,u])=>{const li=el("li");const a=el("a",{href:u,target:"_blank",rel:"noopener noreferrer"});a.textContent=t;li.appendChild(a);ul.appendChild(li)});
-    src.appendChild(ul);d.appendChild(src);
-    const lb=el("button",{class:"notebtn"});lb.textContent="Link";lb.onclick=e=>{e.preventDefault();shareLink("#study/"+st.id,lb)};sm.appendChild(lb);
-    d.addEventListener("toggle",()=>syncHash());
-    box.appendChild(d);
+function srcList(list,label){
+  const src=el("div",{class:"srcdocs"});const sh=el("p",{class:"srch"});sh.textContent=label||"Sources";src.appendChild(sh);const ul=el("ul");
+  list.forEach(([t,u])=>{const li=el("li");const a=el("a",{href:u,target:"_blank",rel:"noopener noreferrer"});a.textContent=t;li.appendChild(a);ul.appendChild(li)});
+  src.appendChild(ul);return src;
+}
+function studyNode(st){
+  const d=el("div",{class:"study",id:"study-"+st.id});
+  const h=el("h3",{class:"sttitle"});h.textContent=st.title;
+  const lb=el("button",{class:"notebtn"});lb.textContent="Link";lb.onclick=()=>shareLink("#jewish/"+jewishSubForStudy(st.id),lb);h.appendChild(lb);d.appendChild(h);
+  const intro=el("p",{class:"stintro"});intro.textContent=st.intro;d.appendChild(intro);
+  st.sections.forEach(sec=>{const hh=el("h4");hh.textContent=sec.h;d.appendChild(hh);sec.p.forEach(t=>{const p=el("p");p.appendChild(studyText(t));d.appendChild(p)})});
+  d.appendChild(srcList(st.sources));
+  return d;
+}
+function jewishSubForStudy(id){const j=JEWISH.find(x=>x.study===id);return j?j.id:JEWISH[0].id}
+function openStudy(id){document.querySelector('.tab[data-tab="jewish"]').click();showJewish(jewishSubForStudy(id));return true}
+
+// ---------- Jewish Tradition tab ----------
+let jewCur=JEWISH[0].id;
+function showJewish(id){
+  const sec=JEWISH.find(x=>x.id===id)||JEWISH[0];jewCur=sec.id;
+  document.querySelectorAll("#jewTabs .chip").forEach(c=>c.setAttribute("aria-selected",c.dataset.sub===sec.id?"true":"false"));
+  const body=document.getElementById("jewBody");body.textContent="";
+  if(sec.study){const st=STUDIES.find(x=>x.id===sec.study);if(st)body.appendChild(studyNode(st));syncHash();return}
+  const intro=el("p",{class:"hint"});intro.textContent=sec.intro;body.appendChild(intro);
+  sec.items.forEach(it=>{
+    const art=el("article",{class:"jitem"});
+    const h=el("h3");h.textContent=it.h;art.appendChild(h);
+    it.t.forEach(t=>{const p=el("p");p.appendChild(studyText(t));art.appendChild(p)});
+    if(it.texts){const p=el("p",{class:"jtexts"});const b=el("span",{class:"srclab"});b.textContent="Jewish texts: ";p.append(b,it.texts);art.appendChild(p)}
+    if(it.xn){const p=el("p",{class:"jxn"});const b=el("span",{class:"srclab"});b.textContent="For Christians: ";p.append(b,studyText(it.xn));art.appendChild(p)}
+    art.appendChild(srcList(it.src));
+    body.appendChild(art);
   });
+  syncHash();
 }
-function openStudy(id){
-  const d=document.getElementById("study-"+id);if(!d)return false;
-  document.querySelector('.tab[data-tab="passages"]').click();d.open=true;
-  setTimeout(()=>d.scrollIntoView({block:"start"}),0);return true;
-}
-renderStudies();
+(function(){
+  const bar=document.getElementById("jewTabs");
+  JEWISH.forEach(sec=>{const b=el("button",{class:"chip",role:"tab","data-sub":sec.id,"aria-selected":"false"});b.textContent=sec.n;b.onclick=()=>showJewish(sec.id);bar.appendChild(b)});
+  showJewish(jewCur);
+})();
 
 // ---------- Today's Mass readings ----------
 let todayOffset=0;
@@ -4311,11 +4523,11 @@ renderToday();
 // Addresses look like #John-3-16, #1-Corinthians-13, #saints/francis, #compare/salvation, #lineage/peter, #find/Melchizedek.
 var LINKS_READY=false, APPLYING_HASH=false;
 const PUBLIC_URL="https://epitome88.github.io/same-book-many-readings/";
-const TAB_IDS=["compare","churches","passages","find","lineage","angels","saints","books","notes"];
+const TAB_IDS=["compare","churches","passages","find","lineage","angels","saints","books","jewish","notes"];
 function verseHash(book,ch,v){return "#"+book.replace(/ /g,"-")+(ch?"-"+ch:"")+(ch&&v?"-"+v:"")}
 function currentHash(){
   const tab=(document.querySelector('.tab[aria-selected="true"]')||{dataset:{}}).dataset.tab||"compare";
-  if(tab==="passages"){const o=document.querySelector("#studies details.study[open]");if(o)return "#study/"+o.id.slice(6)}
+  if(tab==="jewish")return "#jewish/"+jewCur;
   if(tab==="passages"&&fBook.value){const ch=parseInt(fCh.value)||0;return verseHash(fBook.value,ch,ch?parseInt(fVs.value)||0:0)}
   if(tab==="saints"&&sCur)return "#saints/"+sCur.id;
   if(tab==="compare")return "#compare/"+topic;
@@ -4343,11 +4555,12 @@ function applyHash(){
       else if(a==="compare"&&b){const i=TOPICS.findIndex(t=>t.id===b);if(i>=0)topicChips.querySelectorAll(".chip")[i].click()}
       else if(a==="lineage"&&b){const c=[...document.querySelectorAll("#lineage .chip[data-ap]")].find(c=>c.dataset.ap===b);if(c)c.click()}
       else if(a==="find"&&b){q2.value=b.slice(0,200);runFind()}
+      else if(a==="jewish"&&b){showJewish(b)}
     }else{
       const m=h.match(/^(.+?)-(\d+)(?:-(\d+))?$/)||[null,h];
       const want=m[1].replace(/-/g," ").toLowerCase();
       const book=[...fBook.options].map(o=>o.value).find(v=>v&&v.toLowerCase()===want);
-      if(book){document.querySelectorAll("#studies details.study[open]").forEach(d=>{d.open=false});openVerse(book,m[2]||"",m[2]&&m[3]?m[3]:"")}
+      if(book){openVerse(book,m[2]||"",m[2]&&m[3]?m[3]:"")}
     }
   }catch(e){}
   finally{APPLYING_HASH=false}

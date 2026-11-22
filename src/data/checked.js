@@ -5,5 +5,6 @@
 const CHECKED={
   compare:"2026-11-21",
   churches:"2026-11-21",
-  saints:"2026-11-21"
+  saints:"2026-11-21",
+  jewish:"2026-11-21"
 };

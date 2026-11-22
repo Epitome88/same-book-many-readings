@@ -32,6 +32,7 @@
     <button class="tab" role="tab" aria-selected="false" data-tab="angels">Angels</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="saints">Saints</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="books">Other Books</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="jewish">Jewish Tradition</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="notes">Notes</button>
   </div>
 </nav>
@@ -60,7 +61,6 @@
 
   <section id="passages" hidden>
     <div id="today" class="today" aria-live="polite"></div>
-    <div id="studies"></div>
     <h2>Find a verse</h2>
     <p class="hint">Pick a book to see the verses churches read differently, or enter a chapter and verse to look up any verse in the Bible.</p>
     <label class="fl verrow">Bible<select class="verSel" aria-label="Bible version"></select></label>
@@ -240,6 +240,12 @@
       <p><b>Latter-day Saints</b> use the KJV without the Apocrypha. Their scripture says of the Apocrypha, “There are many things contained therein that are true,” along with additions by men, and that reading it is helpful but not needed (Doctrine and Covenants 91). <b>Jehovah's Witnesses</b> use the 66 books.</p>
       <p class="tiny">Dates are scholarly estimates and many are debated. Reading links go to public-domain texts at eBible.org and the Internet Archive, which open in a new tab; a few older archive scans are large files. Translations from 1913 and earlier use older English.</p>
     </div>
+  </section>
+
+  <section id="jewish" hidden>
+    <h2>Jewish Tradition</h2>
+    <div class="chiprow lsub" id="jewTabs" role="tablist" aria-label="Choose a part of Jewish tradition"></div>
+    <div id="jewBody"></div>
   </section>
 
   <section id="notes" hidden>
