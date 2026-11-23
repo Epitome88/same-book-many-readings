@@ -8,6 +8,7 @@
 //@include data/fathers.js
 //@include data/studies.js
 //@include data/jewish.js
+//@include data/life.js
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -489,27 +490,30 @@ function parableCard(p){
   const told=el("p",{class:"told"});
   told.textContent=books.length>1?`Told in ${books.slice(0,-1).join(", ")} and ${books.at(-1)}`:p.r.length>1?`In ${books[0]}, in ${p.r.length} parts`:`Found only in ${books[0]}`;
   d.appendChild(told);
-  p.r.forEach(ref=>{
-    const {book,ch,v1,v2}=parseRange(ref);
-    const det=el("details",{class:"acct"});
-    const sm=el("summary");sm.innerHTML=`${esc(ref.replace("-","\u2013"))} <span>Read</span>`;
-    det.appendChild(sm);
-    det.addEventListener("toggle",()=>{
-      sm.querySelector("span").textContent=det.open?"Hide":"Read";
-      if(!det.open||det.dataset.done)return;det.dataset.done=1;
-      const body=el("div",{class:"acctbody"});
-      let html="";for(let v=v1;v<=v2;v++){const t=getVerse(book,ch,v);if(t)html+=`<sup>${v}</sup>${esc(t)} `}
-      const dn=drNumber(book,ch,v1,v2);if(dn)html+=`<br><small class="drnum">${esc(dn)}</small>`;
-      body.innerHTML=html;
-      const cmp=el("button",{class:"mini link"});cmp.textContent=`Compare churches on ${book} ${ch}:${v1}`;
-      cmp.onclick=()=>openVerse(book,ch,v1);
-      body.appendChild(el("br"));body.appendChild(cmp);
-      det.appendChild(body);
-    });
-    d.appendChild(det);
-  });
+  p.r.forEach(ref=>d.appendChild(acctDetails(ref)));
   return d;
 }
+// A Bible passage that opens to show its text in place.
+function acctDetails(ref,label){
+  const {book,ch,v1,v2}=parseRange(ref);
+  const det=el("details",{class:"acct"});
+  const sm=el("summary");sm.innerHTML=`${esc(ref.replace("-","\u2013"))} <span>Read</span>`;
+  det.appendChild(sm);
+  det.addEventListener("toggle",()=>{
+    sm.querySelector("span").textContent=det.open?"Hide":"Read";
+    if(!det.open||det.dataset.done)return;det.dataset.done=1;
+    const body=el("div",{class:"acctbody"});
+    let html="";for(let v=v1;v<=v2;v++){const t=getVerse(book,ch,v);if(t)html+=`<sup>${v}</sup>${esc(t)} `}
+    const dn=drNumber(book,ch,v1,v2);if(dn)html+=`<br><small class="drnum">${esc(dn)}</small>`;
+    body.innerHTML=html;
+    const cmp=el("button",{class:"mini link"});cmp.textContent=(label||"Compare churches on")+` ${book} ${ch}:${v1}`;
+    cmp.onclick=()=>openVerse(book,ch,v1);
+    body.appendChild(el("br"));body.appendChild(cmp);
+    det.appendChild(body);
+  });
+  return det;
+}
+
 
 let fState={terms:[],hits:[],book:null,shown:40,re:null,capSet:null,total:0};
 const out2=document.getElementById("findOut"), q2=document.getElementById("q2");
@@ -1477,6 +1481,49 @@ function showJewish(id){
   showJewish(jewCur);
 })();
 
+// ---------- Life of Christ tab ----------
+function lifeEvent(ev){
+  const li=el("li",{class:"lcev",id:"life-"+ev.id});
+  li.appendChild(el("span",{class:"lcdot","aria-hidden":"true"}));
+  const card=el("div",{class:"lccard"});
+  const h=el("h4");h.textContent=ev.h;card.appendChild(h);
+  const d=el("p",{class:"lcd"});d.textContent=ev.d;card.appendChild(d);
+  if(ev.feast){const f=el("p",{class:"lcfeast"});const b=el("span",{class:"srclab"});b.textContent="Remembered: ";f.append(b,ev.feast);card.appendChild(f)}
+  ev.refs.forEach(r=>card.appendChild(acctDetails(r,"Open in Verses:")));
+  if(ev.link){const p=el("p",{class:"lclink"});const a=el("a",{href:ev.link[1]});a.textContent=ev.link[0];p.appendChild(a);card.appendChild(p)}
+  li.appendChild(card);return li;
+}
+function lifeGo(id,flash){
+  const box=document.getElementById("lifeLine");
+  const t=document.getElementById("life-"+id)||document.getElementById("lifeph-"+id);if(!box||!t)return false;
+  const left=t.getBoundingClientRect().left-box.getBoundingClientRect().left+box.scrollLeft;
+  box.scrollTo({left:Math.max(0,left-4),behavior:flash?"auto":"smooth"});
+  if(flash&&t.classList.contains("lcev")){t.classList.add("flash");setTimeout(()=>t.classList.remove("flash"),2200)}
+  return true;
+}
+(function(){
+  const sec=document.getElementById("life");if(!sec)return;
+  document.getElementById("lifeIntro").textContent=LIFE.intro;
+  const chips=document.getElementById("lifePhases"),track=el("div",{class:"lctrack"});
+  let n=0;
+  LIFE.phases.forEach(ph=>{
+    const g=el("section",{class:"lcphase",id:"lifeph-"+ph.id,style:`--pc:${ph.c}`,"aria-labelledby":"lifeh-"+ph.id});
+    const hd=el("div",{class:"lcphead"});const h=el("h3",{id:"lifeh-"+ph.id});h.textContent=ph.n;const w=el("p");w.textContent=ph.when;hd.append(h,w);g.appendChild(hd);
+    const ol=el("ol",{class:"lcevents"});ph.events.forEach(ev=>{ol.appendChild(lifeEvent(ev));n++});g.appendChild(ol);
+    track.appendChild(g);
+    const c=el("button",{class:"chip",style:`--k:${ph.c}`});c.textContent=ph.n;c.onclick=()=>lifeGo(ph.id);chips.appendChild(c);
+  });
+  const box=document.getElementById("lifeLine");box.appendChild(track);
+  document.getElementById("lifeCount").textContent=`${n} events · scroll sideways along the line`;
+  const step=dir=>box.scrollBy({left:dir*Math.max(240,box.clientWidth*0.8),behavior:"smooth"});
+  document.getElementById("lifePrev").onclick=()=>step(-1);
+  document.getElementById("lifeNext").onclick=()=>step(1);
+  const ab=document.getElementById("lifeAbout");
+  const ah=el("h3");ah.textContent="About the dates and order";ab.appendChild(ah);
+  LIFE.about.forEach(t=>{const p=el("p");p.appendChild(studyText(t));ab.appendChild(p)});
+  ab.appendChild(srcList(LIFE.src));
+})();
+
 // ---------- Today's Mass readings ----------
 let todayOffset=0;
 function renderToday(){
@@ -1503,7 +1550,7 @@ renderToday();
 // Addresses look like #John-3-16, #1-Corinthians-13, #saints/francis, #compare/salvation, #lineage/peter, #find/Melchizedek.
 var LINKS_READY=false, APPLYING_HASH=false;
 const PUBLIC_URL="https://epitome88.github.io/same-book-many-readings/";
-const TAB_IDS=["compare","churches","passages","find","lineage","angels","saints","books","jewish","notes"];
+const TAB_IDS=["compare","churches","passages","find","lineage","life","angels","saints","books","jewish","notes"];
 function verseHash(book,ch,v){return "#"+book.replace(/ /g,"-")+(ch?"-"+ch:"")+(ch&&v?"-"+v:"")}
 function currentHash(){
   const tab=(document.querySelector('.tab[aria-selected="true"]')||{dataset:{}}).dataset.tab||"compare";
@@ -1536,6 +1583,7 @@ function applyHash(){
       else if(a==="lineage"&&b){const c=[...document.querySelectorAll("#lineage .chip[data-ap]")].find(c=>c.dataset.ap===b);if(c)c.click()}
       else if(a==="find"&&b){q2.value=b.slice(0,200);runFind()}
       else if(a==="jewish"&&b){showJewish(b)}
+      else if(a==="life"&&b){requestAnimationFrame(()=>lifeGo(b,true))}
     }else{
       const m=h.match(/^(.+?)-(\d+)(?:-(\d+))?$/)||[null,h];
       const want=m[1].replace(/-/g," ").toLowerCase();

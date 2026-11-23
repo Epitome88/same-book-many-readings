@@ -470,3 +470,35 @@ a.notebtn{text-decoration:none;display:inline-block}
 .jtexts,.jxn{font-family:var(--sans);font-size:.85rem;margin:6px 0}
 .jxn{border-left:3px solid var(--line);padding-left:10px}
 .stlink{font-family:var(--sans);font-size:.85rem;margin:8px 0 0}
+
+/* Life of Christ timeline */
+.lcnav{display:flex;align-items:center;gap:6px;margin:4px 0 8px}
+.lccount{flex:1;margin:0;font-family:var(--sans);font-size:.8rem;color:var(--muted)}
+.lcscroll{--lcg:16px;margin:0 -16px;padding-left:var(--lcg)!important;padding-right:var(--lcg)!important;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-left:calc(var(--lcg) - 2px);-webkit-overflow-scrolling:touch;padding:2px 0 16px;overscroll-behavior-x:contain}
+.lctrack{display:flex;align-items:flex-start;width:max-content}
+.lcphase{--pl:var(--pc)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lcphase{--pl:color-mix(in srgb,var(--pc) 62%,#fff)}}
+:root[data-theme="dark"] .lcphase{--pl:color-mix(in srgb,var(--pc) 62%,#fff)}
+.lcphead{position:sticky;left:0;display:inline-block;padding:0 14px 8px 4px;max-width:80vw;border-left:4px solid var(--pl)}
+.lcphead h3{font-family:var(--serif);font-size:1.08rem;margin:0 0 0 6px;line-height:1.2}
+.lcphead p{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:2px 0 0 6px}
+.lcevents{list-style:none;margin:0;padding:0;display:flex;align-items:flex-start;position:relative}
+.lcevents::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;background:var(--pl)}
+.lcev{position:relative;flex:none;width:min(240px,76vw);padding:28px 6px 0;scroll-snap-align:start;box-sizing:border-box}
+.lcdot{position:absolute;top:2px;left:18px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:4px solid var(--pl);box-sizing:border-box}
+.lcev::after{content:"";position:absolute;top:20px;left:25px;width:4px;height:8px;background:var(--pl)}
+.lccard{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--pl);border-radius:4px;padding:10px 12px 4px}
+.lccard h4{font-family:var(--serif);font-size:1.03rem;margin:0 0 4px;line-height:1.25}
+.lcd{font-size:.9rem;line-height:1.4;margin:0 0 8px}
+.lcfeast{font-family:var(--sans);font-size:.76rem;color:var(--muted);line-height:1.35;margin:0 0 6px}
+.lccard details.acct summary{font-size:.86rem;padding:8px 0}
+.lccard .acctbody{font-size:.93rem;line-height:1.5}
+.lclink{font-family:var(--sans);font-size:.82rem;margin:4px 0 10px}
+.lcev.flash .lccard{box-shadow:0 0 0 3px #2A7AB8}
+.lcabout{margin-top:22px}
+.lcabout h3{font-family:var(--serif);font-size:1.1rem;margin:0 0 6px}
+.lcfeast .srclab{font-weight:600}
+@media (min-width:800px){.lcscroll{--lcg:calc(50vw - 364px);margin:0 calc(364px - 50vw)}}
+body{overflow-x:clip}
+.lcarrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0 0 3px}
+.lcarrow:hover{border-color:var(--ink)}

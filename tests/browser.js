@@ -3,7 +3,7 @@
 // Set CHROME_PATH to use a particular Chromium; otherwise Playwright's own browser is used.
 const {chromium,devices}=require('playwright');const fs=require('fs'),os=require('os'),path=require('path');
 const BASE=process.argv[2]||'http://localhost:8765/';
-const TABS=["compare","churches","passages","find","lineage","angels","saints","books","jewish","notes"];
+const TABS=["compare","churches","passages","find","lineage","life","angels","saints","books","jewish","notes"];
 let failures=0;
 const ok=(cond,msg)=>{console.log((cond?'  ok   ':'  FAIL ')+msg);if(!cond)failures++};
 async function ctx(b,opts={}){
@@ -45,11 +45,24 @@ console.log('Verse comparisons');
   ok(await p.evaluate(()=>!!document.querySelector('#passageList a[href="#jewish/four-cups"]')),'Matthew 26:26 links to the Four Cups study');
   ok(!errs.length,'no errors'+(errs.length?': '+errs.join('; '):''));await c.close();}
 
+console.log('Life of Christ');
+{const c=await ctx(b);const p=await c.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
+  await p.goto(BASE+'#life');await p.waitForTimeout(900);
+  const n=await p.evaluate(()=>({ev:document.querySelectorAll('#lifeLine .lcev').length,want:LIFE.phases.reduce((n,p)=>n+p.events.length,0),ph:document.querySelectorAll('#lifeLine .lcphase').length,wph:LIFE.phases.length}));
+  ok(n.ev===n.want&&n.ev>50&&n.ph===n.wph,`${n.ev} events in ${n.ph} parts on the timeline`);
+  await p.click('#life-annunciation summary');await p.waitForTimeout(300);
+  ok(/Gabriel/.test(await p.textContent('#life-annunciation .acctbody')),'a passage under an event opens with its text');
+  const x0=await p.evaluate(()=>document.getElementById('lifeLine').scrollLeft);
+  await p.click('#lifePhases .chip:last-child');await p.waitForTimeout(900);
+  ok(await p.evaluate(()=>document.getElementById('lifeLine').scrollLeft)>x0+1000,'a part button scrolls the timeline to it');
+  ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'the page itself does not scroll sideways');
+  ok(!errs.length,'no errors'+(errs.length?': '+errs.join('; '):''));await c.close();}
+
 console.log('Links to a view');
 {const c=await ctx(b);
   for(const [h,check] of [['#John-3-16',"fBook.value==='John'&&fCh.value==='3'&&fVs.value==='16'"],['#1-Corinthians-13-8',"fBook.value==='1 Corinthians'"],
       ['#saints/francis',"sCur&&sCur.id==='francis'"],['#compare/salvation',"topic==='salvation'"],['#lineage/peter',"document.querySelector('#lineage .chip[aria-selected=true]').dataset.ap==='peter'"],
-      ['#find/Melchizedek',"q2.value==='Melchizedek'"],['#notes',"!document.getElementById('notes').hidden"],['#study/four-cups',"!document.getElementById('jewish').hidden&&!!document.getElementById('study-four-cups')"],['#jewish/feasts',"jewCur==='feasts'&&!document.getElementById('jewish').hidden&&document.getElementById('passages').hidden&&document.querySelectorAll('#jewBody .jitem').length>5"],['#jewish/four-cups',"document.getElementById('study-four-cups').querySelectorAll('a.vref').length>=10"]]){
+      ['#find/Melchizedek',"q2.value==='Melchizedek'"],['#notes',"!document.getElementById('notes').hidden"],['#life/supper',"!document.getElementById('life').hidden&&(()=>{const b=document.getElementById('lifeLine'),e=document.getElementById('life-supper');const d=e.getBoundingClientRect().left-b.getBoundingClientRect().left;return d>-5&&d<b.clientWidth/2})()"],['#study/four-cups',"!document.getElementById('jewish').hidden&&!!document.getElementById('study-four-cups')"],['#jewish/feasts',"jewCur==='feasts'&&!document.getElementById('jewish').hidden&&document.getElementById('passages').hidden&&document.querySelectorAll('#jewBody .jitem').length>5"],['#jewish/four-cups',"document.getElementById('study-four-cups').querySelectorAll('a.vref').length>=10"]]){
     const p=await c.newPage();await p.goto(BASE+h);await p.waitForTimeout(700);
     ok(await p.evaluate(check),`${h} opens the right view`);await p.close();
   }

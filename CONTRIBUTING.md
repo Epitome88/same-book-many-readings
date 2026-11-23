@@ -34,6 +34,7 @@ Every claim about what a church teaches, and every date, canonization or Bible r
 | `src/data/church-tree.js` | The family tree of churches |
 | `src/data/checked.js` | When each tab was last checked against its sources. Update a date only after re-verifying that tab |
 | `src/data/jewish.js` | The Jewish Tradition tab: beliefs, texts, law, feasts, Temple, prayer, life cycle, groups in Jesus' time, Judaism today. Describe Judaism in its own terms, from Jewish sources first |
+| `src/data/life.js` | The Life of Christ timeline: events in harmony order, each with every Gospel passage that tells it (one chapter per reference). Keep dates approximate and say so; give feast days only from a church's own calendar. |
 | `src/data/studies.js` | Bible studies on one theme (like the four cups of the Passover), shown as sub-tabs. Write `{Luke 22:20}` in the text to link a verse |
 | `src/data/fathers.js` | Early Christian writers on the debated passages, quoted word for word from public-domain translations |
 | `data/*.gz` | The Bible texts (built by the scripts in `tools/`; please don't edit by hand) |
