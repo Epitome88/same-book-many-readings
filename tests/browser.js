@@ -56,6 +56,17 @@ console.log('Life of Christ');
   await p.click('#lifePhases .chip:last-child');await p.waitForTimeout(900);
   ok(await p.evaluate(()=>document.getElementById('lifeLine').scrollLeft)>x0+1000,'a part button scrolls the timeline to it');
   ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'the page itself does not scroll sideways');
+  // the map follows the timeline, the slider, and Play
+  ok(await p.evaluate(()=>document.querySelectorAll('#lmSvg .lmlake').length>=2&&!!document.querySelector('#lmSvg .lmriver')),'the map draws the Sea of Galilee, the Dead Sea and the Jordan');
+  await p.evaluate(()=>lifeGo('transfiguration',true));await p.waitForTimeout(1200);
+  ok(await p.evaluate(()=>LMAP.steps[LMAP.cur].ev.id==='transfiguration'&&/Transfiguration/.test(document.getElementById('lmNow').textContent)),'scrolling the timeline moves the map to that event');
+  await p.evaluate(()=>{const r=document.getElementById('lmTime');r.value=LMAP.steps.findIndex(s=>s.ev.id==='bartimaeus');r.dispatchEvent(new Event('input'))});await p.waitForTimeout(1600);
+  ok(await p.evaluate(()=>/Jericho/.test(document.getElementById('lmNow').textContent)),'the time slider moves the marker to Jericho for Bartimaeus');
+  ok(await p.evaluate(()=>{const b=document.getElementById('lifeLine'),e=document.getElementById('life-bartimaeus');const d=e.getBoundingClientRect().left-b.getBoundingClientRect().left;return d>-5&&d<b.clientWidth/2}),'the slider scrolls the timeline to the same event');
+  const legs=await p.evaluate(()=>[...document.querySelectorAll('#lmSvg .lmseg')].filter(e=>e.style.display!=='none').length);
+  ok(legs>10,`${legs} legs of the route are drawn so far`);
+  const c0=await p.evaluate(()=>LMAP.cur);await p.click('#lmPlay');await p.waitForTimeout(3000);await p.click('#lmPlay');
+  ok(await p.evaluate(()=>LMAP.cur)>c0,'Play moves forward through time');
   ok(!errs.length,'no errors'+(errs.length?': '+errs.join('; '):''));await c.close();}
 
 console.log('Links to a view');

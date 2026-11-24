@@ -518,6 +518,33 @@ a.notebtn{text-decoration:none;display:inline-block}
 body{overflow-x:clip}
 .lcarrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0 0 3px}
 .lcarrow:hover{border-color:var(--ink)}
+
+/* Life of Christ map */
+.lmap{--lmc:#8A6D1F;margin:8px 0 16px;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.lmnow{margin:0;padding:10px 12px 8px;font-family:var(--sans);font-size:.9rem;line-height:1.35;min-height:2.7em}
+.lmnow b{font-family:var(--serif);font-size:1.03rem}
+.lmtr{color:var(--muted);font-size:.8rem}
+.lmframe{position:relative;height:clamp(260px,50vh,470px);background:#BFD7E8}
+#lmSvg{width:100%;height:100%;display:block}
+.lmland{fill:#EFE7D6}.lmsea{fill:#BFD7E8}.lmlake{fill:#8DBBDA}
+.lmriver{fill:none;stroke:#3F7FB5;stroke-width:1.7px;vector-effect:non-scaling-stroke}
+.lmreg text{font-family:var(--sans);font-size:calc(11px * var(--u,1));letter-spacing:.2em;fill:#6E6250;text-anchor:middle;font-weight:600}
+.lmreg text.lmwater{fill:#2F5F86;letter-spacing:.02em;font-style:italic;font-weight:400}
+.lmseg{fill:none;stroke-width:3.4px;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.lmseg.old{stroke-width:1.8px;stroke-opacity:.45}
+.lmpl circle{fill:#fff;stroke:#4A4134;stroke-width:1.3px;vector-effect:non-scaling-stroke}
+.lmpl.seen circle{fill:#4A4134}
+.lmpl text{display:none;font-family:var(--sans);font-size:calc(11.5px * var(--u,1));fill:#2E2820;paint-order:stroke;stroke:#EFE7D6;stroke-width:calc(3px * var(--u,1));stroke-linejoin:round}
+.lmpl.show text{display:inline}.lmpl.cur text{font-weight:700;font-size:calc(13px * var(--u,1))}
+.lmdot{fill:var(--lmc);stroke:#fff;stroke-width:2.2px;vector-effect:non-scaling-stroke}
+.lmhalo{fill:var(--lmc);opacity:.3;transform-box:fill-box;transform-origin:center;animation:lmpulse 1.8s ease-out infinite}
+@keyframes lmpulse{from{transform:scale(.5);opacity:.5}to{transform:scale(1.5);opacity:0}}
+@media (prefers-reduced-motion:reduce){.lmhalo{animation:none}}
+.lmzoom{position:absolute;right:8px;top:8px;font-family:var(--sans);font-size:.78rem;padding:7px 11px;border-radius:999px;border:1px solid #CFC6B3;background:#FFFDF8;color:#2E2820;cursor:pointer}
+.lmcredit{position:absolute;left:6px;bottom:4px;font-family:var(--sans);font-size:.62rem;color:#3A3A3A;background:rgba(255,255,255,.75);padding:1px 5px;border-radius:3px}
+.lmctl{display:flex;align-items:center;gap:12px;padding:10px 12px 4px}
+.lmctl input[type=range]{flex:1;min-width:0;accent-color:var(--lmc);height:28px}
+.lmwhen{margin:0;padding:2px 12px 10px;font-family:var(--sans);font-size:.78rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -752,7 +779,7 @@ body{overflow-x:clip}
     </div>
   </section>
 
-  <section id="life" hidden><h2>Life of Christ</h2><p class="hint" id="lifeIntro"></p><div class="chiprow" id="lifePhases" aria-label="Jump to a part of his life"></div><div class="lcnav"><p class="lccount" id="lifeCount"></p><button class="lcarrow" id="lifePrev" aria-label="Earlier events">‹</button><button class="lcarrow" id="lifeNext" aria-label="Later events">›</button></div><div class="lcscroll" id="lifeLine" tabindex="0" role="region" aria-label="Timeline of the life of Christ. Scroll sideways."></div><div class="lcabout" id="lifeAbout"></div></section>
+  <section id="life" hidden><h2>Life of Christ</h2><p class="hint" id="lifeIntro"></p><div class="lmap" id="lifeMap"><p class="lmnow" id="lmNow" aria-live="polite"></p><div class="lmframe"><svg id="lmSvg" role="img" aria-label="Map of the Holy Land" preserveAspectRatio="xMidYMid slice"></svg><button class="lmzoom" id="lmZoom" aria-pressed="false">Whole land</button><span class="lmcredit">Map: OpenStreetMap contributors, OpenBible.info</span></div><div class="lmctl"><button class="lcarrow" id="lmPlay" aria-label="Play the journey">▶</button><input type="range" id="lmTime" min="0" max="1" value="0" aria-label="Move through his life"></div><p class="lmwhen" id="lmWhen"></p></div><div class="chiprow" id="lifePhases" aria-label="Jump to a part of his life"></div><div class="lcnav"><p class="lccount" id="lifeCount"></p><button class="lcarrow" id="lifePrev" aria-label="Earlier events">‹</button><button class="lcarrow" id="lifeNext" aria-label="Later events">›</button></div><div class="lcscroll" id="lifeLine" tabindex="0" role="region" aria-label="Timeline of the life of Christ. Scroll sideways."></div><div class="lcabout" id="lifeAbout"></div></section>
 <section id="jewish" hidden>
     <h2>Jewish Tradition</h2>
     <div class="chiprow lsub" id="jewTabs" role="tablist" aria-label="Choose a part of Jewish tradition"></div>
@@ -1934,101 +1961,134 @@ const JEWISH=[
 // refs: "Book chapter:verse-verse" (one chapter per reference). feast: when churches remember the event.
 // link: [label, "#address"] to another part of the app.
 const LIFE={
-  intro:"The events of Jesus' life in the order most Gospel harmonies follow. Swipe or scroll along the line; under each event are the Gospel passages that tell it. Tap a passage to read it.",
+  intro:"The events of Jesus' life in the order most Gospel harmonies follow. Press play or drag the slider to follow him across the map; swipe along the timeline and the map follows. Under each event are the Gospel passages that tell it. Tap a passage to read it.",
+  // Where events happened, for the map. ll: [latitude, longitude], from OpenBible.info's Bible geocoding data;
+  // traditional sites it lacks (Temple Mount, Mount of Temptation, Mount of Beatitudes, Cenacle) were checked against
+  // GeoNames and two map gazetteers. "tr" means the Gospels don't name the exact spot: this is where it is remembered.
+  places:{
+    nazareth:{n:"Nazareth",ll:[32.70214,35.29769],big:1},
+    bethlehem:{n:"Bethlehem",ll:[31.704306,35.207639],big:1},
+    jerusalem:{n:"Jerusalem",ll:[31.776667,35.234167],big:1},
+    temple:{n:"the Temple, Jerusalem",ll:[31.77801,35.23595]},
+    hillcountry:{n:"the hill country of Judea",ll:[31.764483,35.159454],tr:"by tradition Ein Karem"},
+    egypt:{n:"toward Egypt",ll:[31.33,34.33],edge:1},
+    jordan:{n:"Bethany beyond the Jordan",ll:[31.837109,35.550301],tr:"by tradition al-Maghtas"},
+    wilderness:{n:"the wilderness",ll:[31.8714,35.4260],tr:"by tradition the Mount of Temptation above Jericho"},
+    cana:{n:"Cana",ll:[32.8222,35.30269],tr:"site debated: Khirbet Qana or Kafr Kanna"},
+    sychar:{n:"Sychar (Jacob's well)",ll:[32.21776,35.28897]},
+    capernaum:{n:"Capernaum",ll:[32.881111,35.575],big:1},
+    mountain:{n:"a mountain in Galilee",ll:[32.8818,35.5565],tr:"by tradition the Mount of Beatitudes"},
+    galsea:{n:"the Sea of Galilee",ll:[32.818906,35.590033]},
+    bethsaida:{n:"Bethsaida",ll:[32.91038,35.63096]},
+    caesarea:{n:"Caesarea Philippi",ll:[33.246111,35.693333],big:1},
+    tabor:{n:"Mount Tabor",ll:[32.68625,35.392917],tr:"by tradition; some suggest Mount Hermon"},
+    samaria:{n:"through Samaria",ll:[32.276111,35.195]},
+    bethany:{n:"Bethany",ll:[31.771661,35.255903]},
+    siloam:{n:"the Pool of Siloam",ll:[31.770556,35.235]},
+    jericho:{n:"Jericho",ll:[31.871719,35.444564],big:1},
+    olives:{n:"the Mount of Olives",ll:[31.777946,35.245686]},
+    upperroom:{n:"the upper room",ll:[31.77192,35.22927],tr:"by tradition the Cenacle on Mount Zion"},
+    gethsemane:{n:"Gethsemane",ll:[31.779419,35.239425]},
+    gabbatha:{n:"Gabbatha, the judgment seat",ll:[31.776083,35.228036],tr:"near Herod's palace"},
+    golgotha:{n:"Golgotha",ll:[31.778444,35.22975],tr:"by tradition the Church of the Holy Sepulchre"},
+    emmaus:{n:"Emmaus",ll:[31.79289,35.16419],tr:"site debated"}
+  },
+  regions:[["GALILEE",33.02,35.3],["SAMARIA",32.33,34.98],["JUDEA",31.48,34.93],["PEREA",31.95,35.78],["DECAPOLIS",32.5,35.92],["Mediterranean Sea",32.55,34.33],["Dead Sea",31.47,35.66],["Jordan River",32.3,35.66]],
   phases:[
     {id:"birth",n:"Birth and childhood",when:"about 6–4 BC",c:"#8A6D1F",events:[
       {id:"word",h:"The Word before all things",d:"John opens his Gospel before creation: the Word was with God and was God.",refs:["John 1:1-18"]},
-      {id:"zechariah",h:"An angel visits Zechariah",d:"Gabriel promises the old priest Zechariah a son, John.",refs:["Luke 1:5-25"]},
-      {id:"annunciation",h:"The Annunciation",d:"Gabriel tells Mary she will bear the Son of God.",refs:["Luke 1:26-38"],feast:"March 25"},
-      {id:"visitation",h:"Mary visits Elizabeth",d:"John leaps in the womb; Mary sings the Magnificat.",refs:["Luke 1:39-56"],feast:"May 31 (Catholic)"},
-      {id:"john-born",h:"John the Baptist is born",d:"Zechariah's tongue is loosed and he prophesies.",refs:["Luke 1:57-80"],feast:"June 24"},
-      {id:"joseph",h:"Joseph's dream",d:"An angel tells Joseph to take Mary as his wife.",refs:["Matthew 1:18-25"]},
+      {id:"zechariah",at:"temple",h:"An angel visits Zechariah",d:"Gabriel promises the old priest Zechariah a son, John.",refs:["Luke 1:5-25"]},
+      {id:"annunciation",at:"nazareth",h:"The Annunciation",d:"Gabriel tells Mary she will bear the Son of God.",refs:["Luke 1:26-38"],feast:"March 25"},
+      {id:"visitation",at:"hillcountry",h:"Mary visits Elizabeth",d:"John leaps in the womb; Mary sings the Magnificat.",refs:["Luke 1:39-56"],feast:"May 31 (Catholic)"},
+      {id:"john-born",at:"hillcountry",h:"John the Baptist is born",d:"Zechariah's tongue is loosed and he prophesies.",refs:["Luke 1:57-80"],feast:"June 24"},
+      {id:"joseph",at:"nazareth",h:"Joseph's dream",d:"An angel tells Joseph to take Mary as his wife.",refs:["Matthew 1:18-25"]},
       {id:"genealogy",h:"The family line of Jesus",d:"Matthew traces it from Abraham, Luke back to Adam.",refs:["Matthew 1:1-17","Luke 3:23-38"],link:["See it in the Lineage tab","#lineage"]},
-      {id:"nativity",h:"Born in Bethlehem",d:"Jesus is laid in a manger; angels announce him to shepherds.",refs:["Luke 2:1-20"],feast:"December 25 (January 7 in churches that keep the Julian calendar)"},
-      {id:"naming",h:"Circumcised and named Jesus",d:"On the eighth day he receives the name the angel gave.",refs:["Luke 2:21"],feast:"January 1 (Orthodox: the Circumcision; Episcopal: the Holy Name; Catholics keep Mary, Mother of God that day and the Holy Name on January 3)"},
-      {id:"presentation",h:"Presented in the Temple",d:"Simeon and Anna recognize the child.",refs:["Luke 2:22-38"],feast:"February 2"},
-      {id:"magi",h:"The Magi",d:"Wise men from the east follow a star and bring gifts.",refs:["Matthew 2:1-12"],feast:"January 6 (Epiphany)"},
-      {id:"egypt",h:"Flight into Egypt",d:"The family escapes; Herod kills the boys of Bethlehem.",refs:["Matthew 2:13-18"],feast:"Holy Innocents: December 28 (Western churches)"},
-      {id:"nazareth",h:"Home to Nazareth",d:"After Herod dies the family settles in Nazareth.",refs:["Matthew 2:19-23","Luke 2:39-40"]},
-      {id:"temple12",h:"In the Temple at twelve",d:"Found among the teachers: “I must be about my Father's business.”",refs:["Luke 2:41-52"]}
+      {id:"nativity",at:"bethlehem",h:"Born in Bethlehem",d:"Jesus is laid in a manger; angels announce him to shepherds.",refs:["Luke 2:1-20"],feast:"December 25 (January 7 in churches that keep the Julian calendar)"},
+      {id:"naming",at:"bethlehem",h:"Circumcised and named Jesus",d:"On the eighth day he receives the name the angel gave.",refs:["Luke 2:21"],feast:"January 1 (Orthodox: the Circumcision; Episcopal: the Holy Name; Catholics keep Mary, Mother of God that day and the Holy Name on January 3)"},
+      {id:"presentation",at:"temple",h:"Presented in the Temple",d:"Simeon and Anna recognize the child.",refs:["Luke 2:22-38"],feast:"February 2"},
+      {id:"magi",at:"bethlehem",h:"The Magi",d:"Wise men from the east follow a star and bring gifts.",refs:["Matthew 2:1-12"],feast:"January 6 (Epiphany)"},
+      {id:"egypt",at:"egypt",h:"Flight into Egypt",d:"The family escapes; Herod kills the boys of Bethlehem.",refs:["Matthew 2:13-18"],feast:"Holy Innocents: December 28 (Western churches)"},
+      {id:"nazareth",at:"nazareth",h:"Home to Nazareth",d:"After Herod dies the family settles in Nazareth.",refs:["Matthew 2:19-23","Luke 2:39-40"]},
+      {id:"temple12",at:"temple",h:"In the Temple at twelve",d:"Found among the teachers: “I must be about my Father's business.”",refs:["Luke 2:41-52"]}
     ]},
     {id:"prep",n:"Preparation",when:"about AD 27–29",c:"#2F7A6B",events:[
-      {id:"baptist",h:"John the Baptist preaches",d:"In the wilderness John calls Israel to repent. Luke dates it to Tiberius' fifteenth year.",refs:["Matthew 3:1-12","Mark 1:1-8","Luke 3:1-18","John 1:19-28"]},
-      {id:"baptism",h:"Jesus is baptized",d:"The Spirit descends and the Father's voice speaks from heaven.",refs:["Matthew 3:13-17","Mark 1:9-11","Luke 3:21-22","John 1:29-34"],feast:"Theophany, January 6 (Orthodox); Baptism of the Lord, the Sunday after Epiphany (Catholic)"},
-      {id:"temptation",h:"Tempted in the wilderness",d:"Forty days of fasting; Jesus answers the devil with Scripture.",refs:["Matthew 4:1-11","Mark 1:12-13","Luke 4:1-13"]},
-      {id:"first-disciples",h:"The first disciples",d:"Andrew, Peter, Philip and Nathanael follow him.",refs:["John 1:35-51"]},
-      {id:"cana",h:"Water into wine at Cana",d:"His first sign, at a wedding, at his mother's word.",refs:["John 2:1-11"]}
+      {id:"baptist",at:"jordan",h:"John the Baptist preaches",d:"In the wilderness John calls Israel to repent. Luke dates it to Tiberius' fifteenth year.",refs:["Matthew 3:1-12","Mark 1:1-8","Luke 3:1-18","John 1:19-28"]},
+      {id:"baptism",at:"jordan",h:"Jesus is baptized",d:"The Spirit descends and the Father's voice speaks from heaven.",refs:["Matthew 3:13-17","Mark 1:9-11","Luke 3:21-22","John 1:29-34"],feast:"Theophany, January 6 (Orthodox); Baptism of the Lord, the Sunday after Epiphany (Catholic)"},
+      {id:"temptation",at:"wilderness",h:"Tempted in the wilderness",d:"Forty days of fasting; Jesus answers the devil with Scripture.",refs:["Matthew 4:1-11","Mark 1:12-13","Luke 4:1-13"]},
+      {id:"first-disciples",at:"jordan",h:"The first disciples",d:"Andrew, Peter, Philip and Nathanael follow him.",refs:["John 1:35-51"]},
+      {id:"cana",at:"cana",h:"Water into wine at Cana",d:"His first sign, at a wedding, at his mother's word.",refs:["John 2:1-11"]}
     ]},
     {id:"early",n:"Early ministry in Judea",when:"about AD 28–29",c:"#3E6FA8",events:[
-      {id:"temple-john",h:"Clearing the Temple (John)",d:"At the first Passover John records, Jesus drives out the money changers.",refs:["John 2:13-25"]},
-      {id:"nicodemus",h:"Nicodemus at night",d:"“Ye must be born again”; “For God so loved the world.”",refs:["John 3:1-21"]},
-      {id:"samaritan-woman",h:"The woman at the well",d:"Living water offered to a Samaritan woman; her town believes.",refs:["John 4:1-42"]}
+      {id:"temple-john",at:"temple",h:"Clearing the Temple (John)",d:"At the first Passover John records, Jesus drives out the money changers.",refs:["John 2:13-25"]},
+      {id:"nicodemus",at:"jerusalem",h:"Nicodemus at night",d:"“Ye must be born again”; “For God so loved the world.”",refs:["John 3:1-21"]},
+      {id:"samaritan-woman",at:"sychar",h:"The woman at the well",d:"Living water offered to a Samaritan woman; her town believes.",refs:["John 4:1-42"]}
     ]},
     {id:"galilee",n:"Ministry in Galilee",when:"about AD 28–30",c:"#5B5FA8",events:[
-      {id:"galilee-begins",h:"Preaching begins in Galilee",d:"“Repent: for the kingdom of heaven is at hand.”",refs:["Matthew 4:12-17","Mark 1:14-15","Luke 4:14-15"]},
-      {id:"rejected",h:"Rejected at Nazareth",d:"He reads Isaiah in his home synagogue and is driven out.",refs:["Luke 4:16-30"]},
-      {id:"fishers",h:"Fishers of men",d:"Peter, Andrew, James and John leave their nets.",refs:["Matthew 4:18-22","Mark 1:16-20","Luke 5:1-11"]},
-      {id:"capernaum",h:"Healing at Capernaum",d:"A demon cast out in the synagogue; Peter's mother-in-law healed.",refs:["Mark 1:21-34","Luke 4:31-41","Matthew 8:14-17"]},
-      {id:"paralytic",h:"The paralyzed man through the roof",d:"Jesus forgives his sins, then tells him to walk.",refs:["Matthew 9:1-8","Mark 2:1-12","Luke 5:17-26"]},
-      {id:"levi",h:"Matthew the tax collector called",d:"Jesus eats with tax collectors and sinners.",refs:["Matthew 9:9-13","Mark 2:13-17","Luke 5:27-32"]},
-      {id:"twelve",h:"The Twelve chosen",d:"After a night of prayer he names the apostles.",refs:["Mark 3:13-19","Luke 6:12-16","Matthew 10:1-4"],link:["The Twelve in the Lineage tab","#lineage"]},
-      {id:"sermon",h:"The Sermon on the Mount",d:"The Beatitudes, the Lord's Prayer, the Golden Rule. Luke gives a shorter Sermon on the Plain.",refs:["Matthew 5:1-48","Matthew 6:1-34","Matthew 7:1-29","Luke 6:17-49"]},
-      {id:"storm",h:"Calming the storm",d:"“What manner of man is this, that even the winds and the sea obey him!”",refs:["Matthew 8:23-27","Mark 4:35-41","Luke 8:22-25"]},
-      {id:"parables",h:"Parables by the sea",d:"The sower, the mustard seed, the hidden treasure.",refs:["Matthew 13:1-52","Mark 4:1-34","Luke 8:4-18"]},
-      {id:"jairus",h:"Jairus' daughter raised",d:"On the way, a woman is healed by touching his garment.",refs:["Mark 5:21-43","Matthew 9:18-26","Luke 8:40-56"]},
+      {id:"galilee-begins",at:"capernaum",h:"Preaching begins in Galilee",d:"“Repent: for the kingdom of heaven is at hand.”",refs:["Matthew 4:12-17","Mark 1:14-15","Luke 4:14-15"]},
+      {id:"rejected",at:"nazareth",h:"Rejected at Nazareth",d:"He reads Isaiah in his home synagogue and is driven out.",refs:["Luke 4:16-30"]},
+      {id:"fishers",at:"capernaum",h:"Fishers of men",d:"Peter, Andrew, James and John leave their nets.",refs:["Matthew 4:18-22","Mark 1:16-20","Luke 5:1-11"]},
+      {id:"capernaum",at:"capernaum",h:"Healing at Capernaum",d:"A demon cast out in the synagogue; Peter's mother-in-law healed.",refs:["Mark 1:21-34","Luke 4:31-41","Matthew 8:14-17"]},
+      {id:"paralytic",at:"capernaum",h:"The paralyzed man through the roof",d:"Jesus forgives his sins, then tells him to walk.",refs:["Matthew 9:1-8","Mark 2:1-12","Luke 5:17-26"]},
+      {id:"levi",at:"capernaum",h:"Matthew the tax collector called",d:"Jesus eats with tax collectors and sinners.",refs:["Matthew 9:9-13","Mark 2:13-17","Luke 5:27-32"]},
+      {id:"twelve",at:"mountain",h:"The Twelve chosen",d:"After a night of prayer he names the apostles.",refs:["Mark 3:13-19","Luke 6:12-16","Matthew 10:1-4"],link:["The Twelve in the Lineage tab","#lineage"]},
+      {id:"sermon",at:"mountain",h:"The Sermon on the Mount",d:"The Beatitudes, the Lord's Prayer, the Golden Rule. Luke gives a shorter Sermon on the Plain.",refs:["Matthew 5:1-48","Matthew 6:1-34","Matthew 7:1-29","Luke 6:17-49"]},
+      {id:"storm",at:"galsea",h:"Calming the storm",d:"“What manner of man is this, that even the winds and the sea obey him!”",refs:["Matthew 8:23-27","Mark 4:35-41","Luke 8:22-25"]},
+      {id:"parables",at:"capernaum",h:"Parables by the sea",d:"The sower, the mustard seed, the hidden treasure.",refs:["Matthew 13:1-52","Mark 4:1-34","Luke 8:4-18"]},
+      {id:"jairus",at:"capernaum",h:"Jairus' daughter raised",d:"On the way, a woman is healed by touching his garment.",refs:["Mark 5:21-43","Matthew 9:18-26","Luke 8:40-56"]},
       {id:"sent",h:"The Twelve sent out",d:"Sent two by two to preach and heal.",refs:["Matthew 10:5-42","Mark 6:7-13","Luke 9:1-6"]},
       {id:"baptist-dies",h:"John the Baptist beheaded",d:"Herod Antipas has John killed at a banquet.",refs:["Matthew 14:1-12","Mark 6:14-29"]},
-      {id:"five-thousand",h:"Feeding the five thousand",d:"Apart from the Resurrection, the only miracle all four Gospels tell. John sets it near a Passover.",refs:["Matthew 14:13-21","Mark 6:30-44","Luke 9:10-17","John 6:1-14"]},
-      {id:"water",h:"Walking on the water",d:"In Matthew, Peter walks too, then sinks.",refs:["Matthew 14:22-33","Mark 6:45-52","John 6:16-21"]},
-      {id:"bread-of-life",h:"“I am the bread of life”",d:"The teaching at Capernaum that many disciples could not accept.",refs:["John 6:22-71"]},
-      {id:"confession",h:"Peter's confession",d:"“Thou art the Christ.” In Matthew: “upon this rock I will build my church.”",refs:["Matthew 16:13-20","Mark 8:27-30","Luke 9:18-21"],link:["How churches read Matthew 16:18","#Matthew-16-18"]},
-      {id:"prediction",h:"He foretells his death",d:"The Son of Man must suffer, die and rise; whoever would follow must take up his cross.",refs:["Matthew 16:21-28","Mark 8:31-38","Luke 9:22-27"]},
-      {id:"transfiguration",h:"The Transfiguration",d:"On the mountain with Moses and Elijah: “This is my beloved Son.”",refs:["Matthew 17:1-13","Mark 9:2-13","Luke 9:28-36"],feast:"August 6"}
+      {id:"five-thousand",at:"bethsaida",h:"Feeding the five thousand",d:"Apart from the Resurrection, the only miracle all four Gospels tell. John sets it near a Passover.",refs:["Matthew 14:13-21","Mark 6:30-44","Luke 9:10-17","John 6:1-14"]},
+      {id:"water",at:"galsea",h:"Walking on the water",d:"In Matthew, Peter walks too, then sinks.",refs:["Matthew 14:22-33","Mark 6:45-52","John 6:16-21"]},
+      {id:"bread-of-life",at:"capernaum",h:"“I am the bread of life”",d:"The teaching at Capernaum that many disciples could not accept.",refs:["John 6:22-71"]},
+      {id:"confession",at:"caesarea",h:"Peter's confession",d:"“Thou art the Christ.” In Matthew: “upon this rock I will build my church.”",refs:["Matthew 16:13-20","Mark 8:27-30","Luke 9:18-21"],link:["How churches read Matthew 16:18","#Matthew-16-18"]},
+      {id:"prediction",at:"caesarea",h:"He foretells his death",d:"The Son of Man must suffer, die and rise; whoever would follow must take up his cross.",refs:["Matthew 16:21-28","Mark 8:31-38","Luke 9:22-27"]},
+      {id:"transfiguration",at:"tabor",h:"The Transfiguration",d:"On the mountain with Moses and Elijah: “This is my beloved Son.”",refs:["Matthew 17:1-13","Mark 9:2-13","Luke 9:28-36"],feast:"August 6"}
     ]},
     {id:"journey",n:"The road to Jerusalem",when:"about AD 29–30",c:"#8A4F8F",events:[
-      {id:"face",h:"He sets his face toward Jerusalem",d:"The seventy sent ahead of him.",refs:["Luke 9:51-62","Luke 10:1-24"]},
-      {id:"good-samaritan",h:"The Good Samaritan; Martha and Mary",d:"“Who is my neighbour?” Then a visit to Martha's house.",refs:["Luke 10:25-42"]},
-      {id:"tabernacles",h:"At the Feast of Tabernacles",d:"“If any man thirst, let him come unto me, and drink.”",refs:["John 7:1-52"],link:["Sukkot in the Jewish Tradition tab","#jewish/feasts"]},
-      {id:"blind",h:"The man born blind",d:"Healed on the Sabbath: “I was blind, now I see.”",refs:["John 9:1-41"]},
-      {id:"shepherd",h:"The Good Shepherd",d:"Part of it taught in winter, at the Feast of Dedication (Hanukkah).",refs:["John 10:1-42"],link:["Hanukkah in the Jewish Tradition tab","#jewish/feasts"]},
+      {id:"face",at:"samaria",h:"He sets his face toward Jerusalem",d:"The seventy sent ahead of him.",refs:["Luke 9:51-62","Luke 10:1-24"]},
+      {id:"good-samaritan",at:"bethany",h:"The Good Samaritan; Martha and Mary",d:"“Who is my neighbour?” Then a visit to Martha's house.",refs:["Luke 10:25-42"]},
+      {id:"tabernacles",at:"temple",h:"At the Feast of Tabernacles",d:"“If any man thirst, let him come unto me, and drink.”",refs:["John 7:1-52"],link:["Sukkot in the Jewish Tradition tab","#jewish/feasts"]},
+      {id:"blind",at:"siloam",h:"The man born blind",d:"Healed on the Sabbath: “I was blind, now I see.”",refs:["John 9:1-41"]},
+      {id:"shepherd",at:"temple",h:"The Good Shepherd",d:"Part of it taught in winter, at the Feast of Dedication (Hanukkah).",refs:["John 10:1-42"],link:["Hanukkah in the Jewish Tradition tab","#jewish/feasts"]},
       {id:"lost",h:"Lost sheep, lost coin, lost son",d:"Three parables of what was lost and found.",refs:["Luke 15:1-32"]},
-      {id:"lazarus",h:"Lazarus raised",d:"“I am the resurrection, and the life.” Four days dead, Lazarus walks out.",refs:["John 11:1-44"]},
-      {id:"children",h:"He blesses the children",d:"“Of such is the kingdom of God.”",refs:["Matthew 19:13-15","Mark 10:13-16","Luke 18:15-17"]},
-      {id:"rich-man",h:"The rich young man",d:"“Sell whatsoever thou hast”; the camel and the needle's eye.",refs:["Matthew 19:16-30","Mark 10:17-31","Luke 18:18-30"]},
-      {id:"bartimaeus",h:"Blind Bartimaeus at Jericho",d:"“Thou Son of David, have mercy on me.”",refs:["Mark 10:46-52","Matthew 20:29-34","Luke 18:35-43"]},
-      {id:"zacchaeus",h:"Zacchaeus",d:"The tax collector in the sycamore tree.",refs:["Luke 19:1-10"]},
-      {id:"bethany",h:"Anointed at Bethany",d:"Six days before Passover, Mary pours costly ointment on him.",refs:["John 12:1-8","Matthew 26:6-13","Mark 14:3-9"]}
+      {id:"lazarus",at:"bethany",h:"Lazarus raised",d:"“I am the resurrection, and the life.” Four days dead, Lazarus walks out.",refs:["John 11:1-44"]},
+      {id:"children",at:"jordan",h:"He blesses the children",d:"“Of such is the kingdom of God.”",refs:["Matthew 19:13-15","Mark 10:13-16","Luke 18:15-17"]},
+      {id:"rich-man",at:"jordan",h:"The rich young man",d:"“Sell whatsoever thou hast”; the camel and the needle's eye.",refs:["Matthew 19:16-30","Mark 10:17-31","Luke 18:18-30"]},
+      {id:"bartimaeus",at:"jericho",h:"Blind Bartimaeus at Jericho",d:"“Thou Son of David, have mercy on me.”",refs:["Mark 10:46-52","Matthew 20:29-34","Luke 18:35-43"]},
+      {id:"zacchaeus",at:"jericho",h:"Zacchaeus",d:"The tax collector in the sycamore tree.",refs:["Luke 19:1-10"]},
+      {id:"bethany",at:"bethany",h:"Anointed at Bethany",d:"Six days before Passover, Mary pours costly ointment on him.",refs:["John 12:1-8","Matthew 26:6-13","Mark 14:3-9"]}
     ]},
     {id:"passion",n:"Holy Week",when:"a Passover about AD 30 or 33",c:"#A3262E",events:[
-      {id:"entry",h:"Entry into Jerusalem",d:"Crowds wave branches: “Hosanna to the Son of David.”",refs:["Matthew 21:1-11","Mark 11:1-11","Luke 19:28-44","John 12:12-19"],feast:"Palm Sunday"},
-      {id:"temple",h:"Clearing the Temple",d:"“My house shall be called the house of prayer.”",refs:["Matthew 21:12-17","Mark 11:15-19","Luke 19:45-48"]},
-      {id:"olivet",h:"Teaching on the end of the age",d:"On the Mount of Olives he foretells the Temple's fall and his return.",refs:["Matthew 24:1-51","Mark 13:1-37","Luke 21:5-38"]},
-      {id:"judas",h:"Judas agrees to betray him",d:"For thirty pieces of silver, in Matthew.",refs:["Matthew 26:14-16","Mark 14:10-11","Luke 22:3-6"]},
-      {id:"supper",h:"The Last Supper",d:"“This is my body… this is my blood.” At Passover time.",refs:["Matthew 26:17-30","Mark 14:12-26","Luke 22:7-38","1 Corinthians 11:23-26"],feast:"Holy Thursday",link:["The Four Cups of Passover","#jewish/four-cups"]},
-      {id:"feet",h:"He washes their feet",d:"John's account of the night: the new commandment, the farewell, the prayer for unity.",refs:["John 13:1-20","John 14:1-31","John 17:1-26"]},
-      {id:"gethsemane",h:"Gethsemane",d:"“Not my will, but thine, be done.”",refs:["Matthew 26:36-46","Mark 14:32-42","Luke 22:39-46"]},
-      {id:"arrest",h:"Arrested",d:"Judas betrays him with a kiss.",refs:["Matthew 26:47-56","Mark 14:43-52","Luke 22:47-53","John 18:1-12"]},
-      {id:"trial",h:"Before the high priest; Peter's denial",d:"Questioned by night; Peter denies him three times.",refs:["Matthew 26:57-75","Mark 14:53-72","Luke 22:54-71","John 18:13-27"]},
-      {id:"pilate",h:"Before Pilate",d:"Pilate finds no fault, then hands him over to be crucified.",refs:["Matthew 27:11-26","Mark 15:1-15","Luke 23:1-25","John 18:28-40","John 19:1-16"]},
-      {id:"cross",h:"The Crucifixion",d:"“Father, forgive them.” “It is finished.”",refs:["Matthew 27:32-56","Mark 15:21-41","Luke 23:26-49","John 19:17-37"],feast:"Good Friday"},
-      {id:"burial",h:"Buried",d:"Joseph of Arimathea lays him in a new tomb.",refs:["Matthew 27:57-66","Mark 15:42-47","Luke 23:50-56","John 19:38-42"]}
+      {id:"entry",at:"jerusalem",h:"Entry into Jerusalem",d:"Crowds wave branches: “Hosanna to the Son of David.”",refs:["Matthew 21:1-11","Mark 11:1-11","Luke 19:28-44","John 12:12-19"],feast:"Palm Sunday"},
+      {id:"temple",at:"temple",h:"Clearing the Temple",d:"“My house shall be called the house of prayer.”",refs:["Matthew 21:12-17","Mark 11:15-19","Luke 19:45-48"]},
+      {id:"olivet",at:"olives",h:"Teaching on the end of the age",d:"On the Mount of Olives he foretells the Temple's fall and his return.",refs:["Matthew 24:1-51","Mark 13:1-37","Luke 21:5-38"]},
+      {id:"judas",at:"jerusalem",h:"Judas agrees to betray him",d:"For thirty pieces of silver, in Matthew.",refs:["Matthew 26:14-16","Mark 14:10-11","Luke 22:3-6"]},
+      {id:"supper",at:"upperroom",h:"The Last Supper",d:"“This is my body… this is my blood.” At Passover time.",refs:["Matthew 26:17-30","Mark 14:12-26","Luke 22:7-38","1 Corinthians 11:23-26"],feast:"Holy Thursday",link:["The Four Cups of Passover","#jewish/four-cups"]},
+      {id:"feet",at:"upperroom",h:"He washes their feet",d:"John's account of the night: the new commandment, the farewell, the prayer for unity.",refs:["John 13:1-20","John 14:1-31","John 17:1-26"]},
+      {id:"gethsemane",at:"gethsemane",h:"Gethsemane",d:"“Not my will, but thine, be done.”",refs:["Matthew 26:36-46","Mark 14:32-42","Luke 22:39-46"]},
+      {id:"arrest",at:"gethsemane",h:"Arrested",d:"Judas betrays him with a kiss.",refs:["Matthew 26:47-56","Mark 14:43-52","Luke 22:47-53","John 18:1-12"]},
+      {id:"trial",at:"jerusalem",h:"Before the high priest; Peter's denial",d:"Questioned by night; Peter denies him three times.",refs:["Matthew 26:57-75","Mark 14:53-72","Luke 22:54-71","John 18:13-27"]},
+      {id:"pilate",at:"gabbatha",h:"Before Pilate",d:"Pilate finds no fault, then hands him over to be crucified.",refs:["Matthew 27:11-26","Mark 15:1-15","Luke 23:1-25","John 18:28-40","John 19:1-16"]},
+      {id:"cross",at:"golgotha",h:"The Crucifixion",d:"“Father, forgive them.” “It is finished.”",refs:["Matthew 27:32-56","Mark 15:21-41","Luke 23:26-49","John 19:17-37"],feast:"Good Friday"},
+      {id:"burial",at:"golgotha",h:"Buried",d:"Joseph of Arimathea lays him in a new tomb.",refs:["Matthew 27:57-66","Mark 15:42-47","Luke 23:50-56","John 19:38-42"]}
     ]},
     {id:"risen",n:"Resurrection and Ascension",when:"the forty days after Easter",c:"#B07A12",events:[
-      {id:"empty-tomb",h:"The empty tomb",d:"“He is not here: for he is risen.”",refs:["Matthew 28:1-10","Mark 16:1-8","Luke 24:1-12","John 20:1-10"],feast:"Easter"},
-      {id:"magdalene",h:"He appears to Mary Magdalene",d:"She mistakes him for the gardener until he says her name.",refs:["John 20:11-18","Mark 16:9-11"]},
-      {id:"emmaus",h:"The road to Emmaus",d:"Known to two disciples “in breaking of bread.”",refs:["Luke 24:13-35"]},
-      {id:"thomas",h:"He appears to the disciples; Thomas",d:"“My Lord and my God.”",refs:["Luke 24:36-49","John 20:19-29"]},
-      {id:"galilee-sea",h:"By the Sea of Galilee",d:"A great catch of fish; “Feed my sheep.”",refs:["John 21:1-25"]},
-      {id:"commission",h:"The Great Commission",d:"“Go ye therefore, and teach all nations.”",refs:["Matthew 28:16-20"]},
-      {id:"ascension",h:"The Ascension",d:"Forty days after Easter he is taken up into heaven.",refs:["Acts 1:1-11","Luke 24:50-53","Mark 16:19-20"],feast:"Forty days after Easter (Ascension Thursday)"},
-      {id:"pentecost",h:"Pentecost",d:"The Holy Spirit comes on the disciples: the Church's beginning.",refs:["Acts 2:1-41"],feast:"Fifty days after Easter",link:["Where the church family tree begins","#churches"]}
+      {id:"empty-tomb",at:"golgotha",h:"The empty tomb",d:"“He is not here: for he is risen.”",refs:["Matthew 28:1-10","Mark 16:1-8","Luke 24:1-12","John 20:1-10"],feast:"Easter"},
+      {id:"magdalene",at:"golgotha",h:"He appears to Mary Magdalene",d:"She mistakes him for the gardener until he says her name.",refs:["John 20:11-18","Mark 16:9-11"]},
+      {id:"emmaus",at:"emmaus",h:"The road to Emmaus",d:"Known to two disciples “in breaking of bread.”",refs:["Luke 24:13-35"]},
+      {id:"thomas",at:"jerusalem",h:"He appears to the disciples; Thomas",d:"“My Lord and my God.”",refs:["Luke 24:36-49","John 20:19-29"]},
+      {id:"galilee-sea",at:"galsea",h:"By the Sea of Galilee",d:"A great catch of fish; “Feed my sheep.”",refs:["John 21:1-25"]},
+      {id:"commission",at:"mountain",h:"The Great Commission",d:"“Go ye therefore, and teach all nations.”",refs:["Matthew 28:16-20"]},
+      {id:"ascension",at:"olives",h:"The Ascension",d:"Forty days after Easter he is taken up into heaven.",refs:["Acts 1:1-11","Luke 24:50-53","Mark 16:19-20"],feast:"Forty days after Easter (Ascension Thursday)"},
+      {id:"pentecost",at:"jerusalem",h:"Pentecost",d:"The Holy Spirit comes on the disciples: the Church's beginning.",refs:["Acts 2:1-41"],feast:"Fifty days after Easter",link:["Where the church family tree begins","#churches"]}
     ]}
   ],
   about:[
     "The Gospels give few dates, so every year here is approximate and scholars differ. Matthew places Jesus' birth under Herod the Great, who died about 4 BC; Luke dates John the Baptist's preaching to the fifteenth year of Tiberius, about AD 28–29; the crucifixion is most often dated to AD 30 or 33.",
     "John's Gospel mentions three Passovers during the ministry {John 2:13}, {John 6:4} and {John 11:55}, which is why it is often said to have lasted about three years. Read from Matthew, Mark and Luke alone, it could be as short as one.",
     "The order of events follows the common harmony of the Gospels. Each Gospel arranges some events differently, and harmonies disagree in places, so treat the order in the middle of the ministry as a guide rather than a fixed sequence.",
-    "Feast days are from the General Roman Calendar unless another church is named. Many churches keep the same days."
+    "Feast days are from the General Roman Calendar unless another church is named. Many churches keep the same days.",
+    "On the map, lines join the places in order; they are not the roads he walked, which the Gospels rarely describe. Where the Gospels don't name the exact spot (the mountain of the Sermon, the upper room, Golgotha), the map uses the site remembered by tradition and says so. Where no place is given, the marker stays where it was. Place locations come from OpenBible.info's geocoding of Bible places; shorelines are today's, and the Dead Sea has shrunk greatly in modern times."
   ],
   src:[
     ["Britannica: The life of Jesus (dates of birth, ministry and death)","https://www.britannica.com/topic/biblical-literature/The-life-of-Jesus"],
@@ -2037,9 +2097,15 @@ const LIFE={
     ["General Roman Calendar (Liturgy Office, England and Wales)","https://www.liturgyoffice.org.uk/Calendar/Info/General-Roman-Calendar.pdf"],
     ["The Episcopal Church: The Holy Name, January 1","https://www.episcopalchurch.org/lectionary/holy-name/"],
     ["OrthodoxWiki: January 1, the Circumcision of the Lord","https://orthodoxwiki.org/January_1"],
+    ["OpenBible.info: Bible Geocoding Data (place locations; CC BY 4.0)","https://github.com/openbibleinfo/Bible-Geocoding-Data"],
+    ["OpenStreetMap contributors: coastline, lakes and Jordan River (ODbL)","https://www.openstreetmap.org/copyright"],
     ["Al Jazeera: Why do 250 million Christians celebrate Christmas on January 7?","https://www.aljazeera.com/news/2026/1/7/why-do-250-million-christians-celebrate-christmas-on-january-7"]
   ]
 };
+// Generated by tools/make_life_map.js. Do not edit by hand.
+// Coastline and lakes: OpenStreetMap contributors (ODbL), via geo-maps. Jordan River: OpenStreetMap via OpenBible.info (CC BY 4.0).
+// Modern shorelines; map units: x=(lon-33.95)*371.915, y=(33.7-lat)*440.
+const LIFEMAP={"w":892.6,"h":1210,"lon0":33.95,"lat0":33.7,"k":440,"kx":371.915,"sea":"M-71.6,1129.7L-51.5,1122.9L-43.4,1118.2L-44.9,1121.7L-44,1120.3L-29.3,1117.9L26.9,1095L68.1,1070.8L94.8,1050.3L116.9,1029L131.8,1012.9L131,1011.8L132.6,1012.6L143.5,1001.6L172.4,966.6L178.3,958.2L178,955.8L178.9,955.2L177.7,956.7L179.1,957.6L179.2,955.7L182,954.4L203.4,923L211.8,909.3L210.8,907.7L212,906.1L211,907.7L213.2,907.8L212.4,906.6L215.9,903.9L225.3,886.5L225.2,888.8L227.6,885.7L244.5,855.1L252,839.4L251.3,836.7L251.7,839L256.7,828.7L254.5,824.7L255.7,816.5L254.7,824.8L256.8,827.9L258.1,826.7L256.8,824.7L258.7,825L257.1,823.3L259.6,823.9L256.5,822.2L260.5,821.9L258.1,821L258.2,819.9L261.1,819.4L261.2,816.6L261.1,818.7L261.7,818.6L276.3,782L281.9,773.3L292.2,743.2L295.6,727.3L301.2,720.6L303.6,709.3L304,710.6L307.2,702.9L306.2,700L307.6,701.8L306.6,700.3L309.8,694.1L314.4,678.5L313.4,677.9L313.7,676.3L314.1,677.9L322.3,650.8L347.3,543.7L345.6,539.7L347.1,542.2L347.8,540.2L346.3,539.8L347.4,539.8L348.9,535L349.2,526.7L351.8,523.3L357.5,496.1L359.6,482.2L358.6,478.1L360.9,474.2L361.1,465.4L364.2,451.4L363,448.9L363.5,440.9L366.1,440L365.3,437.3L367.9,437L369.8,432.3L374.3,394.7L373.8,384.7L383,379.9L387.2,382.1L387,381.3L390.5,381.2L387.2,382.1L390,381.9L389.7,383.5L392.8,384.7L396.6,384L393.7,384.8L390.3,384.4L387.4,382.7L387.3,384.5L392.1,388.1L394,386L394.8,389.8L396.3,386.7L397.1,390.5L399,389L397.8,390.4L399.7,389.5L400.7,393.3L402.2,394.1L401.2,392.2L403.9,389.9L402.4,390.5L399,388.3L402.3,388.4L406.5,385.2L414.5,371.8L420.6,348L419.2,343.2L414.8,343.2L417.3,337L420.2,315.3L428.4,285.8L430,263.2L433.7,257.5L444.3,252.4L452.8,235.6L457.4,235.3L459.9,232.8L463.4,221.5L466.2,219.7L469.4,204.8L469.1,196.1L465.7,190.8L461.7,190.5L461.4,186.8L465.5,188.1L468.7,186.3L471.6,181.6L473.4,172.3L475.3,171.4L477.6,165.9L481.7,161.2L483.9,140.7L489.7,126.6L493,111.3L498,104.2L502.3,103.5L504.1,100.2L503.6,101.2L507.3,100.1L518.1,85.8L517.3,84.7L520.1,84.4L522.5,80.9L525.9,64L527.5,62.5L527,58.9L529.6,58.7L532,54.9L534.8,41.2L537.6,40.6L538.5,38.5L538.5,23.3L540.8,22.5L541.1,20.7L542.1,22.3L545.1,19.7L545.3,4.9L547.4,2.2L552.9,0.6L555.4,-4.8L558.1,-22.7L563.2,-29.8L567.2,-37.5L566.2,-38.6L568.2,-39.9L569.9,-50.6L567.8,-62.7L570.1,-61L570,-71L568.1,-73.5L569.4,-73.8L569.3,-77L568.2,-80.6L566.1,-80.3L566.1,-82.2L564.7,-82.4L565.9,-83.4L564.1,-85L564.5,-87.7L569.7,-89.7L572.7,-88.7L575.5,-90.5L575.2,-88.8L579.7,-91.7L581.1,-89.8L588.7,-95.1L579.3,-88.3L582.5,-88L583.5,-89.8L583.8,-88.4L587.8,-92.1L592.3,-91.8L591.5,-90L595.4,-89.3L595.3,-87.1L600.2,-88.3L601.5,-90.9L601.5,-89.5L603.3,-90L607.1,-94.9L606.1,-96.4L607.3,-103.6L608.2,-101.5L609.2,-108.7L609.9,-107.3L-400,-107.3L-400,1129.7Z","lakes":["M590.5,851.2L607,851.2L607.1,867.6L608.2,875.8L605.3,884L603.3,900.5L602.9,917L595.7,929.6L597.4,949.9L596.5,958.1L603,974.6L601.1,982.9L602.5,999.4L595.7,1007.9L593.4,1015.9L595.7,1015.9L595.7,1021.5L586.7,1032.4L591.1,1040.6L588.3,1048.9L579.4,1050.8L579.4,1023.3L563,1023.3L563,1032.4L553.1,1032.4L568,1048.9L563,1054.9L554.9,1059.7L546.7,1054.1L543.9,1048.9L545.2,1032.4L546.7,1032.4L546.7,1025L538.3,1015.9L539.2,966.4L538.1,958.1L545.6,941.7L540.7,933.5L546.7,924.7L546.7,913.7L557.4,900.5L556.7,884L563,878L571.2,875.8L571,867.6L567.1,852.2L579.4,856.8L590.5,851.2Z","M514,1098.5L530.4,1088.5L538.5,1085.6L546.7,1086.5L563,1084.3L563,1098.8L570,1098.5L564,1089.6L579.4,1093.8L583,1098.5L587.2,1115L573.6,1131.6L581.2,1131.6L579.4,1140.7L563,1159.4L563,1135.7L554.3,1148.1L554.2,1164.7L546.7,1167.2L546.7,1181.3L545.3,1181.3L541.3,1197.9L544.7,1209.1L530.4,1206L524.4,1197.9L530.4,1189.3L530.4,1181.3L525,1181.3L530.4,1173.7L539.1,1164.7L538.6,1148.1L535.3,1139.9L539.6,1131.6L538.5,1123.3L530.4,1120.8L522,1115L530.4,1105.3L538.3,1098.5L514,1098.5Z","M603.8,361L612.1,353.8L621.8,361L628.4,368.6L632.6,377.2L628.8,385.4L629.8,393.5L628.4,400L624.6,409.7L626.6,417.9L624.1,426L612.1,437.8L599.6,426L600.8,409.7L595.7,409.7L595.7,404L585.1,393.5L584.2,377.2L595.7,365.9L603.8,361Z"],"jordan":"M620.8,226L617.5,235.4L623.7,241.3L624.7,246.8L621.6,276.5L625.2,292.2L622.6,349L618.2,352L617.8,355.3L620.7,356.3L605.9,435.3L599.8,439.1L602.8,445L599.9,444.7L597.5,450.9L602.6,460.5L599.1,463.9L601.7,465.6L599,467.4L601.7,469.5L599.3,473.1L603.4,477.8L601.4,485.5L605.5,485.4L605,497.9L602.6,499.1L605.2,505L601.9,505.6L603.1,510.3L599.2,508.2L598.5,514.1L601.5,517L596,521.5L598.8,524.8L599.7,521.6L598.2,527.1L604.7,529.5L606.3,533.5L600.8,536.3L602.5,538L599.6,543.6L604,546.1L601.2,548.7L601.1,556.2L597.1,558.3L599.7,561.4L595.8,562.1L598.5,564L599,571.5L593.7,571.7L600,579.1L599.2,588L596.1,586.9L598.6,594.8L596.2,606.4L600.2,611.7L596.9,616.7L601.7,623.2L597.8,627.8L599.8,637.6L602.9,637.5L599.1,641.8L600.3,647.3L603.5,647.1L601.2,651.4L604,655L599.8,658L602.6,663.7L598.2,665L598.8,671.6L596.4,670.1L595.8,672.8L597.8,674.3L594.2,674.7L599,681.6L592.7,685.3L595.5,691.5L588.5,700.9L593.6,711.8L589,714.3L587.5,725.8L583.6,727.1L584.7,738.2L587.3,739.8L584.8,741.9L587.2,744.1L585.9,746.8L590.9,749.8L588.7,754L594.4,761.7L591.9,766.4L593.5,776.3L586.3,782L585.5,788.6L589.4,794.4L588.8,800L595,804L590,811.2L594.7,816.6L594.6,825.6L591,828.9L595.6,837.5L594.1,843.4L598.2,854.4"};
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -4692,6 +4758,132 @@ function lifeGo(id,flash){
   const ah=el("h3");ah.textContent="About the dates and order";ab.appendChild(ah);
   LIFE.about.forEach(t=>{const p=el("p");p.appendChild(studyText(t));ab.appendChild(p)});
   ab.appendChild(srcList(LIFE.src));
+})();
+
+// ---------- Life of Christ map: a marker travels the route as you move through the timeline ----------
+const LMAP=(function(){
+  const svg=document.getElementById("lmSvg");if(!svg||typeof LIFEMAP==="undefined")return null;
+  const M=LIFEMAP,NS="http://www.w3.org/2000/svg",RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const P=ll=>[(ll[1]-M.lon0)*M.kx,(M.lat0-ll[0])*M.k];
+  const mk=(t,a,par)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(par||svg).appendChild(e);return e};
+  const steps=[];LIFE.phases.forEach(ph=>ph.events.forEach(ev=>steps.push({ev,ph})));
+  let last=null;steps.forEach(s=>{if(s.ev.at)last=s.ev.at;s.at=last});
+  // base map
+  mk("rect",{x:-600,y:-600,width:M.w+1200,height:M.h+1200,class:"lmland"});
+  mk("path",{d:M.sea,class:"lmsea"});
+  M.lakes.forEach(d=>mk("path",{d,class:"lmlake"}));
+  mk("path",{d:M.jordan,class:"lmriver"});
+  const gReg=mk("g",{class:"lmreg","aria-hidden":"true"});
+  LIFE.regions.forEach(([t,la,lo])=>{const [x,y]=P([la,lo]);const e=mk("text",{x,y,class:/[a-z]/.test(t)?"lmwater":""},gReg);e.textContent=t});
+  const gRoute=mk("g",{class:"lmroute"});
+  const gPl=mk("g",{class:"lmplaces","aria-hidden":"true"}),pel={};
+  const side={golgotha:"l",upperroom:"l",gabbatha:"l",emmaus:"l",hillcountry:"l",siloam:"b",bethlehem:"b",temple:"l",jerusalem:"l",samaria:"l",cana:"l",nazareth:"l",mountain:"l",galsea:"r",tabor:"r",egypt:"r"};
+  for(const id in LIFE.places){const pl=LIFE.places[id],[x,y]=P(pl.ll);
+    const g=mk("g",{class:"lmpl"+(pl.big?" big":"")},gPl),c=mk("circle",{cx:x,cy:y,r:3},g),t=mk("text",{x,y},g);
+    t.textContent=pl.edge?pl.n.replace(/^toward /,"to ")+" \u2199":pl.n.replace(/^(the|through) /,"").replace(/,.*$/,"").replace(/ \(.*$/,"");
+    t.textContent=t.textContent.charAt(0).toUpperCase()+t.textContent.slice(1);
+    pel[id]={g,c,t,x,y,s:side[id]||"r"}}
+  const halo=mk("circle",{class:"lmhalo",r:10}),dot=mk("circle",{class:"lmdot",r:5});
+  const xy=id=>id?[pel[id].x,pel[id].y]:null;
+  // the route: distinct places in order
+  const route=[];steps.forEach((s,i)=>{if(s.at&&(!route.length||route[route.length-1].id!==s.at))route.push({id:s.at,i})});
+  const pts=route.map(r=>xy(r.id));
+  // one line per leg, colored by the part of his life it belongs to
+  const segs=route.map((r,j)=>j?mk("path",{class:"lmseg",stroke:steps[r.i].ph.c,"data-ph":steps[r.i].ph.id},gRoute):null);
+  const allBox=(()=>{const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);return[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)]})();
+  const frame=svg.parentNode;
+  let cur=-1,cam=null,whole=false,anim=0;
+  const routeUpTo=i=>{let k=-1;route.forEach((r,j)=>{if(r.i<=i)k=j});return k}; // index in route
+  function target(i,box){
+    let [x0,y0,x1,y1]=box;const w=Math.max(x1-x0,1),h=Math.max(y1-y0,1);
+    const pad=Math.max(w,h)*0.35+7;x0-=pad;x1+=pad;y0-=pad;y1+=pad;
+    const A=(frame.clientWidth||400)/(frame.clientHeight||300);let bw=x1-x0,bh=y1-y0,cx=(x0+x1)/2,cy=(y0+y1)/2;
+    if(bw/bh<A)bw=bh*A;else bh=bw/A;
+    const cl=(c,b,lo,hi)=>b>=hi-lo?(lo+hi)/2:Math.min(Math.max(c,lo+b/2),hi-b/2);
+    return[cl(cx,bw,0,M.w),cl(cy,bh,0,M.h),bw,bh];
+  }
+  function boxFor(i){
+    if(whole||!steps[i].at)return allBox;
+    const k=routeUpTo(i),a=pts[k],b=pts[Math.max(0,k-1)];
+    return[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0]),Math.max(a[1],b[1])];
+  }
+  function setCam(c){cam=c;const[cx,cy,bw,bh]=c;svg.setAttribute("viewBox",`${(cx-bw/2).toFixed(2)} ${(cy-bh/2).toFixed(2)} ${bw.toFixed(2)} ${bh.toFixed(2)}`);
+    const u=bw/(frame.clientWidth||400);svg.style.setProperty("--u",u.toFixed(4));
+    for(const id in pel){const p=pel[id];p.c.setAttribute("r",(p.g.classList.contains("cur")?4.5:3.2)*u);
+      const o=7*u;let tx=p.x+o,ty=p.y+4*u,an="start";
+      if(p.s==="l"){tx=p.x-o;an="end"}else if(p.s==="t"){tx=p.x;ty=p.y-o;an="middle"}else if(p.s==="b"){tx=p.x;ty=p.y+o+9*u;an="middle"}
+      p.t.setAttribute("x",tx.toFixed(2));p.t.setAttribute("y",ty.toFixed(2));p.t.setAttribute("text-anchor",an)}
+    dot.setAttribute("r",6*u);halo.setAttribute("r",13*u);
+    labels(u);
+  }
+  function labels(u){
+    const zoomed=cam&&cam[2]<170;const here=cur>=0?steps[cur].at:null;
+    gReg.querySelectorAll('text').forEach(t=>{const wtr=t.classList.contains('lmwater'),big=t.textContent==='Mediterranean Sea';t.style.display=(big||(wtr?cam[2]<420&&cam[2]>40:cam[2]>140))?'':'none'});
+    for(const id in pel){const p=pel[id];const close=id==="jerusalem"&&id!==here&&cam[2]<60;p.g.style.display=close?"none":"";const show=id===here||(zoomed?!close:(LIFE.places[id].big||LIFE.places[id].edge));p.g.classList.toggle("show",show);p.g.classList.toggle("cur",id===here)}
+  }
+  const L2=(a,b)=>`M${a[0].toFixed(1)},${a[1].toFixed(1)}L${b[0].toFixed(1)},${b[1].toFixed(1)}`;
+  function drawRoute(k,partial){ // legs up to route[k], plus a growing leg toward the next place
+    const ph=cur>=0?steps[cur].ph.id:"";
+    segs.forEach((g,j)=>{if(!g)return;const on=j<=k||(partial&&j===k+1);g.style.display=on?"":"none";
+      if(on){g.setAttribute("d",L2(pts[j-1],j===k+1?partial:pts[j]));g.classList.toggle("old",g.dataset.ph!==ph)}});
+    for(const id in pel)pel[id].g.classList.remove("seen");
+    route.slice(0,k+1).forEach(r=>pel[r.id].g.classList.add("seen"));
+  }
+  function place(pt){if(!pt){dot.style.display=halo.style.display="none";return}dot.style.display=halo.style.display="";
+    for(const e of[dot,halo]){e.setAttribute("cx",pt[0].toFixed(2));e.setAttribute("cy",pt[1].toFixed(2))}}
+  function caption(i){
+    const {ev,ph}=steps[i],pl=steps[i].at&&LIFE.places[steps[i].at];
+    const now=document.getElementById("lmNow");now.textContent="";
+    const b=el("b");b.textContent=ev.h;now.appendChild(b);
+    now.append(" \u00b7 "+(pl?(ev.at?"":"still near ")+pl.n:"no place named"));
+    if(pl&&pl.tr&&ev.at){const t=el("span",{class:"lmtr"});t.textContent=` (${pl.tr})`;now.appendChild(t)}
+    document.getElementById("lmWhen").textContent=`${ph.n}, ${ph.when} \u00b7 event ${i+1} of ${steps.length}`;
+    document.getElementById("lifeMap").style.setProperty("--lmc",ph.c);
+    const r=document.getElementById("lmTime");r.value=i;r.setAttribute("aria-valuetext",`${ev.h}, ${pl?pl.n:"no place named"}`);
+    svg.setAttribute("aria-label",`Map of the Holy Land${pl?", showing "+pl.n:""}`);
+  }
+  function go(i,animate){
+    i=Math.max(0,Math.min(steps.length-1,i));if(i===cur&&cam)return;
+    const prev=cur;cur=i;caption(i);cancelAnimationFrame(anim);
+    const k=routeUpTo(i),to=k>=0?pts[k]:null,from=prev>=0&&routeUpTo(prev)>=0?pts[routeUpTo(prev)]:to;
+    const c1=target(i,boxFor(i)),c0=cam||c1;
+    const moving=animate&&!RM&&prev>=0&&Math.abs(i-prev)===1&&k>0&&from&&to;
+    if(!moving&&!(animate&&!RM)){drawRoute(k);place(to);setCam(c1);return}
+    const dist=from&&to?Math.hypot(to[0]-from[0],to[1]-from[1]):0;
+    const D=Math.min(1700,650+dist*2.2),t0=performance.now(),ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    const step=now=>{const t=Math.min(1,(now-t0)/D),e=ease(t);
+      const cc=c0.map((v,j)=>v+(c1[j]-v)*e);
+      if(moving&&i>prev){const pt=[from[0]+(to[0]-from[0])*e,from[1]+(to[1]-from[1])*e];drawRoute(k-1,t<1?pt:null);if(t>=1)drawRoute(k);place(pt)}
+      else{drawRoute(k);place(to)}
+      setCam(cc);labels(cc[2]/(frame.clientWidth||400));if(t<1)anim=requestAnimationFrame(step)};
+    anim=requestAnimationFrame(step);
+  }
+  // controls
+  const range=document.getElementById("lmTime");range.max=steps.length-1;
+  let playT=0,quiet=0;
+  const follow=i=>{quiet=Date.now();lifeGo(steps[i].ev.id)};
+  range.addEventListener("input",()=>{stop();const v=+range.value;go(v,Math.abs(v-cur)===1);follow(v)});
+  const play=document.getElementById("lmPlay");
+  function stop(){if(!playT)return;clearInterval(playT);playT=0;play.textContent="\u25B6";play.setAttribute("aria-label","Play the journey")}
+  play.onclick=()=>{if(playT){stop();return}
+    if(cur>=steps.length-1){go(0,false);follow(0)}
+    play.textContent="\u275A\u275A";play.setAttribute("aria-label","Pause");
+    const tick=()=>{if(cur>=steps.length-1){stop();return}go(cur+1,true);follow(cur)};tick();playT=setInterval(tick,2600)};
+  const zb=document.getElementById("lmZoom");
+  zb.onclick=()=>{whole=!whole;zb.textContent=whole?"Follow the route":"Whole land";zb.setAttribute("aria-pressed",whole);if(cur<0)return;const c1=target(cur,boxFor(cur));
+    if(RM)setCam(c1);else{const c0=cam,t0=performance.now();cancelAnimationFrame(anim);const st=now=>{const t=Math.min(1,(now-t0)/700),e=t*(2-t);setCam(c0.map((v,j)=>v+(c1[j]-v)*e));if(t<1)anim=requestAnimationFrame(st)};anim=requestAnimationFrame(st)}};
+  // follow the timeline as it scrolls
+  const box=document.getElementById("lifeLine");let st=0;
+  box.addEventListener("scroll",()=>{clearTimeout(st);st=setTimeout(()=>{if(Date.now()-quiet<900)return;
+    const L=box.getBoundingClientRect().left+40;let best=0;
+    const cards=box.querySelectorAll(".lcev");for(let j=0;j<cards.length;j++){if(cards[j].getBoundingClientRect().right>L){best=j;break}}
+    if(best!==cur){if(playT&&Date.now()-quiet>900)stop();go(best,Math.abs(best-cur)===1)}},140)},{passive:true});
+  addEventListener("resize",()=>{if(cur>=0)setCam(target(cur,boxFor(cur)))});
+  // start once the tab is visible (sizes are known then)
+  let started=false;
+  const start=()=>{if(started||!frame.clientWidth)return;started=true;go(0,false)};
+  new ResizeObserver(()=>{if(!started)start();else if(cur>=0)setCam(target(cur,boxFor(cur)))}).observe(frame);
+  return {go,steps,get cur(){return cur}};
 })();
 
 // ---------- Today's Mass readings ----------

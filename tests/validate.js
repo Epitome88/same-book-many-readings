@@ -3,8 +3,8 @@
 //   node tests/validate.js --base origin/main  also compare against another version and flag removed content
 const fs=require('fs'),path=require('path'),vm=require('vm'),zlib=require('zlib'),{execFileSync}=require('child_process');
 const ROOT=path.join(__dirname,'..');
-const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers','checked','studies','jewish','life'];
-const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS','CHECKED','STUDIES','JEWISH','LIFE'];
+const ORDER=['topics','traditions','passages','sources','parables','lineage','angels','saints','other-books','church-tree','apostles','fathers','checked','studies','jewish','life','lifemap'];
+const EXPORTS=['TOPICS','T','P','CSRC','PARABLES','LINE','ANG_RANKS','ANG_NAMED','DEM_RANKS','DEM_NAMED','SAINTS','XB_CATS','XBOOKS','RSRC','READ','NOREAD','FT','APOSTLES','FATHERS','CHECKED','STUDIES','JEWISH','LIFE','LIFEMAP'];
 const errors=[],warnings=[];
 const err=(where,msg)=>errors.push(`${where}: ${msg}`);
 
@@ -139,6 +139,14 @@ const jids=new Set();
   });
  });
  (L.about||[]).forEach((t,i)=>verseLinks(`life about ${i+1}`,t));
+ const PL=L.places||{},M=cur.LIFEMAP;
+ if(!M)err('life map','src/data/lifemap.js is missing: run tools/make_life_map.js');
+ for(const [id,p] of Object.entries(PL)){const w=`life place ${id}`;
+  if(!p.n||!Array.isArray(p.ll)||p.ll.length!==2)err(w,'needs n and ll:[latitude, longitude]');
+  else if(M){const x=(p.ll[1]-M.lon0)*M.kx,y=(M.lat0-p.ll[0])*M.k;if(x<0||y<0||x>M.w||y>M.h)err(w,'is outside the map')}}
+ L.phases.forEach(ph=>(ph.events||[]).forEach(ev=>{if(ev.at!==undefined&&!PL[ev.at])err(`life event ${ev.id}`,`at:"${ev.at}" is not in places`)}));
+ const used=new Set();L.phases.forEach(ph=>(ph.events||[]).forEach(ev=>ev.at&&used.add(ev.at)));
+ Object.keys(PL).forEach(id=>{if(!used.has(id))err(`life place ${id}`,'is not used by any event')});
  if(!(L.src||[]).length)err('life','needs sources');
  (L.src||[]).forEach(s=>{if(!Array.isArray(s)||!s[0]||!/^https:\/\//.test(s[1]||''))err('life sources','each source should be ["Title", "https://..."]')});
 }

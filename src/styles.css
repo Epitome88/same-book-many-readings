@@ -502,3 +502,30 @@ a.notebtn{text-decoration:none;display:inline-block}
 body{overflow-x:clip}
 .lcarrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0 0 3px}
 .lcarrow:hover{border-color:var(--ink)}
+
+/* Life of Christ map */
+.lmap{--lmc:#8A6D1F;margin:8px 0 16px;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.lmnow{margin:0;padding:10px 12px 8px;font-family:var(--sans);font-size:.9rem;line-height:1.35;min-height:2.7em}
+.lmnow b{font-family:var(--serif);font-size:1.03rem}
+.lmtr{color:var(--muted);font-size:.8rem}
+.lmframe{position:relative;height:clamp(260px,50vh,470px);background:#BFD7E8}
+#lmSvg{width:100%;height:100%;display:block}
+.lmland{fill:#EFE7D6}.lmsea{fill:#BFD7E8}.lmlake{fill:#8DBBDA}
+.lmriver{fill:none;stroke:#3F7FB5;stroke-width:1.7px;vector-effect:non-scaling-stroke}
+.lmreg text{font-family:var(--sans);font-size:calc(11px * var(--u,1));letter-spacing:.2em;fill:#6E6250;text-anchor:middle;font-weight:600}
+.lmreg text.lmwater{fill:#2F5F86;letter-spacing:.02em;font-style:italic;font-weight:400}
+.lmseg{fill:none;stroke-width:3.4px;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.lmseg.old{stroke-width:1.8px;stroke-opacity:.45}
+.lmpl circle{fill:#fff;stroke:#4A4134;stroke-width:1.3px;vector-effect:non-scaling-stroke}
+.lmpl.seen circle{fill:#4A4134}
+.lmpl text{display:none;font-family:var(--sans);font-size:calc(11.5px * var(--u,1));fill:#2E2820;paint-order:stroke;stroke:#EFE7D6;stroke-width:calc(3px * var(--u,1));stroke-linejoin:round}
+.lmpl.show text{display:inline}.lmpl.cur text{font-weight:700;font-size:calc(13px * var(--u,1))}
+.lmdot{fill:var(--lmc);stroke:#fff;stroke-width:2.2px;vector-effect:non-scaling-stroke}
+.lmhalo{fill:var(--lmc);opacity:.3;transform-box:fill-box;transform-origin:center;animation:lmpulse 1.8s ease-out infinite}
+@keyframes lmpulse{from{transform:scale(.5);opacity:.5}to{transform:scale(1.5);opacity:0}}
+@media (prefers-reduced-motion:reduce){.lmhalo{animation:none}}
+.lmzoom{position:absolute;right:8px;top:8px;font-family:var(--sans);font-size:.78rem;padding:7px 11px;border-radius:999px;border:1px solid #CFC6B3;background:#FFFDF8;color:#2E2820;cursor:pointer}
+.lmcredit{position:absolute;left:6px;bottom:4px;font-family:var(--sans);font-size:.62rem;color:#3A3A3A;background:rgba(255,255,255,.75);padding:1px 5px;border-radius:3px}
+.lmctl{display:flex;align-items:center;gap:12px;padding:10px 12px 4px}
+.lmctl input[type=range]{flex:1;min-width:0;accent-color:var(--lmc);height:28px}
+.lmwhen{margin:0;padding:2px 12px 10px;font-family:var(--sans);font-size:.78rem;color:var(--muted)}

@@ -9,6 +9,7 @@
 //@include data/studies.js
 //@include data/jewish.js
 //@include data/life.js
+//@include data/lifemap.js
 
 const byId = Object.fromEntries(T.map(t=>[t.id,t]));
 const el = (tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="style")e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
@@ -1522,6 +1523,132 @@ function lifeGo(id,flash){
   const ah=el("h3");ah.textContent="About the dates and order";ab.appendChild(ah);
   LIFE.about.forEach(t=>{const p=el("p");p.appendChild(studyText(t));ab.appendChild(p)});
   ab.appendChild(srcList(LIFE.src));
+})();
+
+// ---------- Life of Christ map: a marker travels the route as you move through the timeline ----------
+const LMAP=(function(){
+  const svg=document.getElementById("lmSvg");if(!svg||typeof LIFEMAP==="undefined")return null;
+  const M=LIFEMAP,NS="http://www.w3.org/2000/svg",RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const P=ll=>[(ll[1]-M.lon0)*M.kx,(M.lat0-ll[0])*M.k];
+  const mk=(t,a,par)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(par||svg).appendChild(e);return e};
+  const steps=[];LIFE.phases.forEach(ph=>ph.events.forEach(ev=>steps.push({ev,ph})));
+  let last=null;steps.forEach(s=>{if(s.ev.at)last=s.ev.at;s.at=last});
+  // base map
+  mk("rect",{x:-600,y:-600,width:M.w+1200,height:M.h+1200,class:"lmland"});
+  mk("path",{d:M.sea,class:"lmsea"});
+  M.lakes.forEach(d=>mk("path",{d,class:"lmlake"}));
+  mk("path",{d:M.jordan,class:"lmriver"});
+  const gReg=mk("g",{class:"lmreg","aria-hidden":"true"});
+  LIFE.regions.forEach(([t,la,lo])=>{const [x,y]=P([la,lo]);const e=mk("text",{x,y,class:/[a-z]/.test(t)?"lmwater":""},gReg);e.textContent=t});
+  const gRoute=mk("g",{class:"lmroute"});
+  const gPl=mk("g",{class:"lmplaces","aria-hidden":"true"}),pel={};
+  const side={golgotha:"l",upperroom:"l",gabbatha:"l",emmaus:"l",hillcountry:"l",siloam:"b",bethlehem:"b",temple:"l",jerusalem:"l",samaria:"l",cana:"l",nazareth:"l",mountain:"l",galsea:"r",tabor:"r",egypt:"r"};
+  for(const id in LIFE.places){const pl=LIFE.places[id],[x,y]=P(pl.ll);
+    const g=mk("g",{class:"lmpl"+(pl.big?" big":"")},gPl),c=mk("circle",{cx:x,cy:y,r:3},g),t=mk("text",{x,y},g);
+    t.textContent=pl.edge?pl.n.replace(/^toward /,"to ")+" \u2199":pl.n.replace(/^(the|through) /,"").replace(/,.*$/,"").replace(/ \(.*$/,"");
+    t.textContent=t.textContent.charAt(0).toUpperCase()+t.textContent.slice(1);
+    pel[id]={g,c,t,x,y,s:side[id]||"r"}}
+  const halo=mk("circle",{class:"lmhalo",r:10}),dot=mk("circle",{class:"lmdot",r:5});
+  const xy=id=>id?[pel[id].x,pel[id].y]:null;
+  // the route: distinct places in order
+  const route=[];steps.forEach((s,i)=>{if(s.at&&(!route.length||route[route.length-1].id!==s.at))route.push({id:s.at,i})});
+  const pts=route.map(r=>xy(r.id));
+  // one line per leg, colored by the part of his life it belongs to
+  const segs=route.map((r,j)=>j?mk("path",{class:"lmseg",stroke:steps[r.i].ph.c,"data-ph":steps[r.i].ph.id},gRoute):null);
+  const allBox=(()=>{const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);return[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)]})();
+  const frame=svg.parentNode;
+  let cur=-1,cam=null,whole=false,anim=0;
+  const routeUpTo=i=>{let k=-1;route.forEach((r,j)=>{if(r.i<=i)k=j});return k}; // index in route
+  function target(i,box){
+    let [x0,y0,x1,y1]=box;const w=Math.max(x1-x0,1),h=Math.max(y1-y0,1);
+    const pad=Math.max(w,h)*0.35+7;x0-=pad;x1+=pad;y0-=pad;y1+=pad;
+    const A=(frame.clientWidth||400)/(frame.clientHeight||300);let bw=x1-x0,bh=y1-y0,cx=(x0+x1)/2,cy=(y0+y1)/2;
+    if(bw/bh<A)bw=bh*A;else bh=bw/A;
+    const cl=(c,b,lo,hi)=>b>=hi-lo?(lo+hi)/2:Math.min(Math.max(c,lo+b/2),hi-b/2);
+    return[cl(cx,bw,0,M.w),cl(cy,bh,0,M.h),bw,bh];
+  }
+  function boxFor(i){
+    if(whole||!steps[i].at)return allBox;
+    const k=routeUpTo(i),a=pts[k],b=pts[Math.max(0,k-1)];
+    return[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0]),Math.max(a[1],b[1])];
+  }
+  function setCam(c){cam=c;const[cx,cy,bw,bh]=c;svg.setAttribute("viewBox",`${(cx-bw/2).toFixed(2)} ${(cy-bh/2).toFixed(2)} ${bw.toFixed(2)} ${bh.toFixed(2)}`);
+    const u=bw/(frame.clientWidth||400);svg.style.setProperty("--u",u.toFixed(4));
+    for(const id in pel){const p=pel[id];p.c.setAttribute("r",(p.g.classList.contains("cur")?4.5:3.2)*u);
+      const o=7*u;let tx=p.x+o,ty=p.y+4*u,an="start";
+      if(p.s==="l"){tx=p.x-o;an="end"}else if(p.s==="t"){tx=p.x;ty=p.y-o;an="middle"}else if(p.s==="b"){tx=p.x;ty=p.y+o+9*u;an="middle"}
+      p.t.setAttribute("x",tx.toFixed(2));p.t.setAttribute("y",ty.toFixed(2));p.t.setAttribute("text-anchor",an)}
+    dot.setAttribute("r",6*u);halo.setAttribute("r",13*u);
+    labels(u);
+  }
+  function labels(u){
+    const zoomed=cam&&cam[2]<170;const here=cur>=0?steps[cur].at:null;
+    gReg.querySelectorAll('text').forEach(t=>{const wtr=t.classList.contains('lmwater'),big=t.textContent==='Mediterranean Sea';t.style.display=(big||(wtr?cam[2]<420&&cam[2]>40:cam[2]>140))?'':'none'});
+    for(const id in pel){const p=pel[id];const close=id==="jerusalem"&&id!==here&&cam[2]<60;p.g.style.display=close?"none":"";const show=id===here||(zoomed?!close:(LIFE.places[id].big||LIFE.places[id].edge));p.g.classList.toggle("show",show);p.g.classList.toggle("cur",id===here)}
+  }
+  const L2=(a,b)=>`M${a[0].toFixed(1)},${a[1].toFixed(1)}L${b[0].toFixed(1)},${b[1].toFixed(1)}`;
+  function drawRoute(k,partial){ // legs up to route[k], plus a growing leg toward the next place
+    const ph=cur>=0?steps[cur].ph.id:"";
+    segs.forEach((g,j)=>{if(!g)return;const on=j<=k||(partial&&j===k+1);g.style.display=on?"":"none";
+      if(on){g.setAttribute("d",L2(pts[j-1],j===k+1?partial:pts[j]));g.classList.toggle("old",g.dataset.ph!==ph)}});
+    for(const id in pel)pel[id].g.classList.remove("seen");
+    route.slice(0,k+1).forEach(r=>pel[r.id].g.classList.add("seen"));
+  }
+  function place(pt){if(!pt){dot.style.display=halo.style.display="none";return}dot.style.display=halo.style.display="";
+    for(const e of[dot,halo]){e.setAttribute("cx",pt[0].toFixed(2));e.setAttribute("cy",pt[1].toFixed(2))}}
+  function caption(i){
+    const {ev,ph}=steps[i],pl=steps[i].at&&LIFE.places[steps[i].at];
+    const now=document.getElementById("lmNow");now.textContent="";
+    const b=el("b");b.textContent=ev.h;now.appendChild(b);
+    now.append(" \u00b7 "+(pl?(ev.at?"":"still near ")+pl.n:"no place named"));
+    if(pl&&pl.tr&&ev.at){const t=el("span",{class:"lmtr"});t.textContent=` (${pl.tr})`;now.appendChild(t)}
+    document.getElementById("lmWhen").textContent=`${ph.n}, ${ph.when} \u00b7 event ${i+1} of ${steps.length}`;
+    document.getElementById("lifeMap").style.setProperty("--lmc",ph.c);
+    const r=document.getElementById("lmTime");r.value=i;r.setAttribute("aria-valuetext",`${ev.h}, ${pl?pl.n:"no place named"}`);
+    svg.setAttribute("aria-label",`Map of the Holy Land${pl?", showing "+pl.n:""}`);
+  }
+  function go(i,animate){
+    i=Math.max(0,Math.min(steps.length-1,i));if(i===cur&&cam)return;
+    const prev=cur;cur=i;caption(i);cancelAnimationFrame(anim);
+    const k=routeUpTo(i),to=k>=0?pts[k]:null,from=prev>=0&&routeUpTo(prev)>=0?pts[routeUpTo(prev)]:to;
+    const c1=target(i,boxFor(i)),c0=cam||c1;
+    const moving=animate&&!RM&&prev>=0&&Math.abs(i-prev)===1&&k>0&&from&&to;
+    if(!moving&&!(animate&&!RM)){drawRoute(k);place(to);setCam(c1);return}
+    const dist=from&&to?Math.hypot(to[0]-from[0],to[1]-from[1]):0;
+    const D=Math.min(1700,650+dist*2.2),t0=performance.now(),ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    const step=now=>{const t=Math.min(1,(now-t0)/D),e=ease(t);
+      const cc=c0.map((v,j)=>v+(c1[j]-v)*e);
+      if(moving&&i>prev){const pt=[from[0]+(to[0]-from[0])*e,from[1]+(to[1]-from[1])*e];drawRoute(k-1,t<1?pt:null);if(t>=1)drawRoute(k);place(pt)}
+      else{drawRoute(k);place(to)}
+      setCam(cc);labels(cc[2]/(frame.clientWidth||400));if(t<1)anim=requestAnimationFrame(step)};
+    anim=requestAnimationFrame(step);
+  }
+  // controls
+  const range=document.getElementById("lmTime");range.max=steps.length-1;
+  let playT=0,quiet=0;
+  const follow=i=>{quiet=Date.now();lifeGo(steps[i].ev.id)};
+  range.addEventListener("input",()=>{stop();const v=+range.value;go(v,Math.abs(v-cur)===1);follow(v)});
+  const play=document.getElementById("lmPlay");
+  function stop(){if(!playT)return;clearInterval(playT);playT=0;play.textContent="\u25B6";play.setAttribute("aria-label","Play the journey")}
+  play.onclick=()=>{if(playT){stop();return}
+    if(cur>=steps.length-1){go(0,false);follow(0)}
+    play.textContent="\u275A\u275A";play.setAttribute("aria-label","Pause");
+    const tick=()=>{if(cur>=steps.length-1){stop();return}go(cur+1,true);follow(cur)};tick();playT=setInterval(tick,2600)};
+  const zb=document.getElementById("lmZoom");
+  zb.onclick=()=>{whole=!whole;zb.textContent=whole?"Follow the route":"Whole land";zb.setAttribute("aria-pressed",whole);if(cur<0)return;const c1=target(cur,boxFor(cur));
+    if(RM)setCam(c1);else{const c0=cam,t0=performance.now();cancelAnimationFrame(anim);const st=now=>{const t=Math.min(1,(now-t0)/700),e=t*(2-t);setCam(c0.map((v,j)=>v+(c1[j]-v)*e));if(t<1)anim=requestAnimationFrame(st)};anim=requestAnimationFrame(st)}};
+  // follow the timeline as it scrolls
+  const box=document.getElementById("lifeLine");let st=0;
+  box.addEventListener("scroll",()=>{clearTimeout(st);st=setTimeout(()=>{if(Date.now()-quiet<900)return;
+    const L=box.getBoundingClientRect().left+40;let best=0;
+    const cards=box.querySelectorAll(".lcev");for(let j=0;j<cards.length;j++){if(cards[j].getBoundingClientRect().right>L){best=j;break}}
+    if(best!==cur){if(playT&&Date.now()-quiet>900)stop();go(best,Math.abs(best-cur)===1)}},140)},{passive:true});
+  addEventListener("resize",()=>{if(cur>=0)setCam(target(cur,boxFor(cur)))});
+  // start once the tab is visible (sizes are known then)
+  let started=false;
+  const start=()=>{if(started||!frame.clientWidth)return;started=true;go(0,false)};
+  new ResizeObserver(()=>{if(!started)start();else if(cur>=0)setCam(target(cur,boxFor(cur)))}).observe(frame);
+  return {go,steps,get cur(){return cur}};
 })();
 
 // ---------- Today's Mass readings ----------
